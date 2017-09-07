@@ -820,7 +820,24 @@
 	 	    #{cmd}
 	 	  )
 	</insert>
+	<select id="listTermsByGatewayId" parameterType="page" resultType="pd">
+	    SELECT
+	    	b.name
+		FROM
+			c_gateway_term a
+		INNER JOIN
+			c_term b
+		ON
+			a.c_term_id  = b.id
+		WHERE
+			a.c_gateway_id = ${pd.c_gateway_id} 
+			and b.sys_user_id IN (${pd.userids})
+			
+	</select>
 	
+	<select id="delTermsandStrategyByGeatewayID" parameterType="pd" resultType="pd" statementType="CALLABLE">
+		CALL delTermsAndTermsByGateWayID(${pd.c_gateway_id},${pd.userids})
+	</select>
 	<!-- end -->
 	
 	
