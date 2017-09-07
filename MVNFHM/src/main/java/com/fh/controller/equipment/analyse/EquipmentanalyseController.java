@@ -40,7 +40,7 @@ public class EquipmentanalyseController extends BaseController {
 		ModelAndView mv = this.getModelAndView();
 		PageData pd = new PageData();
 		pd = this.getPageData();
-		String gateway_code = pd.getString("gateway_code"); // 检索条件：终端编号
+		String gateway_code = pd.getString("gateway_code"); // 检索条件：终端编号11
 		if (null != gateway_code && !"".equals(gateway_code)) {
 			pd.put("gateway_code", gateway_code.trim());
 		}
@@ -57,7 +57,7 @@ public class EquipmentanalyseController extends BaseController {
 		pd.put("userids", userids);
 		PageData pdtemp = new PageData();
 		List<PageData> equipmentGateWayList = equipmentService.listGatenum(page); // 列出网关列表
-		if (equipmentGateWayList.size() > 0 ) {
+		if (equipmentGateWayList.size() > 0) {
 			pdtemp = equipmentGateWayList.get(0);
 			int getWayCount = Integer.parseInt(pdtemp.get("gatewayCount").toString());
 			int onlineGateWayCount = Integer.parseInt(pdtemp.get("onlineGateWayCount").toString());
@@ -65,7 +65,7 @@ public class EquipmentanalyseController extends BaseController {
 			df.setRoundingMode(RoundingMode.HALF_UP);
 			String rate = "0";
 			if (getWayCount != 0) {
-			rate = df.format(100 * (float)onlineGateWayCount / (float)getWayCount);//
+				rate = df.format(100 * (float) onlineGateWayCount / (float) getWayCount);//
 			}
 			pdtemp.put("gatewyOnlineRate", rate + "%");
 			equipmentGateWayList.set(0, pdtemp);
@@ -82,7 +82,7 @@ public class EquipmentanalyseController extends BaseController {
 		List<PageData> LightList = equipmentService.listLightnum(page); //
 		// 列出终端列表
 		PageData pdtemplight = new PageData();
-		if (LightList.size() > 0 ) {
+		if (LightList.size() > 0) {
 			pdtemplight = LightList.get(0);
 			int lightCount = Integer.parseInt(pdtemplight.get("lightCount").toString());
 			int onlineLightCount = Integer.parseInt(pdtemplight.get("onlineLightCount").toString());
@@ -90,7 +90,7 @@ public class EquipmentanalyseController extends BaseController {
 			df.setRoundingMode(RoundingMode.HALF_UP);
 			String rate = "0";
 			if (lightCount != 0) {
-				rate = df.format(100 * (float)onlineLightCount / (float)lightCount);//
+				rate = df.format(100 * (float) onlineLightCount / (float) lightCount);//
 			}
 			pdtemplight.put("onlineLightRate", rate + "%");
 			LightList.set(0, pdtemplight);
@@ -109,7 +109,7 @@ public class EquipmentanalyseController extends BaseController {
 		// 列出终端列表
 		PageData pdEquipmentFault = new PageData();
 		PageData pdEquipmen = new PageData();
-		if (equipmenttList.size() > 0  ) {
+		if (equipmenttList.size() > 0) {
 			pdEquipmentFault = equipmentfaultList.get(0);
 			int faultCount = Integer.parseInt(pdEquipmentFault.get("faultnum").toString());
 			pdEquipmen = equipmenttList.get(0);
@@ -118,7 +118,7 @@ public class EquipmentanalyseController extends BaseController {
 			df.setRoundingMode(RoundingMode.HALF_UP);
 			String rate = "0";
 			if (faultCount != 0) {
-				rate = df.format(100 * (float)faultCount / (float)equipmentcnt);//
+				rate = df.format(100 * (float) faultCount / (float) equipmentcnt);//
 			}
 			pdEquipmentFault.put("faultnum", faultCount);
 			pdEquipmentFault.put("equipmentcnt", equipmentcnt);
