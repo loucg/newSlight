@@ -40,7 +40,7 @@ public class EquipmentanalyseController extends BaseController {
 		ModelAndView mv = this.getModelAndView();
 		PageData pd = new PageData();
 		pd = this.getPageData();
-		String gateway_code = pd.getString("gateway_code"); // 检索条件：终端编号11
+		String gateway_code = pd.getString("gateway_code"); // 检索条件：终端编号112
 		if (null != gateway_code && !"".equals(gateway_code)) {
 			pd.put("gateway_code", gateway_code.trim());
 		}
