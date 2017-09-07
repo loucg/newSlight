@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="InternationalMapper">
+
+<select id="getLanguage" parameterType="pd" resultType="pd">
+	SELECT a.LANGUAGE AS language
+	FROM sys_user AS a
+	WHERE a.USER_ID = #{userid}
+</select>
+
+</mapper>

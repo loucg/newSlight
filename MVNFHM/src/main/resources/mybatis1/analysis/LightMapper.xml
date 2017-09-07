@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="LightMapper">
+
+<select id="datalistPage" parameterType="page" resultType="pd">
+		select 
+		a.c_client_id, 
+		sum(a.time) as time,
+		TRUNCATE(AVG(a.per)+0.005,2) as per,
+		count(a.day) as day,
+		c.name as groupname,
+		d.client_code,
+		e.name,
+		e.location,
+		e.lamp_pole_num,
+		f.name as wgname
+		from b_client_power_daily_report a,
+		c_term c,
+		c_client d,
+		c_client_attr1 e,
+		c_gateway_attr1 f,
+		c_client_term g,
+		c_client_gateway h
+		where a.c_client_id=g.c_client_id 
+		and g.c_term_id=c.id and a.c_client_id=d.id 
+		and a.c_client_id=e.c_client_id 
+		and a.c_client_id=h.c_client_id 
+		and h.c_gateway_id=f.c_gateway_id
+		and e.sys_user_id in ${pd.userids}
+		<if test="pd.groupname!= null and pd.groupname != ''"><!-- 检索 -->
+			and c.name LIKE CONCAT(CONCAT('%', #{pd.groupname}),'%')
+		</if>
+		<if test="pd.name != null and pd.name != ''"><!-- 关键词检索 -->
+			and e.name LIKE CONCAT(CONCAT('%', #{pd.name}),'%')
+		</if>
+		<if test="pd.number != null and pd.number != ''"><!-- 关键词检索 -->
+			and d.client_code LIKE CONCAT(CONCAT('%', #{pd.number}),'%')
+		</if>
+		<if test="pd.location != null and pd.location != ''"><!-- 关键词检索 -->
+			and e.location LIKE CONCAT(CONCAT('%', #{pd.location}),'%')
+		</if>
+		<if test="pd.starttime != null and pd.starttime != ''"><!-- 关键词检索 -->
+			and a.day &gt;= #{pd.starttime}
+		</if>
+		<if test="pd.endtime != null and pd.endtime != ''"><!-- 关键词检索 -->
+			and a.day &lt;= #{pd.endtime}
+		</if>
+		group by a.c_client_id
+		order by c.name
+	</select>
+	</mapper>

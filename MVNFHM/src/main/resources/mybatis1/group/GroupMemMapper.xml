@@ -1,0 +1,695 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="GroupMemMapper">
+	
+	<!-- 表名 -->
+	<sql id="tableName">c_term</sql>
+	
+	<!-- 字段 -->
+	<sql id="Field">
+		name,
+		c_term.explain,
+		status,
+		sys_user_id,
+		b_ctrl_strategy_id
+	</sql>
+	
+	<!-- 字段值 -->
+	<sql id="FieldValue">
+		#{name},
+		#{explain},
+		#{status},
+		#{sys_user_id},
+		#{b_ctrl_strategy_id}
+	</sql>
+	
+		<!-- 查询给定组，组成员（缪秀诚改。。。。。。。。。。） -->
+	<select id="memlistPage" parameterType="page" resultType="pd">
+	   SELECT
+	    a.id,
+		a.client_code,
+		b.`name` clientname,
+		b.lamp_pole_num,
+		b.location,
+		c.`name` ctyname  	
+	FROM
+		c_client  AS a
+		LEFT JOIN c_client_attr1 AS b ON a.id=b.c_client_id
+		LEFT JOIN c_client_type AS c ON c.id=b.c_client_type_id
+		WHERE
+		a.id
+		IN
+		(SELECT
+		c_client_term.c_client_id
+		FROM
+		c_client_term
+		WHERE
+		c_client_term.c_term_id = #{pd.id}
+		)
+		<!-- WHERE
+		 a.id
+		NOT IN
+		(SELECT
+		c_client_term.c_client_id
+		FROM
+		c_client_term
+		)-->
+		AND 
+		b.sys_user_id IN ${pd.userids}
+		 <if test="pd.location!=null and pd.location!=''">
+			and 
+			(
+				b.location LIKE CONCAT(CONCAT('%', #{pd.location}),'%')
+			)
+		</if>
+		<if test="pd.clientname!=null and pd.clientname!=''">
+			and 
+			(
+				b.name LIKE CONCAT(CONCAT('%', #{pd.clientname}),'%')
+			)
+		</if>
+		<if test="pd.lamp_pole_num!=null and pd.lamp_pole_num!=''">
+			and 
+			(
+				b.lamp_pole_num LIKE CONCAT(CONCAT('%', #{pd.lamp_pole_num}),'%')
+			)
+		</if>
+		<if test="pd.client_code!=null and pd.client_code!=''">
+			and 
+			(
+				a.client_code LIKE CONCAT(CONCAT('%', #{pd.client_code}),'%')
+			)
+		</if>
+		GROUP BY
+		a.id
+	</select>
+	
+	<!-- 查询给定组，组成员 -->
+	<select id="memlistPage1" parameterType="page" resultType="pd">
+	   SELECT
+	    c_client.id,
+		c_client.client_code,
+		c_client_attr1.`name` clientname,
+		c_client_attr1.lamp_pole_num,
+		c_client_attr1.location,
+		c_power_type.`name` powername,
+		c_lamp_type.`name` lampname
+		
+		FROM
+		c_client
+		
+		LEFT JOIN c_client_attr1
+		ON
+		c_client.id=c_client_attr1.c_client_id
+		LEFT JOIN c_power_type ON c_power_type.id = ( SELECT c_power_type_id FROM c_client_attr2
+														WHERE
+														c_client_attr2.c_client_id = c_client.id
+													)
+		LEFT JOIN
+		c_lamp_type
+		ON
+		c_lamp_type.id = (
+		SELECT
+		c_lamp_type_id
+		FROM
+		c_client_attr2
+		WHERE
+		c_client_attr2.c_client_id = c_client.id
+		)
+		WHERE
+		c_client.id
+		IN
+		(SELECT
+		c_client_term.c_client_id
+		FROM
+		c_client_term
+		WHERE
+		c_client_term.c_term_id = #{pd.id}
+		)
+		AND
+		c_client_attr1.sys_user_id IN ${pd.userids}
+		 <if test="pd.location!=null and pd.location!=''">
+			and 
+			(
+				c_client_attr1.location LIKE CONCAT(CONCAT('%', #{pd.location}),'%')
+			)
+		</if>
+		<if test="pd.clientname!=null and pd.clientname!=''">
+			and 
+			(
+				c_client_attr1.name LIKE CONCAT(CONCAT('%', #{pd.clientname}),'%')
+			)
+		</if>
+		<if test="pd.lamp_pole_num!=null and pd.lamp_pole_num!=''">
+			and 
+			(
+				c_client_attr1.lamp_pole_num LIKE CONCAT(CONCAT('%', #{pd.lamp_pole_num}),'%')
+			)
+		</if>
+		<if test="pd.client_code!=null and pd.client_code!=''">
+			and 
+			(
+				c_client.client_code LIKE CONCAT(CONCAT('%', #{pd.client_code}),'%')
+			)
+		</if>
+		GROUP BY
+		c_client.id
+	</select>
+	
+	<!-- 查询未分组，组成员 （原先的）-->
+	<select id="otherlistPage1" parameterType="page" resultType="pd">
+	   SELECT
+	    c_client.id,
+		c_client.client_code,
+		c_client_attr1.`name` clientname,
+		c_client_attr1.lamp_pole_num,
+		c_client_attr1.location,
+		c_power_type.`name` powername,
+		c_lamp_type.`name` lampname  
+		
+		FROM
+		c_client
+		
+		LEFT JOIN
+		c_client_attr1
+		ON
+		c_client.id=c_client_attr1.c_client_id
+		LEFT JOIN
+		c_power_type
+		ON
+		c_power_type.id = (
+				SELECT
+				c_power_type_id
+				FROM
+				c_client_attr2
+				WHERE
+				c_client_attr2.c_client_id = c_client.id
+				)
+		LEFT JOIN
+		c_lamp_type
+		ON
+		c_lamp_type.id = (
+		SELECT
+		c_lamp_type_id
+		FROM
+		c_client_attr2
+		WHERE
+		c_client_attr2.c_client_id = c_client.id
+		)
+		WHERE
+		c_client.id
+		NOT IN
+		(SELECT
+		c_client_term.c_client_id
+		FROM
+		c_client_term
+		)
+		AND
+		c_client_attr1.sys_user_id IN ${pd.userids}
+		 <if test="pd.location!=null and pd.location!=''">
+			and 
+			(
+				c_client_attr1.location LIKE CONCAT(CONCAT('%', #{pd.location}),'%')
+			)
+		</if>
+		<if test="pd.clientname!=null and pd.clientname!=''">
+			and 
+			(
+				c_client_attr1.name LIKE CONCAT(CONCAT('%', #{pd.clientname}),'%')
+			)
+		</if>
+		<if test="pd.lamp_pole_num!=null and pd.lamp_pole_num!=''">
+			and 
+			(
+				c_client_attr1.lamp_pole_num LIKE CONCAT(CONCAT('%', #{pd.lamp_pole_num}),'%')
+			)
+		</if>
+		<if test="pd.client_code!=null and pd.client_code!=''">
+			and 
+			(
+				c_client.client_code LIKE CONCAT(CONCAT('%', #{pd.client_code}),'%')
+			)
+		</if>
+		GROUP BY
+		c_client.id
+	</select>
+	
+	<!-- 缪秀诚改 。。。。。。。。。-->
+	<select id="otherlistPage" parameterType="page" resultType="pd">
+	SELECT
+	    a.id,
+		a.client_code,
+		b.`name` clientname,
+		b.lamp_pole_num,
+		b.location,
+		c.`name` ctyname,
+		d.c_gateway_id gateway_id
+	FROM
+		c_client  AS a
+		LEFT JOIN c_client_attr1 AS b ON a.id=b.c_client_id
+		LEFT JOIN c_client_type AS c ON c.id=b.c_client_type_id
+		LEFT JOIN c_client_gateway AS d ON d.c_client_id=a.id
+		WHERE 
+
+		a.id
+		NOT IN
+		(SELECT
+		c_client_term.c_client_id
+		FROM
+		c_client_term
+		WHERE
+		c_client_term.c_term_id = #{pd.id}
+		)
+		AND  
+		b.sys_user_id IN ${pd.userids}
+		AND  
+		d.type = 1
+		 <if test="pd.location!=null and pd.location!=''">
+			and 
+			(
+				b.location LIKE CONCAT(CONCAT('%', #{pd.location}),'%')
+			)
+		</if>
+		<if test="pd.clientname!=null and pd.clientname!=''">
+			and 
+			(
+				b.name LIKE CONCAT(CONCAT('%', #{pd.clientname}),'%')
+			)
+		</if>
+		<if test="pd.lamp_pole_num!=null and pd.lamp_pole_num!=''">
+			and 
+			(
+				b.lamp_pole_num LIKE CONCAT(CONCAT('%', #{pd.lamp_pole_num}),'%')
+			)
+		</if>
+		<if test="pd.client_code!=null and pd.client_code!=''">
+			and 
+			(
+				a.client_code LIKE CONCAT(CONCAT('%', #{pd.client_code}),'%')
+			)
+		</if>
+		GROUP BY
+		a.id
+	</select>
+	
+	
+	<!-- 添加组成员到给定组 -->
+	<insert id="addMember" parameterType="pd" >
+		INSERT INTO
+			c_client_term
+			(
+			c_term_id,
+			c_client_id,
+			type
+			)
+		VALUES
+		(
+		#{c_term_id},
+		#{c_client_id},
+		 ( SELECT
+			     type
+			  FROM
+				c_client_gateway
+			WHERE
+			    c_client_id = #{c_client_id}	
+		  )
+			
+		)
+	</insert>
+	<!-- 添加到给辅助表 -->
+	<insert id="addMemberAssist" parameterType="pd" >
+		<!-- INSERT INTO
+		c_gateway_term
+		(
+		  c_term_id, 
+		  c_gateway_id 
+		 )
+		 SELECT '#{c_term_id}','#{c_gateway_id}'
+		 FROM DUAL where '#{c_term_id}','#{c_gateway_id}'
+		 not in (
+		 select c_gateway_id from c_gateway_term
+		 ) -->
+	
+	 INSERT INTO
+		c_gateway_term
+		(
+		  c_term_id, 
+		  c_gateway_id,
+		  c_gateway_team_id
+		 )
+		VALUES
+		(
+		  #{c_term_id},
+		  #{c_gateway_id},
+		  #{c_gateway_team_id}
+		  
+		  <!--  ( SELECT
+			     c_gateway_id
+			  FROM
+				c_client_gateway
+			WHERE
+			    c_client_id = #{c_client_id}	
+			) -->
+		) 
+	</insert>
+	<!-- 一次搜索-->
+	<select id="getGTList" parameterType="pd" resultType="string">
+	    SELECT c_gateway_team_id FROM c_gateway_term 
+	    WHERE  c_term_id=#{c_term_id} 
+	    AND c_gateway_id=#{c_gateway_id}
+	    ORDER BY c_gateway_team_id
+	</select>
+	<!-- 二次搜索,找出网组最大值-->
+	<select id="getSGTList" parameterType="pd" resultType="pd">
+	    SELECT MAX(c_gateway_team_id) AS c_gateway_team_id FROM c_gateway_term 
+	    WHERE c_gateway_id=#{c_gateway_id}                                                                                        
+	</select>
+	<!-- 二次搜索,找出网组总数-->
+	<select id="getSGTListcount" parameterType="pd" resultType="Integer">
+	    SELECT count(c_gateway_team_id) AS c_gateway_team_id FROM c_gateway_term 
+	    WHERE c_gateway_id=#{c_gateway_id}                                                                                        
+	</select>
+	<!-- 二次搜索,找出网组中的所有值-->
+	<select id="getSGTListAll" parameterType="pd" resultType="pd">
+	    SELECT c_gateway_team_id FROM c_gateway_term 
+	    WHERE c_gateway_id=#{c_gateway_id} 
+		ORDER BY c_gateway_team_id                                                                                     
+	</select>
+	
+	
+	
+		<!-- 一次搜索(最后一张表)-->
+	<select id="addMemberAssistFirst" parameterType="pd" resultType="pd">
+	    INSERT INTO
+		c_client_term2
+		(
+		  c_gateway_term_id,
+		  c_client_id,
+		  type
+		 )
+		VALUES
+		(
+		  ( SELECT
+			     id
+			  FROM
+				c_gateway_term
+			WHERE
+			    c_gateway_team_id = #{c_gateway_team_id}
+			    AND 	
+			    c_gateway_id = #{c_gateway_id}
+			),
+		  #{c_client_id_last},
+		  ( SELECT
+			     type
+			  FROM
+				c_client_gateway
+			WHERE
+			    c_client_id = #{c_client_id_last}	
+		  )
+		) 
+	</select>
+	
+	<!-- 删除给定组的组成员 -->
+	<delete id="removeMember" parameterType="pd" >
+		DELETE
+		FROM
+		c_client_term
+		WHERE
+		c_term_id = #{c_term_id}
+		AND
+		c_client_id = #{c_client_id}
+	</delete>
+	
+	<!-- 计算最后一张表里面网关对应的组数的个数 -->
+	<select id="conutRemoveMember" parameterType="pd" resultType="Integer">
+	   select count(*) AS count 
+       from c_client_term2
+       where 
+       c_gateway_term_id =#{c_gateway_term_id}
+       and
+       type IN (SELECT type from c_client_gateway WHERE c_client_id =#{c_client_id})
+	</select>
+	
+	<!-- 处理麻烦-->
+	<select id="solveProblemMember" parameterType="pd" resultType="Integer">
+	   	   select count(*) AS count 
+       from c_client_gateway
+       where 
+       c_gateway_id =#{c_gateway_id}
+       and
+       c_client_id =#{c_client_id_last}
+	</select>
+	
+		<!-- 删除网组表里面的数据（倒数第二张表） -->
+	<delete id="removeMemberContinueLast" parameterType="pd" >
+		DELETE
+		FROM
+		c_gateway_term
+		WHERE
+		id  =#{c_gateway_term_id}
+	</delete>
+	
+	<!-- 删除网组表里面的数据（最后一张表） -->
+	<delete id="removeMemberLast" parameterType="pd" >
+		DELETE
+		FROM
+		c_client_term2
+		WHERE
+		c_client_id = #{c_client_id}
+		AND
+		c_gateway_term_id = #{c_gateway_term_id}
+	</delete>
+	
+	<!-- 更新表c_client_term -->
+	<update id="updateMember" parameterType="pd" >
+		UPDATE
+		c_client_term
+		SET
+		c_term_id = #{c_term_id}
+		WHERE
+		1=1
+		<!-- c_client_id = #{c_client_id} -->
+		<if test="c_client_id!=null and c_client_id!=''">
+			and 
+			(
+				c_client_id = #{c_client_id}
+			)
+		</if>
+		<if test="lamp_pole_num!=null and lamp_pole_num!=''">
+			and 
+			(
+				c_client_id IN (SELECT c_client_id FROM c_client_attr1 WHERE lamp_pole_num = #{lamp_pole_num})
+			)
+		</if>
+		
+	</update>
+	
+	
+	<!-- 最后的剔除组员模块 -->
+    <select id="searchRemoveMemberGT" parameterType="pd" resultType="Integer">
+	    SELECT id
+		from c_gateway_term
+		WHERE c_term_id =#{c_term_id}
+		AND c_gateway_id IN
+			(
+				SELECT c_gateway_id
+			FROM c_client_gateway
+			WHERE c_client_id =#{c_client_id}
+			)
+
+	   <!-- SELECT c_gateway_term_id from c_client_term2 WHERE c_client_id =#{c_client_id} -->
+	</select>
+	
+	<!-- 添加cmd命令内容1 -->
+	<insert id="addCmdContent" parameterType = "pd">
+	 	INSERT INTO 
+	 	  b_user_log
+	 	  (
+	 	  	tdate,
+	 	  	b_log_type_id,
+	 	  	comment,
+	 	  	sys_user_id
+	 	  )
+	 	  VALUES(
+	 	    #{tdate},
+	 	    #{b_log_type_id},
+	 	    #{comment},
+	 	    #{sys_user_id}
+	 	  )
+	</insert>
+	<!-- 获取b_user_log的id -->
+	<select id="searchUserLogId" parameterType="pd" resultType="Integer">
+	   SELECT id FROM b_user_log WHERE tdate = #{tdate}
+	</select>
+	<!-- 增加员工 -->
+	<select id="searchfirst" parameterType="pd" resultType="Integer">
+		SELECT c_gateway_team_id 
+		FROM c_gateway_term 
+		WHERE 
+		c_gateway_id =#{c_gateway_id} 
+		AND c_gateway_team_id =#{c_gateway_team_id}
+	</select>
+	
+	<select id="searchsecond" parameterType="pd" resultType="Integer">
+	   select count(*) AS num 
+       from c_client_term2
+       where 
+       c_gateway_term_id IN
+		(
+		SELECT id FROM c_gateway_term 
+		WHERE 
+		c_gateway_id =#{c_gateway_id}  
+		AND c_gateway_team_id =#{c_gateway_team_id}
+		)
+	</select>
+	
+	<select id="searchthird" parameterType="pd" resultType="string">
+		SELECT
+		GROUP_CONCAT(
+		CONCAT_WS('.',node,node2) separator '、'
+		)
+		AS mxc
+		FROM 
+		c_client_attr1
+		WHERE 
+		c_client_id IN
+		(
+		select c_client_id 
+		       from c_client_term2
+		       where 
+		       c_gateway_term_id IN 
+						(
+						SELECT id FROM c_gateway_term WHERE
+						 c_gateway_id =#{c_gateway_id} 
+						 AND c_gateway_team_id =#{c_gateway_team_id}
+						)
+		)
+	</select>
+	
+	<!-- 插入最后一张cmd表（增加成员） -->
+	<insert id="finallypage" parameterType = "pd">
+	 	INSERT INTO 
+	 	  b_client_log
+	 	  (
+	 	  	b_uesr_log_id,
+	 	  	c_gateway_id,
+	 	  	b_cmd_type_id,
+	 	  	status,
+	 	  	tdate,
+	 	  	cmd
+	 	  )
+	 	  VALUES(
+	 	    #{b_user_log_id},
+	 	    #{c_gateway_id},
+	 	    #{b_cmd_type_id},
+	 	    #{status},
+	 	    #{tdate},
+	 	    #{cmd}
+	 	  )
+	</insert>
+		<insert id="finallypagelast" parameterType = "pd">
+	 	INSERT INTO 
+	 	  b_client_log
+	 	  (
+	 	  	b_uesr_log_id,
+	 	  	c_gateway_id,
+	 	  	b_cmd_type_id,
+	 	  	status,
+	 	  	tdate,
+	 	  	cmd
+	 	  )
+	 	  VALUES(
+	 	    #{b_user_log_id},
+	 	    #{c_gateway_id},
+	 	    #{b_cmd_type_id},
+	 	    #{status},
+	 	    #{tdate},
+	 	    #{cmd1}
+	 	  )
+	</insert>
+	
+<!-- 踢除部分的命令 -->
+	<select id="getGatewayId" parameterType="pd" resultType="pd">
+	   SELECT c_gateway_id from c_gateway_term WHERE c_term_id =#{c_term_id}
+	</select>
+	<select id="searchdeletefirst" parameterType="pd" resultType="Integer">	    
+		SELECT c_gateway_team_id from c_gateway_term 
+		WHERE c_term_id =#{c_term_id}
+		AND c_gateway_id=#{CGID}
+	</select>
+	<select id="searchdeletesecond" parameterType="pd" resultType="Integer">	    
+		select count(*) AS num1 
+        from c_client_term2
+        where 
+	       c_gateway_term_id IN
+			(
+			SELECT id FROM c_gateway_term 
+			WHERE 
+			c_gateway_id =#{CGID}
+			AND c_term_id =#{c_term_id}
+			)
+	</select>
+	
+		<select id="searchdeletethird" parameterType="pd" resultType="string">
+		SELECT 
+		GROUP_CONCAT(
+		CONCAT_WS('.',node,node2) separator '、')
+		AS mcx
+		FROM c_client_attr1
+		WHERE c_client_id IN(
+			select c_client_id
+			       from c_client_term2
+			       where 
+			       c_gateway_term_id IN
+					(
+					SELECT id FROM c_gateway_term 
+					WHERE 
+					c_gateway_id =#{CGID}
+					AND c_term_id =#{c_term_id}
+			    )
+            )
+	</select>	
+	
+		<!-- 插入最后一张cmd表（踢除成员） -->
+	<insert id="finallydeletepage" parameterType = "pd">
+	 	INSERT INTO 
+	 	  b_client_log
+	 	  (
+	 	  	b_uesr_log_id,
+	 	  	c_gateway_id,
+	 	  	b_cmd_type_id,
+	 	  	status,
+	 	  	tdate,
+	 	  	cmd
+	 	  )
+	 	  VALUES(
+	 	    #{b_user_log_id},
+	 	    #{CGID},
+	 	    #{b_cmd_type_id},
+	 	    #{status},
+	 	    #{tdate},
+	 	    #{cmd}
+	 	  )
+	</insert>
+		<insert id="finallydeletepagelast" parameterType = "pd">
+	 	INSERT INTO 
+	 	  b_client_log
+	 	  (
+	 	  	b_uesr_log_id,
+	 	  	c_gateway_id,
+	 	  	b_cmd_type_id,
+	 	  	status,
+	 	  	tdate,
+	 	  	cmd
+	 	  )
+	 	  VALUES(
+	 	    #{b_user_log_id},
+	 	    #{CGID},
+	 	    #{b_cmd_type_id},
+	 	    #{status},
+	 	    #{tdate},
+	 	    #{cmd1}
+	 	  )
+	</insert>
+</mapper>

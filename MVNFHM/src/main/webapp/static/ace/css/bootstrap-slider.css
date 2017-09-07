@@ -1,0 +1,165 @@
+.slider {
+	vertical-align: middle; display: inline-block; position: relative;
+}
+.slider.slider-horizontal {
+	width: 120px; height: 10px;
+}
+.slider.slider-horizontal .slider-track {
+	left: 0px; top: 50%; width: 100%; height: 10px; margin-top: -3px;
+}
+.slider.slider-horizontal .slider-selection {
+	top: 0px; height: 100%; bottom: 0px;
+}
+.slider.slider-horizontal .slider-track-low {
+	top: 0px; height: 100%; bottom: 0px;
+}
+.slider.slider-horizontal .slider-track-high {
+	top: 0px; height: 100%; bottom: 0px;
+}
+.slider.slider-horizontal .slider-tick {
+	margin-left: -10px;
+}
+.slider.slider-horizontal .slider-handle {
+	margin-left: -10px;
+}
+.slider.slider-horizontal .slider-tick.triangle {
+	border-width: 0px 10px 10px; top: 50%; width: 0px; height: 0px; margin-top: 0px; border-bottom-color: rgb(4, 128, 190); position: relative; transform: translateY(-50%);
+}
+.slider.slider-horizontal .slider-handle.triangle {
+	border-width: 0px 10px 10px; top: 50%; width: 0px; height: 0px; margin-top: 0px; border-bottom-color: rgb(4, 128, 190); position: relative; transform: translateY(-50%);
+}
+.slider.slider-horizontal .slider-tick-container {
+	left: 0px; top: 0px; width: 100%; white-space: nowrap; position: absolute;
+}
+.slider.slider-horizontal .slider-tick-label-container {
+	margin-top: 20px; white-space: nowrap;
+}
+.slider.slider-horizontal .slider-tick-label-container .slider-tick-label {
+	text-align: center; padding-top: 4px; display: inline-block;
+}
+.slider.slider-horizontal.slider-rtl .slider-track {
+	right: 0px;
+}
+.slider.slider-horizontal.slider-rtl .slider-tick {
+	margin-right: -10px;
+}
+.slider.slider-horizontal.slider-rtl .slider-handle {
+	margin-right: -10px;
+}
+.slider.slider-horizontal.slider-rtl .slider-tick-container {
+	right: 0px;
+}
+.slider.slider-vertical {
+	width: 20px; height: 210px;
+}
+.slider.slider-vertical .slider-track {
+	left: 25%; top: 0px; width: 10px; height: 100%;
+}
+.slider.slider-vertical .slider-selection {
+	left: 0px; top: 0px; width: 100%; bottom: 0px;
+}
+.slider.slider-vertical .slider-track-low {
+	left: 0px; width: 100%; right: 0px;
+}
+.slider.slider-vertical .slider-track-high {
+	left: 0px; width: 100%; right: 0px;
+}
+.slider.slider-vertical .slider-tick {
+	margin-top: -10px;
+}
+.slider.slider-vertical .slider-handle {
+	margin-top: -10px;
+}
+.slider.slider-vertical .slider-tick.triangle {
+	border-width: 10px 0px 10px 10px; width: 1px; height: 1px; margin-right: 0px; margin-left: 0px; border-right-color: rgb(4, 128, 190); border-left-color: rgb(4, 128, 190);
+}
+.slider.slider-vertical .slider-handle.triangle {
+	border-width: 10px 0px 10px 10px; width: 1px; height: 1px; margin-right: 0px; margin-left: 0px; border-right-color: rgb(4, 128, 190); border-left-color: rgb(4, 128, 190);
+}
+.slider.slider-vertical .slider-tick-label-container {
+	white-space: nowrap;
+}
+.slider.slider-vertical .slider-tick-label-container .slider-tick-label {
+	padding-left: 4px;
+}
+.slider.slider-vertical.slider-rtl .slider-track {
+	right: 25%;
+}
+.slider.slider-vertical.slider-rtl .slider-selection {
+	right: 0px;
+}
+.slider.slider-vertical.slider-rtl .slider-tick.triangle {
+	border-width: 10px 10px 10px 0px;
+}
+.slider.slider-vertical.slider-rtl .slider-handle.triangle {
+	border-width: 10px 10px 10px 0px;
+}
+.slider.slider-vertical.slider-rtl .slider-tick-label-container .slider-tick-label {
+	padding-right: 4px;
+}
+.slider.slider-disabled .slider-handle {
+	background-image: linear-gradient(rgb(223, 223, 223) 0%, rgb(190, 190, 190) 100%); background-repeat: repeat-x;
+}
+.slider.slider-disabled .slider-track {
+	cursor: not-allowed; background-image: linear-gradient(rgb(229, 229, 229) 0%, rgb(233, 233, 233) 100%); background-repeat: repeat-x;
+}
+.slider input {
+	display: none;
+}
+.slider .tooltip.top {
+	margin-top: -36px;
+}
+.slider .tooltip-inner {
+	white-space: nowrap; max-width: none;
+}
+.slider .hide {
+	display: none;
+}
+.slider-track {
+	border-radius: 4px; position: absolute; cursor: pointer; box-shadow: inset 0px 1px 2px rgba(0,0,0,0.1); background-image: linear-gradient(rgb(245, 245, 245) 0%, rgb(249, 249, 249) 100%); background-repeat: repeat-x; -webkit-box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+.slider-selection {
+	border-radius: 4px; position: absolute; box-sizing: border-box; box-shadow: inset 0px -1px 0px rgba(0,0,0,0.15); background-image: linear-gradient(rgb(249, 249, 249) 0%, rgb(245, 245, 245) 100%); background-repeat: repeat-x; -webkit-box-sizing: border-box; -moz-box-sizing: border-box; -webkit-box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.15);
+}
+.slider-selection.tick-slider-selection {
+	background-image: linear-gradient(rgb(137, 205, 239) 0%, rgb(129, 191, 222) 100%); background-repeat: repeat-x;
+}
+.slider-track-low {
+	background: none; border-radius: 4px; position: absolute; box-sizing: border-box; -webkit-box-sizing: border-box; -moz-box-sizing: border-box;
+}
+.slider-track-high {
+	background: none; border-radius: 4px; position: absolute; box-sizing: border-box; -webkit-box-sizing: border-box; -moz-box-sizing: border-box;
+}
+.slider-handle {
+	border: 0px solid transparent; border-image: none; top: 0px; width: 15px; height: 15px; filter: none; position: absolute; box-shadow: inset 0px 1px 0px rgba(255,255,255,0.2), 0px 1px 2px rgba(0,0,0,0.05); background-image: linear-gradient(rgb(20, 155, 223) 0%, rgb(4, 128, 190) 100%); background-repeat: repeat-x; background-color: rgb(51, 122, 183); -webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, .2), 0 1px 2px rgba(0, 0, 0, .05);
+}
+.slider-handle.round {
+	border-radius: 50%;
+}
+.slider-handle.triangle {
+	background: none;
+}
+.slider-handle.custom {
+	background: none;
+}
+.slider-handle.custom::before {
+	color: rgb(114, 98, 4); line-height: 20px; font-size: 20px; content: "\2605";
+}
+.slider-tick {
+	border: 0px solid transparent; border-image: none; width: 20px; height: 20px; filter: none; position: absolute; box-sizing: border-box; opacity: 0.8; box-shadow: inset 0px -1px 0px rgba(0,0,0,0.15); background-image: linear-gradient(rgb(249, 249, 249) 0%, rgb(245, 245, 245) 100%); background-repeat: repeat-x; -webkit-box-sizing: border-box; -moz-box-sizing: border-box; -webkit-box-shadow: inset 0 -1px 0 rgba(0, 0, 0, 0.15);
+}
+.slider-tick.round {
+	border-radius: 50%;
+}
+.slider-tick.triangle {
+	background: none;
+}
+.slider-tick.custom {
+	background: none;
+}
+.slider-tick.custom::before {
+	color: rgb(114, 98, 4); line-height: 20px; font-size: 20px; content: "\2605";
+}
+.slider-tick.in-selection {
+	opacity: 1; background-image: linear-gradient(rgb(137, 205, 239) 0%, rgb(129, 191, 222) 100%); background-repeat: repeat-x;
+}

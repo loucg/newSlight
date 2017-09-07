@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="GroupMapper">
+	
+	<!-- 表名 -->
+	<sql id="tableName">c_term</sql>
+	<sql id="statusTableName">b_status</sql>
+	<sql id="ctTableName">c_client_term</sql>
+	<sql id="clientTableName">c_client</sql>
+	<sql id="clientattr1TableName">c_client_attr1</sql>
+	<sql id="clientattr2TableName">c_client_attr2</sql>
+	<sql id="lampTableName">c_lamp_type</sql>
+	<sql id="powerTableName">c_power_type</sql>
+	
+	<!-- 字段 -->
+	<sql id="Field">
+		name,
+		c_term.explain,
+		status,
+		sys_user_id
+	</sql>
+	
+	<!-- 字段值 -->
+	<sql id="FieldValue">
+		#{name},
+		#{explain},
+		#{status},
+		#{sys_user_id}
+	</sql>
+	
+	
+	<select id="grouplistPage" parameterType="page" resultType="pd">
+		SELECT
+		  	c_term.id,
+			c_term.`name`,
+			c_term.`explain`,
+			b_status.`name` STATUS,
+			<!-- 成员数 -->
+			COUNT(c_client_id) number,
+			<!-- 策略数 -->
+			IFNULL(select_strategy.number,0) strategy_num
+		FROM
+		c_term
+		LEFT JOIN 
+		b_status
+		ON
+		c_term.`status` = b_status.`value`
+		AND
+		b_status.b_status_main_id = 1
+		LEFT JOIN
+		c_client_term
+		ON
+		c_term.id = c_client_term.c_term_id
+		LEFT JOIN
+		(
+			SELECT b_strategy_clientterm.c_term_id,COUNT(b_strategy_clientterm.b_ctrl_strategy_id) number
+			FROM
+				b_strategy_clientterm
+			LEFT JOIN 
+				b_ctrl_strategy 
+			ON
+				b_strategy_clientterm.b_ctrl_strategy_id = b_ctrl_strategy.id
+			WHERE
+				<!-- 只统计有效的策略 -->
+				b_ctrl_strategy.status = '1' 
+			AND
+				b_ctrl_strategy.b_user_id IN ${pd.userids}
+			GROUP BY
+				b_strategy_clientterm.c_term_id
+		) select_strategy
+		ON
+			select_strategy.c_term_id = c_term.id		
+		WHERE 1=1
+		AND
+		c_term.sys_user_id IN ${pd.userids}
+		 <if test="pd.name!=null and pd.name!=''">
+			and 
+			(
+				c_term.name LIKE CONCAT(CONCAT('%', #{pd.name}),'%')
+			)
+		</if>
+		<if test="pd.explain!=null and pd.explain!=''">
+			and 
+			(
+				c_term.explain LIKE CONCAT(CONCAT('%', #{pd.explain}),'%')
+			)
+		</if> 
+		GROUP BY
+		c_term.id
+	</select>
+
+	<!-- 通过c_term.id获取数据 -->
+	<select id="findById" parameterType="pd" resultType="pd" >
+		SELECT
+	  	c_term.id,
+		c_term.`name`,
+		c_term.`explain`,
+		c_term.`status`
+		FROM
+		c_term
+		WHERE 
+		c_term.id = #{id}
+		
+	</select>	
+	
+	<!-- 新增分组 -->
+ 	<insert id="saveGroup" parameterType="pd" >
+	<selectKey resultType="java.lang.Long" order="AFTER" keyProperty="id">
+		SELECT LAST_INSERT_ID() AS id
+	</selectKey>
+		insert into <include refid="tableName"></include> (
+			<include refid="Field"></include>
+		) values (
+			<include refid="FieldValue"></include>
+		)
+	</insert>
+
+	<!-- 修改分组 -->
+	<update id="editGroup" parameterType="pd" >
+		update c_term
+		LEFT JOIN c_client_attr1
+		ON
+		c_client_attr1.c_client_id
+		IN
+		(SELECT
+		c_client_term.c_client_id
+		FROM
+		c_client_term
+		WHERE
+		c_client_term.c_term_id = c_term.id
+		) 
+			set 
+				c_term.name 		        = #{name},
+				c_term.explain 			    = #{explain},
+				c_term.status				= #{status},
+				c_term.sys_user_id			= #{sys_user_id},
+				c_client_attr1.staus		= #{status}
+			where 
+				c_term.id = #{id}
+	</update>
+	
+	<!-- 删除分组 -->
+	<delete id="deleteById" parameterType="String">
+		DELETE 
+		FROM c_term
+		WHERE
+		id = #{id}
+	</delete>
+	
+	
+</mapper>

@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="PowerMapper">
+
+<select id="datalistPage" parameterType="page" resultType="pd">
+	select a.c_client_id, 
+	sum(a.power) as power,
+	c.name as groupname,
+	d.client_code,
+	e.name,
+	e.location,
+	e.lamp_pole_num,
+	f.name as wgname, 
+	b.name as clname
+	from b_client_power_daily_report a,c_term c,c_client d,c_client_attr1 e,c_gateway_attr1 f,c_client_term g,c_client_gateway h,b_ctrl_strategy b
+	where a.c_client_id=g.c_client_id 
+	and g.c_term_id=c.id 
+	and a.c_client_id=d.id 
+	and a.c_client_id=e.c_client_id 
+	and a.c_client_id=h.c_client_id 
+	and h.c_gateway_id=f.c_gateway_id 
+	and c.b_ctrl_strategy_id=b.id
+	and e.sys_user_id in ${pd.userids}
+	<if test="pd.groupname!= null and pd.groupname != ''"><!-- 检索 -->
+			and c.name LIKE CONCAT(CONCAT('%', #{pd.groupname}),'%')
+		</if>
+		<if test="pd.strategy != null and pd.strategy != ''"><!-- 关键词检索 -->
+			and b.name LIKE CONCAT(CONCAT('%', #{pd.strategy}),'%')
+		</if>
+		<if test="pd.starttime != null and pd.starttime != ''"><!-- 关键词检索 -->
+			and a.day &gt;= #{pd.starttime}
+		</if>
+		<if test="pd.endtime != null and pd.endtime != ''"><!-- 关键词检索 -->
+			and a.day &lt;= #{pd.endtime}
+		</if>
+		<if test="pd.endtime != null and pd.endtime != '' and pd.starttime==pd.endtime and pd.starttime != null and pd.starttime != ''"><!-- 关键词检索 -->
+			and a.tdate LIKE CONCAT(CONCAT('%', #{pd.starttime}),'%')
+		</if>
+	group by a.c_client_id
+	order by c.name
+</select>
+<select id="monthdatalistPage" parameterType="page" resultType="pd">
+	select a.c_client_id, 
+	sum(a.power) as power,
+	c.name as groupname,
+	d.client_code,
+	e.name,
+	e.location,
+	e.lamp_pole_num,
+	f.name as wgname, 
+	b.name as clname
+	from b_client_power_monthly_report a,c_term c,c_client d,c_client_attr1 e,c_gateway_attr1 f,c_client_term g,c_client_gateway h,b_ctrl_strategy b
+	where a.c_client_id=g.c_client_id 
+	and g.c_term_id=c.id 
+	and a.c_client_id=d.id 
+	and a.c_client_id=e.c_client_id 
+	and a.c_client_id=h.c_client_id 
+	and h.c_gateway_id=f.c_gateway_id 
+	and c.b_ctrl_strategy_id=b.id
+	and e.sys_user_id in ${pd.userids}
+	<if test="pd.groupname!= null and pd.groupname != ''"><!-- 检索 -->
+			and c.name LIKE CONCAT(CONCAT('%', #{pd.groupname}),'%')
+		</if>
+		<if test="pd.strategy != null and pd.strategy != ''"><!-- 关键词检索 -->
+			and b.name LIKE CONCAT(CONCAT('%', #{pd.strategy}),'%')
+		</if>
+		<if test="pd.starttime != null and pd.starttime != ''"><!-- 关键词检索 -->
+			and a.month &gt;= #{pd.starttime}
+		</if>
+		<if test="pd.endtime != null and pd.endtime != ''"><!-- 关键词检索 -->
+			and a.month &lt;= #{pd.endtime}
+		</if>
+		<if test="pd.endtime != null and pd.endtime != '' and pd.starttime==pd.endtime and pd.starttime != null and pd.starttime != ''"><!-- 关键词检索 -->
+			and a.month LIKE CONCAT(CONCAT('%', #{pd.starttime}),'%')
+		</if>
+	group by a.c_client_id
+	order by c.name
+</select>
+<select id="firstdatalistPage" parameterType="page" resultType="pd">
+	select a.c_client_id, 
+	sum(a.power) as power,
+	c.name as groupname,
+	d.client_code,
+	e.name,
+	e.location,
+	e.lamp_pole_num,
+	f.name as wgname, 
+	b.name as clname
+	from b_client_power_monthly_report a,c_term c,c_client d,c_client_attr1 e,c_gateway_attr1 f,c_client_term g,c_client_gateway h,b_ctrl_strategy b
+	where a.c_client_id=g.c_client_id 
+	and g.c_term_id=c.id 
+	and a.c_client_id=d.id 
+	and a.c_client_id=e.c_client_id 
+	and a.c_client_id=h.c_client_id 
+	and h.c_gateway_id=f.c_gateway_id 
+	<!-- and c.b_ctrl_strategy_id=b.id -->
+	and a.month LIKE CONCAT(CONCAT('%', #{pd.starttime}),'%')
+	and e.sys_user_id in ${pd.userids}
+	<if test="pd.groupname!= null and pd.groupname != ''"><!-- 检索 -->
+			and c.name LIKE CONCAT(CONCAT('%', #{pd.groupname}),'%')
+		</if>
+		<if test="pd.strategy != null and pd.strategy != ''"><!-- 关键词检索 -->
+			and b.name LIKE CONCAT(CONCAT('%', #{pd.strategy}),'%')
+		</if>
+	group by a.c_client_id
+	order by c.name
+</select>
+</mapper>

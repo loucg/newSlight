@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="StrategyTypeMapper">
+	<!-- 策略类型 -->
+	<resultMap type="StrategyType" id="strategyTypeResultMap">
+		<id column="id" property="id"/>
+		<result column="name" property="name"/>
+		<result column="comment" property="comment"/>
+	</resultMap>
+	
+	<!-- 字段 -->
+	<sql id="Field">
+		id,
+		name,
+		comment
+	</sql>
+	
+	<!--表名 -->
+	<sql id="tableName">
+		B_STRATEGY_TYPE
+	</sql>
+	
+	<!-- 查找策略类型 -->
+	<select id="getStrategyTypeList" resultMap="strategyTypeResultMap">
+		select
+		<include refid="Field"></include>
+		from
+		<include refid="tableName"></include>
+		ORDER BY id
+	</select>	
+
+</mapper>

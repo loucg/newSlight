@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="LampStateMapper">
+	
+<!--路灯列表  -->
+	<!-- 删掉了不该显示部分 -->
+	<select id="lampstatelistPage" parameterType="page" resultType="pd">
+		SELECT
+		c_client_attr1.id, c_client.client_code, c_client_attr1.`name` cname,
+		c_client_attr1.location, c_client_attr1.lamp_pole_num, c_client_upload_status.temperature,
+		c_client_upload_status.voltage, c_client_upload_status.power_factor, c_client_upload_status.`status`,c_client_upload_status.brightness,
+		<!--b_ctrl_strategy.`name` sname,-->
+		c_client_attr1.`comment`,  c_client_upload_status.tdate
+		FROM
+		c_client
+		LEFT JOIN c_client_attr1 ON c_client.id = c_client_attr1.c_client_id
+		LEFT JOIN c_client_upload_status ON c_client.id = c_client_upload_status.c_client_id
+		<!--LEFT JOIN b_ctrl_strategy ON b_ctrl_strategy.id = c_term.b_ctrl_strategy_id-->
+		WHERE 1=1
+		AND
+		c_client_attr1.sys_user_id IN ${pd.userids}
+		
+		<if test="pd.cname!=null and pd.cname!=''">
+			and 
+			(
+				c_client_attr1.`name` LIKE CONCAT(CONCAT('%', #{pd.cname}),'%')
+			)
+		</if> 
+		<if test="pd.ccode!=null and pd.ccode!=''">
+			and 
+			(
+				c_client.client_code LIKE CONCAT(CONCAT('%', #{pd.ccode}),'%')
+			)
+		</if>
+		<if test="pd.location!=null and pd.location!=''">
+			and 
+			(
+				c_client_attr1.location LIKE CONCAT(CONCAT('%', #{pd.location}),'%')
+			)
+		</if>
+		<if test="pd.lstatus!=null and pd.lstatus!=''">
+			and 
+			(
+				c_client_upload_status.`status` = #{pd.lstatus}
+			)
+		</if>
+		GROUP BY
+		c_client.id
+		
+	</select>
+	
+<!-- 查询状态 -->
+	<select id="findStatus" parameterType="pd" resultType="pd" >
+		SELECT
+		*
+		FROM
+		b_status
+		WHERE
+		b_status_main_id = 4
+		AND
+		`value` = #{lstatus}
+	</select>
+
+<!-- 单个路灯详细信息 -->
+	<!-- 删掉了不该显示部分、更改了表对应关系 -->
+	<select id="lampDetail" parameterType="pd" resultType="pd">
+		SELECT
+		
+		c_client.client_code, 
+		c_client_attr1.*,
+		c_client_upload_status.*,
+		c_gateway_attr1.`name` gateway_name,
+		c_lamp_pole_type.`name` lamp_name
+		
+		FROM
+		c_client
+		LEFT JOIN c_client_attr1 ON c_client.id = c_client_attr1.c_client_id
+		LEFT JOIN c_client_upload_status ON c_client_attr1.id = c_client_upload_status.c_client_id
+		
+		LEFT JOIN c_gateway_attr1 ON c_gateway_attr1.c_gateway_id IN (SELECT c_client_gateway.c_gateway_id FROM c_client_gateway WHERE c_client_gateway.c_client_id = c_client.id)
+		LEFT JOIN c_lamp_pole_type ON c_lamp_pole_type.id IN (SELECT c_client_attr2.c_lamp_pole_type_id FROM c_client_attr2 WHERE c_client_attr2.c_client_id = c_client.id)
+		
+		WHERE 1=1 
+		AND
+		c_client_attr1.sys_user_id = #{sys_user_id}
+		AND 
+		c_client_attr1.id = #{id}
+		
+	</select>
+	
+	
+	<!-- 修改一个灯的亮度 -->
+	<update id="adjustBrt" parameterType="pd" >
+		update c_client_upload_status cus
+			SET
+			cus.brightness = #{brightness},
+			tdate          = #{tdate}	
+			WHERE
+			cus.c_client_id = #{id}
+	</update>
+	
+	<!-- 查询策略 -->
+	<select id="findStrategy" parameterType="page" resultType="pd">
+		SELECT
+		id,
+		`name`,
+		json
+		FROM
+		b_ctrl_strategy
+		WHERE 1=1
+		 <if test="pd.str_id!=null and pd.str_id!=''">
+			and 
+			(
+				id = #{pd.str_id}
+			)
+		</if>
+	</select>
+	
+	<!-- 修改一个组的策略 -->
+	<update id="adjustStr" parameterType="pd" >
+		update c_term
+			SET
+			 b_ctrl_strategy_id = #{str_id}
+			WHERE
+			sys_user_id = #{sys_user_id}
+			AND
+			id IN (
+				SELECT
+				c_client_term.c_term_id
+				FROM
+				c_client_term
+				WHERE
+				c_client_term.c_client_id = #{id}
+			)
+	</update>
+	
+</mapper>

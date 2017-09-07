@@ -1,0 +1,475 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="FaultMapper">
+
+	<!-- 所有异常 -->
+	<select id="allfaultlistPage" parameterType="page" resultType="pd">
+	SELECT * FROM (
+		SELECT
+			'1' AS device_cde,
+			c_gateway.gateway_code ccode,
+			c_gateway_attr1.location,
+			b_gateway_fault.`status`,
+			b_status.`name` lstatus,
+			b_gateway_fault.tdate,
+			b_gateway_fault.`comment` fcomment
+			FROM
+			b_gateway_fault
+			LEFT JOIN
+			c_gateway
+			ON
+			c_gateway.id = b_gateway_fault.c_gateway_id
+			LEFT JOIN
+			c_gateway_attr1
+			ON
+			c_gateway_attr1.c_gateway_id = b_gateway_fault.c_gateway_id
+			LEFT JOIN
+			c_gateway_upload_status
+			ON
+			c_gateway_upload_status.c_gateway_id = b_gateway_fault.c_gateway_id
+			LEFT JOIN
+			b_status
+			ON
+			b_status_main_id = 4
+			AND
+			b_status.`value` = b_gateway_fault.`status`
+			WHERE 1=1
+			AND
+			c_gateway_attr1.sys_user_id IN ${pd.userids}
+			GROUP BY
+			c_gateway.id
+		UNION ALL
+			SELECT
+			'2' AS device_cde,
+			c_breaker.breaker_code ccode,
+			c_breaker_attr1.location,
+			b_breaker_fault.`status`,
+			b_status.`name` lstatus,
+			b_breaker_fault.tdate,
+			b_breaker_fault.`comment` fcomment
+			FROM
+			b_breaker_fault
+			LEFT JOIN
+			c_breaker
+			ON
+			c_breaker.id = b_breaker_fault.c_breaker_id
+			LEFT JOIN
+			c_breaker_attr1
+			ON
+			c_breaker_attr1.c_breaker_id = b_breaker_fault.c_breaker_id
+			LEFT JOIN
+			c_breaker_upload_status
+			ON
+			c_breaker_upload_status.c_breaker_id = b_breaker_fault.c_breaker_id
+			LEFT JOIN
+			b_status
+			ON
+			b_status_main_id = 4
+			AND
+			b_status.`value` = b_breaker_fault.`status`
+			WHERE 1=1
+			AND
+			c_breaker_attr1.sys_user_id IN ${pd.userids}
+			GROUP BY
+			c_breaker.id
+		UNION ALL
+			SELECT
+			'3' AS device_cde,
+			c_client.client_code ccode,
+			c_client_attr1.location,
+			b_client_fault.`status`,
+			b_status.`name` lstatus,
+			b_client_fault.tdate,
+			b_client_fault.`comment` fcomment
+			FROM
+			b_client_fault
+			LEFT JOIN
+			c_client_attr1
+			ON
+			c_client_attr1.id = b_client_fault.c_client_id
+			LEFT JOIN
+			c_client
+			ON
+			c_client.id = c_client_attr1.c_client_id
+			LEFT JOIN
+			c_gateway_attr1
+			ON
+			c_gateway_attr1.c_gateway_id IN
+			(
+			SELECT
+			c_client_gateway.c_gateway_id
+			FROM
+			c_client_gateway
+			WHERE
+			c_client_gateway.c_client_id = b_client_fault.c_client_id
+			)
+			LEFT JOIN
+			b_status
+			ON
+			b_status_main_id = 4
+			AND
+			b_status.`value` = b_client_fault.`status`
+			WHERE 1=1
+			AND
+			c_client_attr1.sys_user_id IN ${pd.userids}		
+			GROUP BY
+			b_client_fault.id
+		UNION ALL
+			SELECT
+			'4' AS device_cde,
+			c_sensor.sensor_code ccode,
+			c_sensor_attr1.location,
+			b_sensor_fault.`status`,
+			b_status.`name` lstatus,
+			b_sensor_fault.tdate,
+			b_sensor_fault.`comment` fcomment
+			FROM
+			b_sensor_fault
+			LEFT JOIN
+			c_sensor
+			ON
+			c_sensor.id = b_sensor_fault.c_sensor_id
+			LEFT JOIN
+			c_sensor_attr1
+			ON
+			c_sensor_attr1.c_sensor_id = b_sensor_fault.c_sensor_id
+			LEFT JOIN
+			c_sensor_upload_status
+			ON
+			c_sensor_upload_status.c_sensor_id = b_sensor_fault.c_sensor_id
+			LEFT JOIN
+			b_status
+			ON
+			b_status_main_id = 4
+			AND
+			b_status.`value` = b_sensor_fault.`status`
+			WHERE 1=1
+			AND
+			c_sensor_attr1.sys_user_id IN ${pd.userids}
+			GROUP BY
+			c_sensor.id	
+		)all_default
+	WHERE 1=1 
+		 <if test="pd.name!=null and pd.name!=''">
+			and 
+			(
+				all_default.name LIKE CONCAT(CONCAT('%', #{pd.name}),'%')
+			)
+		</if>
+		<if test="pd.dcode!=null and pd.dcode!=''">
+			and 
+			(
+				all_default.ccode LIKE CONCAT(CONCAT('%', #{pd.dcode}),'%')
+			)
+		</if> 
+		<if test="pd.location!=null and pd.location!=''">
+			and 
+			(
+				all_default.location LIKE CONCAT(CONCAT('%', #{pd.location}),'%')
+			)
+		</if>
+		<if test="pd.lstatus!=null and pd.lstatus!=''">
+			and 
+			(
+				all_default.`status` = #{pd.lstatus}
+			)
+		</if>
+	</select>
+		
+	<!-- 网关异常表 -->
+	<select id="gatewayfaultlistPage" parameterType="page" resultType="pd">
+		SELECT
+		'1' AS device_cde,
+		c_gateway.gateway_code ccode,
+		c_gateway_attr1.`name` cname,
+		c_gateway_attr1.location,
+		c_gateway_attr1.lamp_pole_num,
+		c_gateway_attr1.`comment` acomment,
+		c_gateway_upload_status.voltage,
+		b_status.`name` lstatus,
+		b_gateway_fault.tdate,
+		b_gateway_fault.`comment` fcomment
+		FROM
+		b_gateway_fault
+		LEFT JOIN
+		c_gateway
+		ON
+		c_gateway.id = b_gateway_fault.c_gateway_id
+		LEFT JOIN
+		c_gateway_attr1
+		ON
+		c_gateway_attr1.c_gateway_id = b_gateway_fault.c_gateway_id
+		LEFT JOIN
+		c_gateway_upload_status
+		ON
+		c_gateway_upload_status.c_gateway_id = b_gateway_fault.c_gateway_id
+		LEFT JOIN
+		b_status
+		ON
+		b_status_main_id = 4
+		AND
+		b_status.`value` = b_gateway_fault.`status`
+		WHERE 1=1
+		AND
+		c_gateway_attr1.sys_user_id IN ${pd.userids}
+		 <if test="pd.name!=null and pd.name!=''">
+			and 
+			(
+				c_gateway_attr1.name LIKE CONCAT(CONCAT('%', #{pd.name}),'%')
+			)
+		</if>
+		<if test="pd.dcode!=null and pd.dcode!=''">
+			and 
+			(
+				c_gateway.gateway_code LIKE CONCAT(CONCAT('%', #{pd.dcode}),'%')
+			)
+		</if> 
+		<if test="pd.location!=null and pd.location!=''">
+			and 
+			(
+				c_gateway_attr1.location LIKE CONCAT(CONCAT('%', #{pd.location}),'%')
+			)
+		</if>
+		<if test="pd.lstatus!=null and pd.lstatus!=''">
+			and 
+			(
+				b_gateway_fault.`status` = #{pd.lstatus}
+			)
+		</if>
+		GROUP BY
+		c_gateway.id
+	</select>
+	
+	<!-- 断路器异常表 -->
+	<select id="breakerfaultlistPage" parameterType="page" resultType="pd">
+		SELECT
+		'2' AS device_cde,
+		c_breaker.breaker_code ccode,
+		c_breaker_attr1.`name` cname,
+		c_breaker_attr1.location,
+		c_breaker_attr1.lamp_pole_num,
+		c_breaker_attr1.`comment` acomment,
+		c_breaker_upload_status.voltage,
+		b_status.`name` lstatus,
+		b_breaker_fault.tdate,
+		b_breaker_fault.`comment` fcomment
+		FROM
+		b_breaker_fault
+		LEFT JOIN
+		c_breaker
+		ON
+		c_breaker.id = b_breaker_fault.c_breaker_id
+		LEFT JOIN
+		c_breaker_attr1
+		ON
+		c_breaker_attr1.c_breaker_id = b_breaker_fault.c_breaker_id
+		LEFT JOIN
+		c_breaker_upload_status
+		ON
+		c_breaker_upload_status.c_breaker_id = b_breaker_fault.c_breaker_id
+		LEFT JOIN
+		b_status
+		ON
+		b_status_main_id = 4
+		AND
+		b_status.`value` = b_breaker_fault.`status`
+		WHERE 1=1
+		AND
+		c_breaker_attr1.sys_user_id IN ${pd.userids}
+		 <if test="pd.name!=null and pd.name!=''">
+			and 
+			(
+				c_breaker_attr1.name LIKE CONCAT(CONCAT('%', #{pd.name}),'%')
+			)
+		</if>
+		<if test="pd.dcode!=null and pd.dcode!=''">
+			and 
+			(
+				c_breaker.breaker_code LIKE CONCAT(CONCAT('%', #{pd.dcode}),'%')
+			)
+		</if> 
+		<if test="pd.location!=null and pd.location!=''">
+			and 
+			(
+				c_breaker_attr1.location LIKE CONCAT(CONCAT('%', #{pd.location}),'%')
+			)
+		</if>
+		<if test="pd.lstatus!=null and pd.lstatus!=''">
+			and 
+			(
+				b_breaker_fault.`status` = #{pd.lstatus}
+			)
+		</if>
+		GROUP BY
+		c_breaker.id
+	</select>
+	
+	<!-- 路灯异常 -->
+	<select id="lampfaultlistPage" parameterType="page" resultType="pd">
+		SELECT
+		'3' AS device_cde,
+		c_client.client_code ccode,
+		c_client_attr1.`name` cname,
+		c_client_attr1.location,
+		c_client_attr1.lamp_pole_num,
+		c_gateway_attr1.`name` gname,
+		b_status.`name` lstatus,
+		b_client_fault.tdate,
+		b_client_fault.`comment` fcomment
+		FROM
+		b_client_fault
+		LEFT JOIN
+		c_client_attr1
+		ON
+		c_client_attr1.id = b_client_fault.c_client_id
+		LEFT JOIN
+		c_client
+		ON
+		c_client.id = c_client_attr1.c_client_id
+		LEFT JOIN
+		c_gateway_attr1
+		ON
+		c_gateway_attr1.c_gateway_id IN
+		(
+		SELECT
+		c_client_gateway.c_gateway_id
+		FROM
+		c_client_gateway
+		WHERE
+		c_client_gateway.c_client_id = b_client_fault.c_client_id
+		)
+		LEFT JOIN
+		b_status
+		ON
+		b_status_main_id = 4
+		AND
+		b_status.`value` = b_client_fault.`status`
+		WHERE 1=1
+		AND
+		c_client_attr1.sys_user_id IN ${pd.userids}
+		<if test="pd.name!=null and pd.name!=''">
+			and 
+			(
+				c_client_attr1.`name` LIKE CONCAT(CONCAT('%', #{pd.name}),'%')
+			)
+		</if> 
+		<if test="pd.dcode!=null and pd.dcode!=''">
+			and 
+			(
+				c_client.client_code LIKE CONCAT(CONCAT('%', #{pd.dcode}),'%')
+			)
+		</if>
+		<if test="pd.location!=null and pd.location!=''">
+			and 
+			(
+				c_client_attr1.location LIKE CONCAT(CONCAT('%', #{pd.location}),'%')
+			)
+		</if>
+		<if test="pd.lstatus!=null and pd.lstatus!=''">
+			and 
+			(
+				b_client_fault.`status` = #{pd.lstatus}
+			)
+		</if>
+		GROUP BY
+		b_client_fault.id
+	</select>
+	
+<!-- 传感器异常表 -->
+	<select id="sensorfaultlistPage" parameterType="page" resultType="pd">
+		SELECT
+		'4' AS device_cde,
+		c_sensor.sensor_code ccode,
+		c_sensor_attr1.`name` cname,
+		c_sensor_attr1.location,
+		c_sensor_attr1.lamp_pole_num,
+		c_sensor_attr1.`comment` acomment,
+		c_sensor_upload_status.voltage,
+		b_status.`name` lstatus,
+		b_sensor_fault.tdate,
+		b_sensor_fault.`comment` fcomment
+		FROM
+		b_sensor_fault
+		LEFT JOIN
+		c_sensor
+		ON
+		c_sensor.id = b_sensor_fault.c_sensor_id
+		LEFT JOIN
+		c_sensor_attr1
+		ON
+		c_sensor_attr1.c_sensor_id = b_sensor_fault.c_sensor_id
+		LEFT JOIN
+		c_sensor_upload_status
+		ON
+		c_sensor_upload_status.c_sensor_id = b_sensor_fault.c_sensor_id
+		LEFT JOIN
+		b_status
+		ON
+		b_status_main_id = 4
+		AND
+		b_status.`value` = b_sensor_fault.`status`
+		WHERE 1=1
+		AND
+		c_sensor_attr1.sys_user_id IN ${pd.userids}
+		 <if test="pd.name!=null and pd.name!=''">
+			and 
+			(
+				c_sensor_attr1.name LIKE CONCAT(CONCAT('%', #{pd.name}),'%')
+			)
+		</if>
+		<if test="pd.dcode!=null and pd.dcode!=''">
+			and 
+			(
+				c_sensor.sensor_code LIKE CONCAT(CONCAT('%', #{pd.dcode}),'%')
+			)
+		</if> 
+		<if test="pd.location!=null and pd.location!=''">
+			and 
+			(
+				c_sensor_attr1.location LIKE CONCAT(CONCAT('%', #{pd.location}),'%')
+			)
+		</if>
+		<if test="pd.lstatus!=null and pd.lstatus!=''">
+			and 
+			(
+				b_sensor_fault.`status` = #{pd.lstatus}
+			)
+		</if>
+		GROUP BY
+		c_sensor.id
+	</select>
+	
+	 <!-- 电压异常 -->
+	<select id="vofaultlistPage" parameterType="page" resultType="pd">
+		SELECT
+		*
+		FROM
+		v_vofaults
+		WHERE 1=1
+		AND
+		v_vofaults.sys_user_id IN ${pd.userids}
+		<if test="pd.name!=null and pd.name!=''">
+			and 
+			(
+				v_vofaults.`name` LIKE CONCAT(CONCAT('%', #{pd.name}),'%')
+			)
+		</if>
+		<if test="pd.code!=null and pd.code!=''">
+			and 
+			(
+				v_vofaults.code LIKE CONCAT(CONCAT('%', #{pd.code}),'%')
+			)
+		</if>
+		<if test="pd.location!=null and pd.location!=''">
+			and 
+			(
+				v_vofaults.location LIKE CONCAT(CONCAT('%', #{pd.location}),'%')
+			)
+		</if>
+		GROUP BY
+		v_vofaults.tdate
+	</select>
+
+	
+</mapper>

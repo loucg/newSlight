@@ -1,0 +1,827 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ConfigureMapper">
+	
+	<!-- 表名 -->
+	<sql id="nPowerTableName">
+		c_power_type
+	</sql>
+	<sql id="lampTableName">
+		c_lamp_type
+	</sql>
+	<sql id="sensorTableName">
+		c_sensor_type
+	</sql>
+	<sql id="poleTableName">
+		c_lamp_pole_type
+	</sql>
+	<sql id="simTableName">
+		c_sim
+	</sql>
+
+	
+	<!-- 字段 -->
+	<!-- 普通电源 -->
+	<sql id="Field">
+		name,vendor,type,power,image,comment
+	</sql>
+	<sql id="FieldValue">
+		#{name},#{vendor},#{type},#{power},#{image},#{comment}
+	</sql>
+	<!-- 灯 -->
+	<sql id="lampField">
+		name,vendor,type,image,comment
+	</sql>
+	
+	<sql id="lampFieldValue">
+		#{name},#{vendor},#{type},#{image},#{comment}
+	</sql>
+	
+	<!-- 传感器 -->
+	<sql id="sensorField">
+		name,vendor,type,image,comment
+	</sql>
+	<sql id="sensorFieldValue">
+		#{name},#{vendor},#{type},#{image},#{comment}
+	</sql>
+	<!-- 灯杆 -->
+	<sql id="poleField">
+		name,vendor,type,image,comment
+	</sql>
+	<sql id="poleFieldValue">
+		#{name},#{vendor},#{type},#{image},#{comment}
+	</sql>
+	<!-- sim卡 -->
+	<sql id="simField">
+		iccid,phone_number,status,type,money,comment
+	</sql>
+	<sql id="simFieldValue">
+		#{iccid},#{mobile},#{status},#{type},#{money},#{comment}
+	</sql>
+	
+	
+	<!-- 普通电源查询 -->
+	<select id="getNPowerlistPage" parameterType="page" resultType="pd">
+		SELECT * 
+		FROM <include refid="nPowerTableName"></include>
+		WHERE 1=1
+		<if test="pd.name!=null and pd.name!=''">
+			AND name LIKE CONCAT(CONCAT('%', #{pd.name}),'%')
+		</if>
+		<if test="pd.vendor!=null and pd.vendor!=''">
+			AND vendor LIKE CONCAT(CONCAT('%', #{pd.vendor}), '%')
+		</if>
+
+	</select>
+	
+	<!-- 普通电源修改 -->
+ 	<update id="editNPower" parameterType="pd">
+		UPDATE <include refid="nPowerTableName"/>
+		SET 
+			name = #{name},
+			vendor = #{vendor},
+			type = #{type},
+			power = #{power},
+			comment = #{comment}
+		WHERE id = #{id}
+	</update>
+	
+	<!-- 新增普通电源 -->
+	<insert id="createNPower" parameterType="pd">
+		insert into <include refid="nPowerTableName"/>(
+			<include refid="Field"></include>
+		) values (
+			<include refid="FieldValue"/>
+		)
+	</insert> 
+	
+	<!-- 灯查询 -->
+	<select id="getLamplistPage" parameterType="page" resultType="pd">
+		SELECT * 
+		FROM <include refid="lampTableName"></include>
+		WHERE 1=1
+		<if test="pd.name!=null and pd.name!=''">
+			AND name LIKE CONCAT(CONCAT('%', #{pd.name}),'%')
+		</if>
+		<if test="pd.vendor!=null and pd.vendor!=''">
+			AND vendor LIKE CONCAT(CONCAT('%', #{pd.vendor}),'%')
+		</if>
+
+	</select>
+	<!-- 灯修改 -->
+	<update id="editLamp" parameterType="pd">
+		UPDATE <include refid="lampTableName"/>
+		SET 
+			name = #{name},
+			vendor = #{vendor},
+			type = #{type},
+			comment = #{comment}
+		WHERE id = #{id}
+	</update>
+	<!-- 灯新增 -->
+	<insert id="createLamp" parameterType="pd">
+		insert into <include refid="lampTableName"/>(
+			<include refid="lampField"/>
+		) values (
+			<include refid="lampFieldValue"/>
+		)
+	</insert> 
+	<!-- 传感器查询 -->
+	<select id="getSensorlistPage" parameterType="page" resultType="pd">
+		SELECT a.c_sensor_id AS id, b.sensor_code AS number, a.`name`,a.c_sensor_type_id AS typeid,
+			d.`name` AS type,a.location,a.coordinate,a.`comment`,h.`name` AS statename,
+			h.`value` AS state,<!-- e.`name` AS power, f.`name` AS lamp,--> g.`name` AS pole,
+			a.`password`, a.lamp_pole_num AS polenumber
+		FROM c_sensor_attr1 AS a
+			LEFT JOIN c_sensor AS b ON a.c_sensor_id = b.id
+			LEFT JOIN c_sensor_attr2 AS c ON a.c_sensor_id = c.c_sensor_id
+			LEFT JOIN c_sensor_type AS d ON a.c_sensor_type_id = d.id
+			<!-- LEFT JOIN c_power_type AS e ON c.c_power_type_id = e.id --> 
+			<!-- LEFT JOIN c_lamp_type AS f ON c.c_lamp_type_id = f.id -->
+			LEFT JOIN c_lamp_pole_type AS g ON c.c_lamp_pole_type_id = g.id
+			LEFT JOIN b_status AS h ON a.status = h.`value`
+			LEFT JOIN b_status_main AS i ON h.b_status_main_id = i.id 
+		WHERE a.sys_user_id in ${pd.userids}
+			AND h.b_status_main_id = 1
+			AND a.id = c.id
+		<if test="pd.number!=null and pd.number!=''">
+			AND b.sensor_code LIKE CONCAT(CONCAT('%', #{pd.number}),'%')
+		</if>
+		<if test="pd.name!=null and pd.name!=''">
+			AND a.name LIKE CONCAT(CONCAT('%', #{pd.name}), '%')
+		</if>
+		<!-- 
+		<if test="pd.type!=0 and pd.type!=null and pd.type!=999">
+			AND d.id = #{pd.type, jdbcType=INTEGER}
+		</if>
+		-->
+	</select>
+	<!--
+	<select id="getSensorlistPage" parameterType="page" resultType="pd">
+		SELECT * 
+		FROM <include refid="sensorTableName"></include>
+		WHERE 1=1
+		<if test="pd.name!=null and pd.name!=''">
+			AND name LIKE CONCAT(CONCAT('%', #{pd.name}),'%')
+		</if>
+		<if test="pd.vendor!=null and pd.vendor!=''">
+			AND vendor LIKE CONCAT(CONCAT('%', #{pd.vendor}), '%')
+		</if>
+	</select>
+	-->
+	<!-- 传感器修改 -->
+	<update id="editSensor" parameterType="pd">
+		UPDATE <include refid="sensorTableName"/>
+		SET 
+			name = #{name},
+			vendor = #{vendor},
+			type = #{type},
+			comment = #{comment}
+		WHERE id = #{id}
+	</update>
+	<!-- 传感器新增 -->
+	<insert id="createSensor" parameterType="pd">
+		insert into <include refid="sensorTableName"/>(
+			<include refid="sensorField"/>
+		) values (
+			<include refid="sensorFieldValue"/>
+		)
+	</insert> 
+	<!-- 灯杆查询 -->
+	<select id="getPolelistPage" parameterType="page" resultType="pd">
+		SELECT * 
+		FROM <include refid="poleTableName"></include>
+		WHERE 1=1
+		<if test="pd.name!=null and pd.name!=''">
+			AND name LIKE CONCAT(CONCAT('%', #{pd.name}),'%')
+		</if>
+		<if test="pd.vendor!=null and pd.vendor!=''">
+			AND vendor LIKE CONCAT(CONCAT('%', #{pd.vendor}),'%')
+		</if>
+	</select>
+	<!-- 灯杆修改 -->
+	<update id="editPole" parameterType="pd">
+		UPDATE <include refid="poleTableName"/>
+		SET 
+			name = #{name},
+			vendor = #{vendor},
+			type = #{type},
+			comment = #{comment}
+		WHERE id = #{id}
+	</update>
+	<!-- 灯杆创建 -->
+	<insert id="createPole" parameterType="pd">
+		insert into <include refid="poleTableName"/>(
+			<include refid="poleField"/>
+		) values (
+			<include refid="poleFieldValue"/>
+		)
+	</insert> 
+	
+	<!-- sim卡查询 -->
+	<select id="getSimlistPage" parameterType="page" resultType="pd">
+		SELECT a.id,a.iccid,a.phone_number AS mobile,a.type,b.`value` AS `status`,b.`name` AS statusname,a.money,a.`comment`
+		FROM c_sim AS a
+		LEFT JOIN b_status AS b ON a.`status` = b.`value`
+		LEFT JOIN b_status_main AS c ON b.b_status_main_id = c.id
+		WHERE c.id = 2
+		<if test="pd.iccid!=null and pd.iccid!=''">
+			AND a.iccid LIKE CONCAT(CONCAT('%', #{pd.iccid}),'%')
+		</if>
+		<if test="pd.mobile!=null and pd.mobile!=''">
+			AND a.phone_number LIKE CONCAT(CONCAT('%', #{pd.mobile}), '%')
+		</if>
+		<if test="pd.type!=null and pd.type!=''">
+			AND a.type = #{pd.type, jdbcType=INTEGER}
+		</if>
+		<if test="pd.status!=null and pd.status!=''">
+			AND b.value = #{pd.status, jdbcType=INTEGER}
+		</if>
+		
+	</select>
+	<!-- sim卡修改 -->
+	<update id="editSim" parameterType="pd">
+		UPDATE <include refid="simTableName"/>
+		SET 
+			iccid = #{iccid},
+			phone_number = #{mobile},
+			type = #{type},
+			status = #{status},
+			money = #{money},
+			comment = #{comment}
+		WHERE id = #{id}
+	</update>
+	<!-- sim卡创建 -->
+	<insert id="createSim" parameterType="pd">
+		insert into <include refid="simTableName"/>(
+			<include refid="simField"/>
+		) values (
+			<include refid="simFieldValue"/>
+		)
+	</insert> 
+	
+	<!-- 普通终端查询 -->
+	<select id="getDevicelistPage" parameterType="page" resultType="pd">
+		SELECT a.c_client_id AS id, b.client_code AS number, a.`name`,a.c_client_type_id AS typeid,
+			d.`name` AS type,a.location,a.coordinate,a.`comment`,h.`name` AS statename,
+			h.`value` AS state,<!-- e.`name` AS power, f.`name` AS lamp,--> g.`name` AS pole,
+			a.`password`, a.lamp_pole_num AS polenumber
+		FROM c_client_attr1 AS a
+			LEFT JOIN c_client AS b ON a.c_client_id = b.id
+			LEFT JOIN c_client_attr2 AS c ON a.c_client_id = c.c_client_id
+			LEFT JOIN c_client_type AS d ON a.c_client_type_id = d.id
+			<!-- LEFT JOIN c_power_type AS e ON c.c_power_type_id = e.id --> 
+			<!-- LEFT JOIN c_lamp_type AS f ON c.c_lamp_type_id = f.id -->
+			LEFT JOIN c_lamp_pole_type AS g ON c.c_lamp_pole_type_id = g.id
+			LEFT JOIN b_status AS h ON a.staus = h.`value`
+			LEFT JOIN b_status_main AS i ON h.b_status_main_id = i.id
+		WHERE a.sys_user_id in ${pd.userids}
+			AND h.b_status_main_id = 1
+			AND a.id = c.id
+		<if test="pd.number!=null and pd.number!=''">
+			AND b.client_code LIKE CONCAT(CONCAT('%', #{pd.number}),'%')
+		</if>
+		<if test="pd.name!=null and pd.name!=''">
+			AND a.name LIKE CONCAT(CONCAT('%', #{pd.name}), '%')
+		</if>
+		<!-- <if test="pd.type==null or pd.type==''">
+			<if test="pd.itype!=null and pd.itype==1">
+				AND d.id = 1
+			</if>
+			<if test="pd.itype!=null and pd.itype==2">
+				AND d.id = 2
+			</if>
+			<if test="pd.itype!=null and pd.itype==4">
+				AND d.id = 6
+			</if>
+		</if>
+		<if test="pd.type!=null and pd.type!=''">
+			AND d.id = #{pd.type, jdbcType=INTEGER}
+		</if> -->
+		<if test="pd.type!=0 and pd.type!=null">
+			<if test="pd.type==1">
+				AND d.id = 1
+			</if>
+			<if test="pd.type==2">
+				AND d.id = 2
+			</if>
+			<if test="pd.type==6">
+				AND d.id = 6
+			</if>
+			<if test="pd.type==126">
+				AND (d.id = 1 OR 2 OR 6) 
+			</if>				
+		</if>
+			
+		
+	</select>
+	
+	<!-- 网关终端查询 -->
+	<select id="getGatewaylistPage" parameterType="page" resultType="pd">
+		SELECT a.c_gateway_id AS id, b.gateway_code AS number, a.`name`,a.c_gateway_type_id AS typeid,
+			d.`name_CH` AS type1, d.`name_EN` AS type2, a.location,a.coordinate,a.`comment`,h.`name` AS statename,
+			h.`value` AS state,e.phone_number AS mobile, <!-- f.`name` AS sensor, --> g.`name` AS pole,
+			a.`password`, a.lamp_pole_num AS polenumber
+		FROM c_gateway_attr1 AS a
+			LEFT JOIN c_gateway AS b ON a.c_gateway_id = b.id
+			LEFT JOIN c_gateway_attr2 AS c ON a.c_gateway_id = c.c_gateway_id
+			LEFT JOIN c_gateway_type AS d ON a.c_gateway_type_id = d.id
+			LEFT JOIN c_sim AS e ON c.c_sim_id = e.id
+			<!-- LEFT JOIN c_sensor_type AS f ON c.c_sensor_type_id = f.id -->
+			LEFT JOIN c_lamp_pole_type AS g ON c.c_lamp_pole_type_id = g.id
+			LEFT JOIN b_status AS h ON a.staus = h.`value`
+			LEFT JOIN b_status_main AS i ON h.b_status_main_id = i.id
+		WHERE a.sys_user_id in ${pd.userids}
+			AND h.b_status_main_id = 1
+		<if test="pd.number!=null and pd.number!=''">
+			AND b.gateway_code LIKE CONCAT(CONCAT('%', #{pd.number}),'%')
+		</if>
+		<if test="pd.name!=null and pd.name!=''">
+			AND a.name LIKE CONCAT(CONCAT('%', #{pd.name}), '%')
+		</if>
+		<!-- <if test="pd.type==null or pd.type==''">
+			<if test="pd.itype!=null and pd.itype==3">
+				AND (d.id = 3 OR 4 OR 5)
+			</if>
+		</if>
+		-->
+		<if test="pd.type!=0 and pd.type!=null and pd.type!=999">
+			AND d.id = #{pd.type, jdbcType=INTEGER}
+		</if>
+		<!-- 
+ 		<if test="pd.type!=0 and pd.type!=null">
+			<if test="pd.type==1">
+				AND d.id = 1
+			</if>
+			<if test="pd.type==2">
+				AND d.id = 2
+			</if>
+			<if test="pd.type==5">
+				AND d.id = 5
+			</if>
+			<if test="pd.type==345">
+				AND (d.id = 3 OR 4 OR 5) 
+			</if>				
+		</if>
+		-->
+			
+		
+	</select>
+	
+	<!-- 断路器终端查询 -->
+	<select id="getBreakerlistPage" parameterType="page" resultType="pd">
+		SELECT a.c_breaker_id AS id, b.breaker_code AS number, a.`name`,a.c_breaker_type_id AS typeid,
+			d.`name` AS type, a.location,a.coordinate,a.`comment`,h.`name` AS statename,
+			h.`value` AS state, g.`name` AS pole,
+			a.`password`, a.lamp_pole_num AS polenumber
+		FROM c_breaker_attr1 AS a
+			LEFT JOIN c_breaker AS b ON a.c_breaker_id = b.id
+			LEFT JOIN c_breaker_attr2 AS c ON a.c_breaker_id = c.c_breaker_id
+			LEFT JOIN c_breaker_type AS d ON a.c_breaker_type_id = d.c_breaker_type_id
+			<!-- LEFT JOIN c_sensor_type AS f ON c.c_sensor_type_id = f.id -->
+			LEFT JOIN c_lamp_pole_type AS g ON c.c_lamp_pole_type_id = g.id
+			LEFT JOIN b_status AS h ON a.status = h.`value`
+			LEFT JOIN b_status_main AS i ON h.b_status_main_id = i.id
+		WHERE a.sys_user_id in ${pd.userids}
+			AND h.b_status_main_id = 1
+			AND a.id = c.id
+		<if test="pd.number!=null and pd.number!=''">
+			AND b.breaker_code LIKE CONCAT(CONCAT('%', #{pd.number}),'%')
+		</if>
+		<if test="pd.name!=null and pd.name!=''">
+			AND a.name LIKE CONCAT(CONCAT('%', #{pd.name}), '%')
+		</if>
+		<!-- <if test="pd.type==null or pd.type==''">
+			<if test="pd.itype!=null and pd.itype==3">
+				AND (d.id = 3 OR 4 OR 5)
+			</if>
+		</if>
+		-->
+		<if test="pd.type!=0 and pd.type!=null and pd.type!=999">
+			AND d.c_breaker_type_id = #{pd.type, jdbcType=INTEGER}
+		</if>
+		<!-- 
+ 		<if test="pd.type!=0 and pd.type!=null">
+			<if test="pd.type==1">
+				AND d.id = 1
+			</if>
+			<if test="pd.type==2">
+				AND d.id = 2
+			</if>
+			<if test="pd.type==5">
+				AND d.id = 5
+			</if>
+			<if test="pd.type==345">
+				AND (d.id = 3 OR 4 OR 5) 
+			</if>				
+		</if>
+		-->
+			
+		
+	</select>
+	
+	<!-- 获取网关类型 -->
+	<select id="getTypelist" parameterType="page" resultType="pd">
+		SELECT id, name_CH AS typeName1, name_EN AS typeName2 FROM c_gateway_type
+	</select>
+	
+	<!-- 获取断路器类型 -->
+	<select id="getTypelist2" parameterType="page" resultType="pd">
+		SELECT c_breaker_type_id AS id, name AS typeName FROM c_breaker_type
+	</select>
+	
+	
+	<select id="lastInsertId" resultType="int">
+		SELECT LAST_INSERT_ID()
+	</select>
+	
+	<!-- 普通终端修改 -->
+	<update id="editDevice" parameterType="pd">
+		UPDATE c_client AS a
+			JOIN c_client_attr1 AS b ON a.id = b.c_client_id
+			JOIN c_client_attr2 AS c ON a.id = c.c_client_id
+		SET a.client_code           =#{number},
+			b.name                  =#{name},
+			b.password              =#{password},
+			b.c_client_type_id      =#{typeid},
+			b.location              =#{location},
+			b.coordinate            =#{coordinate},
+			b.comment               =#{comment},
+			b.staus		  			=#{status},
+			b.lamp_pole_num	  		=#{polenumber},
+			c.c_lamp_type_id  		=#{lamp},
+			c.c_lamp_pole_type_id   =#{pole},
+			<!-- c.c_power_type_id		=#{power} -->
+		WHERE 
+			a.id 					=#{id}
+	</update>
+	
+	<!-- 网关断路器修改 -->
+	<update id="editGateway" parameterType="pd">
+		UPDATE c_gateway AS a
+			JOIN c_gateway_attr1 AS b ON a.id = b.c_gateway_id
+			JOIN c_gateway_attr2 AS c ON a.id = c.c_gateway_id
+		SET a.gateway_code          =#{number},
+			b.name                  =#{name},
+			b.password              =#{password},
+			b.c_gateway_type_id     =#{typeid},
+			b.location              =#{location},
+			b.coordinate            =#{coordinate},
+			b.comment               =#{comment},
+			b.staus		  			=#{status},
+			b.lamp_pole_num	  		=#{polenumber},
+			c.c_sim_id				=#{mobile},
+			c.c_lamp_pole_type_id   =#{pole},
+			c.c_sensor_type_id	    =#{sensor}
+		WHERE 
+			a.id					=#{id}
+	</update>	
+	<!-- 普通终端新增 -->
+	<!-- 插入终端表 -->
+	<sql id="clientTable">
+		c_client
+	</sql>
+	<sql id="clientField">
+		client_code
+	</sql>
+	<sql id="clientFieldValue">
+		#{number, jdbcType=VARCHAR}
+	</sql>
+	<insert id="insertClient" parameterType="pd">
+		insert into <include refid="clientTable"/>(
+			<include refid="clientField"/>
+		) values (
+			<include refid="clientFieldValue"/>
+		)
+	</insert>
+	<!-- 插入属性表1-->
+	<sql id="clientAttr1Table">
+		c_client_attr1
+	</sql>
+	<sql id="clientAttr1Field">
+		c_client_id,name,password,c_client_type_id,location,coordinate,comment,staus,lamp_pole_num,sys_user_id
+	</sql>
+	<sql id="clientAttr1FieldValue">
+		#{id, jdbcType=BIGINT},#{name, jdbcType=VARCHAR},#{password,jdbcType=VARCHAR},#{typeid,jdbcType=INTEGER},
+		#{location,jdbcType=VARCHAR},#{coordinate,jdbcType=VARCHAR},#{comment,jdbcType=VARCHAR},#{status,jdbcType=INTEGER},
+		#{polenumber,jdbcType=VARCHAR},#{userid,jdbcType=BIGINT}
+	</sql>
+	<insert id="insertClientAttr1" parameterType="pd">
+		insert into <include refid="clientAttr1Table"/>(
+			<include refid="clientAttr1Field"/>
+		) values (
+			<include refid="clientAttr1FieldValue"/>
+		)
+	</insert>
+	<!-- 插入属性表2-->
+	<sql id="clientAttr2Table">
+		c_client_attr2
+	</sql>
+	<sql id="clientAttr2Field">
+		c_client_id,c_power_type_id,c_lamp_pole_type_id,c_lamp_type_id
+	</sql>
+	<sql id="clientAttr2FieldValue">
+		#{id, jdbcType=BIGINT},#{power, jdbcType=INTEGER},#{pole,jdbcType=INTEGER},#{lamp,jdbcType=INTEGER}
+	</sql>
+	<insert id="insertClientAttr2" parameterType="pd">
+		insert into <include refid="clientAttr2Table"/>(
+			<include refid="clientAttr2Field"/>
+		) values (
+			#{id, jdbcType=BIGINT},
+			<if test="power==''">
+				null,
+			</if>
+			<if test="power!=''">
+				#{power, jdbcType=INTEGER},
+			</if>
+			<if test="pole==''">
+				null,
+			</if>
+			<if test="pole!=''">
+				#{pole,jdbcType=INTEGER},
+			</if>
+			<if test="lamp==''">
+				null
+			</if>
+			<if test="lamp!=''">
+				#{lamp,jdbcType=INTEGER}
+			</if>
+		)
+	</insert>
+	
+	<!-- 网关断路器新增 -->
+	<!-- 插入网关表 -->
+	<sql id="gatewayTable">
+		c_gateway
+	</sql>
+	<sql id="gatewayField">
+		gateway_code
+	</sql>
+	<sql id="gatewayFieldValue">
+		#{number, jdbcType=VARCHAR}
+	</sql>
+	<insert id="insertGateway" parameterType="pd">
+		insert into <include refid="gatewayTable"/>(
+			<include refid="gatewayField"/>
+		) values (
+			<include refid="gatewayFieldValue"/>
+		)
+	</insert>
+	<!-- 插入属性表1-->
+	<sql id="gatewayAttr1Table">
+		c_gateway_attr1
+	</sql>
+	<sql id="gatewayAttr1Field">
+		c_gateway_id,name,password,c_gateway_type_id,location,coordinate,comment,staus,lamp_pole_num,sys_user_id
+	</sql>
+	<sql id="gatewayAttr1FieldValue">
+		#{id, jdbcType=BIGINT},#{name, jdbcType=VARCHAR},#{password,jdbcType=VARCHAR},#{typeid,jdbcType=INTEGER},
+		#{location,jdbcType=VARCHAR},#{coordinate,jdbcType=VARCHAR},#{comment,jdbcType=VARCHAR},#{status,jdbcType=INTEGER},
+		#{polenumber,jdbcType=VARCHAR},#{userid,jdbcType=BIGINT}
+	</sql>
+	<insert id="insertGatewayAttr1" parameterType="pd">
+		insert into <include refid="gatewayAttr1Table"/>(
+			<include refid="gatewayAttr1Field"/>
+		) values (
+			<include refid="gatewayAttr1FieldValue"/>
+		)
+	</insert>
+	<!-- 插入属性表2-->
+	<sql id="gatewayAttr2Table">
+		c_gateway_attr2
+	</sql>
+	<sql id="gatewayAttr2Field">
+		c_gateway_id,c_sim_id,c_lamp_pole_type_id,c_sensor_type_id
+	</sql>
+	<sql id="gatewayAttr2FieldValue">
+		#{id, jdbcType=BIGINT},#{sim, jdbcType=INTEGER},#{pole,jdbcType=INTEGER},#{sensor,jdbcType=INTEGER}
+	</sql>
+	<insert id="insertGatewayAttr2" parameterType="pd">
+		insert into <include refid="gatewayAttr2Table"/>(
+			<include refid="gatewayAttr2Field"/>
+		) values (
+			
+			#{id, jdbcType=BIGINT},
+			<if test="sim==''">
+				null,
+			</if>
+			<if test="sim!=''">
+				#{sim, jdbcType=INTEGER},
+			</if>
+			<if test="pole==''">
+				null,
+			</if>
+			<if test="pole!=''">
+				#{pole,jdbcType=INTEGER},
+			</if>
+			<if test="sensor==''">
+				null
+			</if>
+			<if test="sensor!=''">
+				#{sensor,jdbcType=INTEGER}
+			</if> 
+		)
+	</insert>
+	
+	<!-- 终端类型查询 -->
+	<select id="getDeviceType" resultType="pd">
+		SELECT a.id, a.`name`
+		FROM c_client_type AS a
+		UNION SELECT b.id, b.`name`
+		FROM c_gateway_type AS b	
+	</select>
+	
+	
+	<!-- 获取所有普通电源 -->
+	<select id="getAllNPower" resultType="pd" parameterType="pd">
+		SELECT *
+		FROM <include refid="nPowerTableName"/>
+	</select>
+	<!-- 根据id获取普通电源 -->
+	<select id="getNPowerById" resultType="pd" parameterType="pd">
+		SELECT *
+		FROM <include refid="nPowerTableName"/>
+		WHERE id=#{id, jdbcType=INTEGER}
+	</select>
+	<!-- 获取所有灯 -->
+	<select id="getAllLamp" resultType="pd" parameterType="pd">
+		SELECT *
+		FROM <include refid="lampTableName"/>
+	</select>
+	<!-- 根据id获取灯 -->
+	<select id="getLampById" resultType="pd" parameterType="pd">
+		SELECT *
+		FROM <include refid="lampTableName"/>
+		WHERE id=#{id, jdbcType=INTEGER}
+	</select>
+	<!-- 获取所有灯杆 -->
+	<select id="getAllPole" resultType="pd">
+		SELECT *
+		FROM <include refid="poleTableName"/>
+	</select>
+	<!-- 根据id获取灯杆 -->
+	<select id="getPoleById" resultType="pd">
+		SELECT *
+		FROM <include refid="poleTableName"/>
+		WHERE id=#{id, jdbcType=INTEGER}
+	</select>
+	<!-- 获取所有传感器 -->
+	<select id="getAllSensor" resultType="pd">
+		SELECT *
+		FROM <include refid="sensorTableName"/>
+	</select>
+	<!-- 根据id获取传感器 -->
+	<select id="getSensorById" resultType="pd">
+		SELECT *
+		FROM <include refid="sensorTableName"/>
+		WHERE id=#{id, jdbcType=INTEGER}
+	</select>
+	<!-- 获取所有Sim卡 -->
+	<select id="getAllSim" resultType="pd">
+		SELECT id,iccid,phone_number as mobile, status, type,money,comment
+		FROM <include refid="simTableName"/>
+		WHERE id NOT IN (SELECT c_sim_id FROM c_gateway_attr2 WHERE c_sim_id IS NOT NULL)
+	</select>
+	<!-- 根据id获取Sim卡 -->
+	<select id="getSimById" resultType="pd">
+		SELECT id,iccid,phone_number as mobile, status, type,money,comment
+		FROM <include refid="simTableName"/>
+		WHERE id=#{id, jdbcType=INTEGER}
+	</select>
+	
+	<!-- 根据id获取网关/断路器 -->
+	<select id="getGatewayAndBreakById" resultType="pd">
+		SELECT a.c_gateway_id AS id, b.gateway_code AS number, a.`name`,a.c_gateway_type_id AS typeid,
+			d.`name` AS type,a.location,a.coordinate,a.`comment`,h.`name` AS statename,
+			h.`value` AS state,e.id AS mobile, f.id AS sensor, g.id AS poleid,
+			a.`password`, a.lamp_pole_num AS polenumber
+		FROM c_gateway_attr1 AS a
+			LEFT JOIN c_gateway AS b ON a.c_gateway_id = b.id
+			LEFT JOIN c_gateway_attr2 AS c ON a.c_gateway_id = c.c_gateway_id
+			LEFT JOIN c_gateway_type AS d ON a.c_gateway_type_id = d.id
+			LEFT JOIN c_sim AS e ON c.c_sim_id = e.id
+			LEFT JOIN c_sensor_type AS f ON c.c_sensor_type_id = f.id
+			LEFT JOIN c_lamp_pole_type AS g ON c.c_lamp_pole_type_id = g.id
+			LEFT JOIN b_status AS h ON a.staus = h.`value`
+			LEFT JOIN b_status_main AS i ON h.b_status_main_id = i.id
+		WHERE a.c_gateway_id = #{id ,jdbcType=INTEGER}
+			AND i.id = 1
+	</select>
+	
+	<!-- 根据id获取终端 -->
+	<select id="getDeviceById" resultType="pd">
+	SELECT a.c_client_id AS id, b.client_code AS number, a.`name`,a.c_client_type_id AS typeid,
+			d.`name` AS type,a.location,a.coordinate,a.`comment`,h.`name` AS statename,
+			h.`value` AS state, <!-- e.`id` AS powerid, e.`name` AS POWER, f.`id` AS lampid, f.`name` AS lamp, -->g.`id` AS poleid, g.`name` AS pole,
+			a.`password`, a.lamp_pole_num AS polenumber
+		FROM c_client_attr1 AS a
+			LEFT JOIN c_client AS b ON a.c_client_id = b.id
+			LEFT JOIN c_client_attr2 AS c ON a.c_client_id = c.c_client_id
+			LEFT JOIN c_client_type AS d ON a.c_client_type_id = d.id
+			<!-- LEFT JOIN c_power_type AS e ON c.c_power_type_id = e.id -->
+			<!-- LEFT JOIN c_lamp_type AS f ON c.c_lamp_type_id = f.id -->
+			LEFT JOIN c_lamp_pole_type AS g ON c.c_lamp_pole_type_id = g.id
+			LEFT JOIN b_status AS h ON a.staus = h.`value`
+			LEFT JOIN b_status_main AS i ON h.b_status_main_id = i.id
+		WHERE a.c_client_id = #{id ,jdbcType=INTEGER}
+			AND i.id = 1
+	</select>
+	<!-- 
+	<select id="getDeviceById" resultType="pd">
+	SELECT a.c_client_id AS id, b.client_code AS number, a.`name`,a.c_client_type_id AS typeid,
+			d.`name` AS type,a.location,a.coordinate,a.`comment`,h.`name` AS statename,
+			h.`value` AS state,e.`name` AS power, f.`name` AS lamp, g.`name` AS pole,
+			a.`password`, a.lamp_pole_num AS polenumber
+		FROM c_client_attr1 AS a
+			LEFT JOIN c_client AS b ON a.c_client_id = b.id
+			LEFT JOIN c_client_attr2 AS c ON a.c_client_id = c.c_client_id
+			LEFT JOIN c_client_type AS d ON a.c_client_type_id = d.id
+			LEFT JOIN c_power_type AS e ON c.c_power_type_id = e.id
+			LEFT JOIN c_lamp_type AS f ON c.c_lamp_type_id = f.id
+			LEFT JOIN c_lamp_pole_type AS g ON c.c_lamp_pole_type_id = g.id
+			LEFT JOIN b_status AS h ON a.staus = h.`value`
+			LEFT JOIN b_status_main AS i ON h.b_status_main_id = i.id
+		WHERE a.c_client_id = #{id ,jdbcType=INTEGER}
+			AND i.id = 1
+	</select>
+	 -->
+	<select id="getDeviceByNumber" resultType="pd">
+		SELECT COUNT(*) AS count
+		FROM c_client
+		WHERE client_code = #{number}
+	</select>
+	<select id="getGatewayByNumber" resultType="pd">
+		SELECT COUNT(*) AS count
+		FROM c_gateway
+		WHERE gateway_code = #{number}
+	</select>
+	
+	
+		<insert id="addUserLog" parameterType = "pd">
+	 	INSERT INTO 
+	 	  b_user_log
+	 	  (
+	 	  	tdate,
+	 	  	b_log_type_id,
+	 	  	comment,
+	 	  	sys_user_id
+	 	  )
+	 	  VALUES(
+	 	    #{tdate},
+	 	    #{b_log_type_id},
+	 	    #{comment},
+	 	    #{sys_user_id}
+	 	  )
+	</insert>
+		<!-- 获取b_user_log的id -->
+	<select id="searchUserLogId" parameterType="pd" resultType="Integer">
+	   SELECT id FROM b_user_log WHERE tdate = #{tdate}
+	</select>
+	
+		<insert id="finallyaddpageone" parameterType = "pd">
+	 	INSERT INTO 
+	 	  b_client_log
+	 	  (
+	 	  	b_uesr_log_id,
+	 	  	c_gateway_id,
+	 	  	b_cmd_type_id,
+	 	  	status,
+	 	  	tdate,
+	 	  	cmd
+	 	  )
+	 	  VALUES(
+	 	    #{b_user_log_id},
+	 	    #{c_gateway_id},
+	 	    #{b_cmd_type_id},
+	 	    #{status},
+	 	    #{tdate},
+	 	    #{cmd}
+	 	  )
+	</insert>
+	
+		<insert id="finallyaddpagetwo" parameterType = "pd">
+	 	INSERT INTO 
+	 	  b_client_log
+	 	  (
+	 	  	b_uesr_log_id,
+	 	  	c_gateway_id,
+	 	  	b_cmd_type_id,
+	 	  	status,
+	 	  	tdate,
+	 	  	cmd
+	 	  )
+	 	  VALUES(
+	 	    #{b_user_log_id},
+	 	    #{c_gateway_id},
+	 	    #{b_cmd_type_idDouble},
+	 	    #{status},
+	 	    #{tdate},
+	 	    #{cmd}
+	 	  )
+	</insert>
+	
+	<!-- end -->
+	
+	
+</mapper>

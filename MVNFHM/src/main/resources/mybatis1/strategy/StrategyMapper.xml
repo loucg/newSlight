@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="StrategyMapper">
+	
+	<resultMap type="Strategy" id="strategyResultMap">
+		<id column="id" property="id"/>
+		<result column="name" property="name"/>
+		<result column="explain" property="explain"/>
+		<result column="json" property="json"/>
+		<result column="status" property="status"/>
+		<result column="tdate" property="tdate"/>
+	</resultMap>
+	
+	<!-- 表名 -->
+	<sql id="tableName">b_ctrl_strategy</sql>
+	
+	<!-- 字段 -->
+	<sql id="Field">
+		b_ctrl_strategy.id,
+		b_strategy_type_id,
+		b_ctrl_strategy.name,
+		b_ctrl_strategy.explain,
+		b_ctrl_strategy.value,
+		<!-- 有效无效状态 有效('1'),无效('2')-->
+		status,
+		tdate,
+		b_user_id,
+		datetime1,
+		datetime2,
+		month,
+		day,
+		period,
+		days,
+		time,
+		<!-- 下发状态 -->
+		status2,
+		bright
+	</sql>
+	
+	<!-- 字段值 -->
+	<sql id="FieldValue">
+		#{B_STRATEGY_TYPE_ID},
+		#{NAME},
+		#{EXPLAIN},
+		#{VALUE},
+		#{STATUS},
+		#{TDATE},
+		#{B_USER_ID},
+		#{DATETIME1},
+		#{DATETIME2},
+		#{MONTH},
+		#{DAY},
+		#{PERIOD},
+		#{DAYS},
+		#{MONTH},
+		#{TIME},
+		#{STATUS2},
+		#{BRIGHT}
+	</sql>
+	
+	<!-- 查询指定策略组中所有有效策略 -->
+	<select id="strategylistPage" parameterType="page" resultType="pd">
+	    select
+		   <include refid="Field"></include>,
+		   <!-- 策略类型 -->
+		   b_strategy_type.name strategy_type,
+		   <!-- 组数量 -->
+		   count(b_strategy_clientterm.c_term_id) termcnt,
+		   <!-- 下发状态 -->
+		   b_status.name send_status
+		from 
+			<include refid="tableName"></include>
+		left join
+			<!-- 取得分组数 -->
+			b_strategy_clientterm
+		on
+			b_strategy_clientterm.b_ctrl_strategy_id = b_ctrl_strategy.id
+		inner join
+			<!-- 策略类型 -->
+			b_strategy_type
+		on
+			b_strategy_type.id = b_ctrl_strategy.b_strategy_type_id
+		inner join
+			<!-- 取得下发状态 -->
+			b_status
+		on
+			b_status.value = b_ctrl_strategy.status2 and b_status.b_status_main_id = 6
+		where
+			<!-- 只检索有效数据 -->
+			b_ctrl_strategy.status='1'
+		<if test="pd.name!=null and pd.name!=''"><!-- 策略名称检索 -->
+			and 
+			(
+				b_ctrl_strategy.name LIKE CONCAT(CONCAT('%', #{pd.name}),'%')
+			)
+		</if>
+		<if test="pd.explain!=null and pd.explain!=''"><!-- 应用说明检索 -->
+			and 
+			(
+				b_ctrl_strategy.explain LIKE CONCAT(CONCAT('%', #{pd.explain}),'%')
+			)
+		</if>
+		group by
+			b_ctrl_strategy.id
+		order by
+			b_ctrl_strategy.id
+	</select>
+	
+	<!-- 用ID查询指定策略组中策略 -->
+	<select id="findById" parameterType="String" resultType="pd">
+	    select
+			<include refid="Field"></include>
+		from 
+			<include refid="tableName"></include>
+		where
+			id = #{id}
+	</select>
+
+	<!-- 新增-->
+	<insert id="insert" parameterType="Page">
+		insert into 
+	<include refid="tableName"></include>
+	(
+		b_strategy_type_id,
+		name,
+		b_ctrl_strategy.explain,
+		value,
+		status,
+		tdate,
+		b_user_id,
+		datetime1,
+		datetime2,
+		month,
+		day,
+		period,
+		days,
+		time,
+		bright,
+		status2
+		) values (
+			#{B_STRATEGY_TYPE_ID},
+			#{NAME},
+			#{EXPLAIN},
+			#{VALUE},
+			1,						<!-- 有效无效状态 有效('1'),无效('2')-->
+			#{TDATE},
+			#{B_USER_ID},
+			#{DATETIME1},
+			#{DATETIME2},
+			<choose><when test="MONTH!=null and MONTH!=''">#{MONTH}</when><otherwise>null</otherwise></choose>,
+			<choose><when test="DAY!=null and DAY!=''">#{DAY}</when><otherwise>null</otherwise></choose>,
+			<choose><when test="PERIOD!=null and PERIOD!=''">#{PERIOD}</when><otherwise>null</otherwise></choose>,
+			<choose><when test="DAYS!=null and DAYS!=''">#{DAYS}</when><otherwise>null</otherwise></choose>,
+			#{TIME},
+			#{BRIGHT},
+			<!-- 下发状态'2'(未下发) -->
+			'2'
+		)
+	</insert>
+	
+	<!-- 保存修改 -->
+	<update id="edit" parameterType="pd" >
+		update 
+		<include refid="tableName"></include>
+		set
+			b_strategy_type_id			= #{TYPE},
+			name						= #{NAME},
+			b_ctrl_strategy.explain	= #{EXPLAIN},
+			value		= #{VALUE},
+			tdate		= #{TDATE},
+			b_user_id	= #{B_USER_ID},
+			datetime1	= #{DATETIME1},
+			datetime2	= #{DATETIME2},
+			month		= <choose><when test="MONTH!=null and MONTH!=''">#{MONTH}</when><otherwise>null</otherwise></choose>,
+			day			= <choose><when test="DAY!=null and DAY!=''">#{DAY}</when><otherwise>null</otherwise></choose>,
+			period		= <choose><when test="PERIOD!=null and PERIOD!=''">#{PERIOD}</when><otherwise>null</otherwise></choose>,
+			days		= <choose><when test="DAYS!=null and DAYS!=''">#{DAYS}</when><otherwise>null</otherwise></choose>,
+			time		= #{TIME},
+			bright		= <choose><when test="BRIGHT!=null and BRIGHT!=''">#{BRIGHT}</when><otherwise>null</otherwise></choose>
+		where id = #{ID}
+	</update>
+
+	<!-- 删除一个策略  -->
+	<delete id="deleteStrategyById" parameterType="String">
+		update 
+		<include refid="tableName"></include>
+		<!-- 设成无效 -->
+		set status = '2'
+		where id=#{id}
+	</delete>
+	
+	<!-- 删除多个策略 -->
+	<update id="deleteStrategyByIds" parameterType="Page">
+		update 
+		<include refid="tableName"></include>
+		<!-- 设成无效 -->
+		set status = '2'
+		where 
+			id in ${pd.strategy_ids}
+	</update>
+	
+	<!-- 更新策略 下发状态-->
+	<update id="updateStrategyStatus" parameterType="Page">
+		update 
+		<include refid="tableName"></include>
+		<!-- 设成已下发 -->
+		set status2 = ${pd.status2}
+		where 
+			id in ${pd.strategy_ids}
+	</update>
+
+	
+</mapper>

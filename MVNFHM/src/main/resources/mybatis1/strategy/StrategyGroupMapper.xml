@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="StrategyGroupMapper">
+	
+	<!-- 表名 -->
+	<sql id="tableName">c_term</sql>
+	
+	<!-- 字段 -->
+	<sql id="Field">
+		id,
+		name,
+		c_term.explain,
+		status,
+		sys_user_id
+	</sql>
+	
+	<!-- 字段值 -->
+	<sql id="FieldValue">
+		#{name},
+		#{explain},
+		#{status},
+		#{sys_user_id}
+	</sql>
+	
+	<!-- 查询已选择平台分组 -->
+	<select id="grouplistPage" parameterType="page" resultType="pd">
+		SELECT
+			c_term.id term_id,
+			c_term.`name` term_name,
+			c_term.`explain` term_explain,
+			c_term_count.number 
+		FROM 
+			c_term
+		INNER JOIN
+		(
+			SELECT
+				c_term.id,
+				COUNT(c_client_id) number 
+			FROM 
+				c_term
+			INNER JOIN
+				b_strategy_clientterm
+			ON
+				c_term.id = b_strategy_clientterm.c_term_id
+			LEFT JOIN
+				c_client_term
+			ON
+				c_term.id = c_client_term.c_term_id
+			WHERE
+				b_strategy_clientterm.b_ctrl_strategy_id=#{pd.strategy_id}
+			 <if test="pd.term_name!=null and pd.term_name!=''">
+				and 
+				(
+					c_term.name LIKE CONCAT(CONCAT('%', #{pd.term_name}),'%')
+				)
+			</if>
+			<if test="pd.term_explain!=null and pd.term_explain!=''">
+				and 
+				(
+					c_term.explain LIKE CONCAT(CONCAT('%', #{pd.term_explain}),'%')
+				)
+			</if>
+			GROUP BY c_term.id
+		) AS c_term_count
+		ON
+			c_term.id = c_term_count.id
+		WHERE
+			c_term_count.number>0
+		ORDER BY c_term.id
+	</select>
+	
+	<!-- 查询未分配平台分组 -->
+	<select id="otherlistPage" parameterType="page" resultType="pd">
+		SELECT
+			c_term.id term_id,
+			c_term.`name` term_name,
+			c_term.`explain` term_explain,
+			c_term_count.number 
+		FROM 
+			c_term
+		INNER JOIN
+		(
+			SELECT
+				c_term.id,
+				COUNT(c_client_id) number 
+			FROM 
+				c_term
+			LEFT JOIN
+				c_client_term
+			ON
+				c_term.id = c_client_term.c_term_id
+			WHERE
+				<!-- 只查询有效的 -->
+				c_term.status = '1'
+				and c_term.sys_user_id IN ${pd.userids}
+				and c_term.id not in
+				(select 
+						b_strategy_clientterm.c_term_id
+					from
+						b_strategy_clientterm
+					where b_ctrl_strategy_id=#{pd.strategy_id}
+				)
+			 <if test="pd.term_name!=null and pd.term_name!=''">
+				and 
+				(
+					c_term.name LIKE CONCAT(CONCAT('%', #{pd.term_name}),'%')
+				)
+			</if>
+			<if test="pd.term_explain!=null and pd.term_explain!=''">
+				and 
+				(
+					c_term.explain LIKE CONCAT(CONCAT('%', #{pd.term_explain}),'%')
+				)
+			</if>
+			GROUP BY c_term.id
+		) AS c_term_count
+		ON
+			c_term.id = c_term_count.id
+		WHERE
+			c_term_count.number>0
+		ORDER BY c_term.id
+	</select>
+	
+	<!-- 新增组到给定策略 (策略与平台组对应表)-->
+	<insert id="addClientTerm" parameterType="pd" >
+	insert into 
+		b_strategy_clientterm 
+		(
+			b_ctrl_strategy_id ,
+			c_term_id
+		) values (
+			#{strategy_id},
+			#{c_term_id}
+		)
+	</insert>
+	<!-- 新增组到给定策略 (策略与网关控制组对应表) -->
+	<insert id="addGatewayTerm" parameterType="pd" >
+	insert into 
+		b_strategy_gatewayterm 
+		(
+			b_ctrl_strategy_id,
+			c_gateway_term_id
+		)
+	select 
+		#{strategy_id},
+		id
+	from 
+		c_gateway_term 
+ 	where 
+		c_gateway_term.c_term_id = #{c_term_id}
+	</insert>
+	
+	<!-- 踢删给定策略的组 (策略与平台组对应表)-->
+	<delete id="removeClientTerm" parameterType="pd" >
+		delete from 
+		b_strategy_clientterm
+		where 
+		b_ctrl_strategy_id = #{strategy_id} 
+		and c_term_id = #{c_term_id} 
+	</delete>
+	<!-- 踢删给定策略的组 (策略与网关控制组对应表) -->
+	<delete id="removeGatewayTerm" parameterType="pd" >
+		delete from 
+		b_strategy_gatewayterm
+		where
+		b_ctrl_strategy_id = #{strategy_id}
+		and c_gateway_term_id in(
+			select id
+			from c_gateway_term
+			where c_term_id=#{c_term_id}
+		)
+	</delete>
+	
+	
+</mapper>

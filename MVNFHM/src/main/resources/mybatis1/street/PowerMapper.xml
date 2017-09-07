@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="PowerMapper">
+	<!-- 查询终端日表 （默认）-->
+	<select id="DefaultPower" parameterType="page" resultType="pd">
+ 		SELECT
+		CAST( day AS CHAR) day,
+		CAST(SUM(power) AS CHAR) power
+		FROM
+		b_client_power_daily_report 
+		WHERE 
+		1=1
+		<if test="pd.startTime!=null and pd.startTime!=''">
+			and 
+			(
+				b_client_power_daily_report.day &gt;= #{pd.startTime} 
+			)
+		</if>
+		<if test="pd.endTime!=null and pd.endTime!=''">
+			and 
+			(
+				b_client_power_daily_report.day &lt;= #{pd.endTime} 
+			)
+		</if> 
+		GROUP BY
+		b_client_power_daily_report.day 
+	</select>
+	
+    <!-- 查询终端月表 -->
+	<select id="PowerMonth" parameterType="page" resultType="pd">
+ 		SELECT
+		CAST( DATE_FORMAT(month,'%Y-%m') AS CHAR) monthly,
+		CAST(SUM(power) AS CHAR) power
+		FROM
+		b_client_power_monthly_report 
+		WHERE 
+		1=1
+		<if test="pd.sTime!=null and pd.sTime!=''">
+			and 
+			(
+				month &gt;= #{pd.sTime} 
+			)
+		</if>
+		<if test="pd.eTime!=null and pd.eTime!=''">
+			and 
+			(
+				month &lt;= #{pd.eTime} 
+			)
+		</if>
+		<if test="pd.groupName!=null and pd.groupName!=''">
+			and 
+			(
+				c_client_id IN (
+					SELECT
+					ct.c_client_id
+					FROM
+					c_client_term ct
+					WHERE
+					ct.c_term_id 
+					IN
+					(
+						SELECT
+						c_term.id
+						FROM
+						c_term
+						WHERE
+						c_term.`name` LIKE CONCAT(CONCAT('%',#{pd.groupName}),'%')
+					)
+				)
+			)
+		</if> 
+		<if test="pd.strategy!=null and pd.strategy!=''">
+			and 
+			(
+				c_client_id IN (
+					SELECT
+					c_client_term.c_client_id
+					FROM
+					c_client_term
+					WHERE
+					c_client_term.c_term_id
+					IN
+					(
+						SELECT
+						c_term.id
+						FROM
+						c_term
+						WHERE
+						c_term.b_ctrl_strategy_id
+						IN
+						(
+							SELECT
+							b_ctrl_strategy.id
+							FROM
+							b_ctrl_strategy
+							WHERE
+							b_ctrl_strategy.`name` LIKE CONCAT(CONCAT('%',#{pd.strategy}),'%')
+						)
+					)
+				)	
+			)
+		</if> 
+		GROUP BY
+		monthly  
+	</select>
+		
+	<!-- 查询终端能耗日表 -->
+	<select id="PowerDaily" parameterType="page" resultType="pd">
+		SELECT
+		CAST( day AS CHAR) day,
+		CAST(SUM(power) AS CHAR) power
+		FROM
+		b_client_power_daily_report 
+		WHERE 
+		1=1
+		<if test="pd.startTime!=null and pd.startTime!=''">
+			and 
+			(
+				b_client_power_daily_report.day &gt;= #{pd.startTime} 
+			)
+		</if>
+		<if test="pd.endTime!=null and pd.endTime!=''">
+			and 
+			(
+				b_client_power_daily_report.day &lt;= #{pd.endTime} 
+			)
+		</if> 
+		<if test="pd.groupName!=null and pd.groupName!=''">
+			and 
+			(
+				c_client_id IN (
+					SELECT
+					ct.c_client_id
+					FROM
+					c_client_term ct
+					WHERE
+					ct.c_term_id 
+					IN
+					(
+						SELECT
+						c_term.id
+						FROM
+						c_term
+						WHERE
+						c_term.`name` LIKE CONCAT(CONCAT('%',#{pd.groupName}),'%')
+					)
+				)
+			)
+		</if> 
+		<if test="pd.strategy!=null and pd.strategy!=''">
+			and 
+			(
+				c_client_id IN (
+					SELECT
+					c_client_term.c_client_id
+					FROM
+					c_client_term
+					WHERE
+					c_client_term.c_term_id
+					IN
+					(
+						SELECT
+						c_term.id
+						FROM
+						c_term
+						WHERE
+						c_term.b_ctrl_strategy_id
+						IN
+						(
+							SELECT
+							b_ctrl_strategy.id
+							FROM
+							b_ctrl_strategy
+							WHERE
+							b_ctrl_strategy.`name` LIKE CONCAT(CONCAT('%',#{pd.strategy}),'%')
+						)
+					)
+				)	
+			)
+		</if>
+		GROUP BY
+		b_client_power_daily_report.day 
+	</select>
+	
+</mapper>

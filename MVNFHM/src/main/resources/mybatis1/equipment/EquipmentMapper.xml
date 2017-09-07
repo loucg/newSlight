@@ -1,0 +1,492 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="EquipmentMapper">
+	
+<!-- 表名 -->
+	<sql id="tableName">c_gateway</sql>
+	<sql id="attrTableName">c_gateway_attr1</sql>
+		<!-- 网关在线数量 -->
+	<select id="selectgatewaynum" parameterType="page" resultType="pd">
+		SELECT 
+		count(*) as gatewayCount,
+		(SELECT 
+				count(*) as onlieCnt
+				FROM
+				c_gateway
+				LEFT JOIN
+				c_gateway_attr1
+				ON
+				c_gateway.id = c_gateway_attr1.c_gateway_id
+				LEFT JOIN
+				c_gateway_upload_status
+				ON c_gateway.id = c_gateway_upload_status.c_gateway_id
+				WHERE 1=1
+				AND
+				c_gateway_upload_status.status = 1 
+				AND
+				c_gateway_attr1.sys_user_id in ${pd.userids}
+				and c_gateway_upload_status.interstatus in('0', '1')) as  onlineGateWayCount
+		
+		FROM
+		c_gateway
+		LEFT JOIN
+		c_gateway_attr1
+		ON
+		c_gateway.id = c_gateway_attr1.c_gateway_id
+		LEFT JOIN
+		c_gateway_upload_status
+		ON c_gateway.id = c_gateway_upload_status.c_gateway_id
+		WHERE 1=1
+		AND
+		c_gateway_upload_status.status = 1
+		AND
+		c_gateway_attr1.sys_user_id in ${pd.userids}
+	</select>
+	<!-- 灯在线数量 -->	
+	<select id="selectOnlineLightnum" parameterType="page" resultType="pd">
+		SELECT 
+		count(*) as lightCount,
+		(SELECT 
+				count(*) 
+				FROM
+				c_client
+				LEFT JOIN
+				c_client_attr1
+				ON
+				c_client.id = c_client_attr1.c_client_id
+				LEFT JOIN
+				c_client_upload_status
+				ON c_client.id = c_client_upload_status.c_client_id
+				WHERE 1=1
+				AND
+				c_client_upload_status.status = 1 
+				AND
+				c_client_attr1.sys_user_id   in ${pd.userids}) as onlineLightCount
+						
+		FROM
+		c_client
+		LEFT JOIN
+		c_client_attr1
+		ON
+		c_client.id = c_client_attr1.c_client_id
+		LEFT JOIN
+		c_client_upload_status
+		ON c_client.id = c_client_upload_status.c_client_id
+		WHERE 1=1
+		AND
+		c_client_attr1.sys_user_id  in ${pd.userids}
+	</select>
+
+<!-- 设备损坏数量 -->		
+<select id="selectEquipmentFaultNum" parameterType="page"  resultType="pd">
+select count(*) as faultnum from (
+	select 
+		d.id
+		from b_client_fault a ,
+		c_client d,c_client_attr1 e
+		where a.c_client_id=d.id
+		and a.c_client_id=e.id
+		and a.status='1'
+		and e.sys_user_id in ${pd.userids}
+		GROUP BY a.c_client_id
+		Union all
+	select 
+		d.id
+		from b_gateway_fault a ,
+		c_gateway d,c_gateway_attr1 e
+		where a.c_gateway_id=d.id
+		and a.c_gateway_id=e.c_gateway_id
+		and a.status='1'
+	    and e.sys_user_id in ${pd.userids}
+		GROUP BY a.c_gateway_id
+		
+		Union ALL
+		
+		select 
+		d.id
+		from b_breaker_fault a ,
+		c_breaker d,c_breaker_attr1 e
+		where a.c_breaker_id=d.id
+		and a.c_breaker_id=e.c_breaker_id
+		and a.status='1'
+	   and e.sys_user_id in ${pd.userids}
+		GROUP BY a.c_breaker_id
+		
+	
+		Union ALL
+			select 
+		d.id
+		from b_sensor_fault a ,
+		c_sensor d,c_sensor_attr1 e
+		where a.c_sensor_id=d.id
+		and a.c_sensor_id=e.c_sensor_id
+		 and e.sys_user_id in ${pd.userids}
+		and a.status='1'
+		GROUP BY a.c_sensor_id
+		
+		) a 
+	</select>
+	
+<!-- 设备数量 -->	
+<select id="selectEquipmentNum" parameterType="page" resultType="pd">
+select count(*) as equipmentcnt from 
+(
+		SELECT 
+		c_client.id 
+		FROM
+		c_client
+		LEFT JOIN
+		c_client_attr1
+		ON
+		c_client.id = c_client_attr1.c_client_id
+		WHERE 1=1
+		AND
+		c_client_attr1.sys_user_id in ${pd.userids}
+		
+		union all
+		
+			
+		SELECT 
+			c_sensor.id
+		FROM
+		c_sensor
+		LEFT JOIN
+		c_sensor_attr1
+		ON
+		c_sensor.id = c_sensor_attr1.c_sensor_id
+		WHERE 1=1
+		AND
+		c_sensor_attr1.sys_user_id in ${pd.userids}
+		
+		union all
+		
+		
+			SELECT 
+		c_gateway.id
+		FROM
+		c_gateway
+		LEFT JOIN
+		c_gateway_attr1
+		ON
+		c_gateway.id = c_gateway_attr1.c_gateway_id
+		WHERE 1=1
+		AND
+		c_gateway_attr1.sys_user_id in ${pd.userids}
+		
+		union all
+		
+			SELECT 
+		c_breaker.id 
+		FROM
+		c_breaker
+		LEFT JOIN
+		c_breaker_attr1
+		ON
+		c_breaker.id = c_breaker_attr1.c_breaker_id
+		WHERE 1=1
+		AND
+		c_breaker_attr1.sys_user_id in ${pd.userids}
+		
+		)b
+	</select>
+	<!--仪器损坏按date统计 -->
+	<select id="select_devicefault_seq" parameterType="page" resultType="pd">
+	<![CDATA[
+	select cnt,seq,dayname,dateflag from(
+		SELECT 
+		sum(device_fault_num) as Cnt,1 as seq,DATE_FORMAT(CURRENT_DATE(),'%Y-%m-%d') as dayname,'date1' as dateflag
+		FROM
+		b_device_fault_statistic
+		WHERE 1=1
+		AND
+		b_device_fault_statistic.sys_user_id  in ${pd.userids} 
+		AND TIMESTAMPDIFF(day,DATE_FORMAT(b_device_fault_statistic.tdate,'%Y-%m-%d'),now())=0
+		UNION ALL
+		
+		SELECT 
+		sum(device_fault_num) as Cnt,2 as seq,DATE_FORMAT(DATE_SUB(CURRENT_DATE(),INTERVAL 1 day),'%Y-%m-%d') as dayname,'date2' as datename
+		FROM
+		b_device_fault_statistic
+		WHERE 1=1
+		AND
+		b_device_fault_statistic.sys_user_id in ${pd.userids}
+		AND   TIMESTAMPDIFF(day,DATE_FORMAT(b_device_fault_statistic.tdate,'%Y-%m-%d'),now())=1
+		
+		UNION ALL
+		SELECT 
+		sum(device_fault_num) as Cnt,3 as seq,DATE_FORMAT(DATE_SUB(CURRENT_DATE(),INTERVAL 2 day),'%Y-%m-%d') as dayname,'date3' as datename
+		FROM
+		b_device_fault_statistic
+		WHERE 1=1
+		AND
+		b_device_fault_statistic.sys_user_id in ${pd.userids}
+		AND   TIMESTAMPDIFF(day,DATE_FORMAT(b_device_fault_statistic.tdate,'%Y-%m-%d'),now())=2
+		UNION ALL
+		SELECT 
+		sum(device_fault_num) as Cnt,4 as seq,DATE_FORMAT(DATE_SUB(CURRENT_DATE(),INTERVAL 3 day),'%Y-%m-%d') as dayname,'date4' as datename
+		FROM
+		b_device_fault_statistic
+		WHERE 1=1
+		AND
+		b_device_fault_statistic.sys_user_id in ${pd.userids}
+		AND   TIMESTAMPDIFF(day,DATE_FORMAT(b_device_fault_statistic.tdate,'%Y-%m-%d'),now())=3
+		
+		UNION ALL
+		SELECT 
+		sum(device_fault_num) as Cnt,5 as seq,DATE_FORMAT(DATE_SUB(CURRENT_DATE(),INTERVAL 4 day),'%Y-%m-%d') as dayname,'date5' as datename
+		FROM
+		b_device_fault_statistic
+		WHERE 1=1
+		AND
+		b_device_fault_statistic.sys_user_id in ${pd.userids}
+		AND   TIMESTAMPDIFF(day,DATE_FORMAT(b_device_fault_statistic.tdate,'%Y-%m-%d'),now())=4
+		
+		UNION ALL
+		SELECT 
+		sum(device_fault_num) as Cnt,6 as seq,DATE_FORMAT(DATE_SUB(CURRENT_DATE(),INTERVAL 5 day),'%Y-%m-%d') as dayname,'date6' as datename
+		FROM
+		b_device_fault_statistic
+		WHERE 1=1
+		AND
+		b_device_fault_statistic.sys_user_id in ${pd.userids}
+		AND   TIMESTAMPDIFF(day,DATE_FORMAT(b_device_fault_statistic.tdate,'%Y-%m-%d'),now())=5
+		
+		UNION ALL
+		SELECT 
+		sum(device_fault_num) as Cnt,7 as seq,DATE_FORMAT(DATE_SUB(CURRENT_DATE(),INTERVAL 6 day),'%Y-%m-%d')  as dayname,'date7' as datename
+		FROM
+		b_device_fault_statistic
+		WHERE 1=1
+		AND
+		b_device_fault_statistic.sys_user_id in ${pd.userids}
+		AND   TIMESTAMPDIFF(day,DATE_FORMAT(b_device_fault_statistic.tdate,'%Y-%m-%d'),now())=6
+		) A order by a.seq
+		]]>
+	</select>
+	
+	
+	<!--仪器损坏按week统计 -->
+	<select id="select_devicefault_week" parameterType="page" resultType="pd">
+	<![CDATA[
+	select cnt,seq,dayname,dateflag from(
+		SELECT 
+		sum(device_fault_num) as Cnt,1 as seq,'当前周' as dayname,'date1' as dateflag
+		FROM
+		b_device_fault_statistic
+		WHERE 1=1
+		AND
+		b_device_fault_statistic.sys_user_id in ${pd.userids} 
+		AND YEARWEEK(DATE_FORMAT(b_device_fault_statistic.tdate,'%Y-%m-%d'))=YEARWEEK(now())
+		
+		UNION ALL
+		SELECT 
+		sum(device_fault_num) as Cnt,2 as seq,'前1周' as dayname,'date2' as dateflag
+		FROM
+		b_device_fault_statistic
+		WHERE 1=1
+		AND
+		b_device_fault_statistic.sys_user_id in ${pd.userids} 
+		AND YEARWEEK(DATE_FORMAT(b_device_fault_statistic.tdate,'%Y-%m-%d'))=YEARWEEK(now())-1
+		
+		UNION ALL
+		SELECT 
+		sum(device_fault_num) as Cnt,3 as seq,'前2周' as dayname,'date3' as dateflag
+		FROM
+		b_device_fault_statistic
+		WHERE 1=1
+		AND
+		b_device_fault_statistic.sys_user_id in ${pd.userids} 
+		AND YEARWEEK(DATE_FORMAT(b_device_fault_statistic.tdate,'%Y-%m-%d'))=YEARWEEK(now())-2
+		UNION ALL
+		SELECT 
+		sum(device_fault_num) as Cnt,4 as seq,'前3周' as dayname,'date4' as dateflag
+		FROM
+		b_device_fault_statistic
+		WHERE 1=1
+		AND
+		b_device_fault_statistic.sys_user_id in ${pd.userids} 
+		AND YEARWEEK(DATE_FORMAT(b_device_fault_statistic.tdate,'%Y-%m-%d'))=YEARWEEK(now())-3
+		
+		UNION ALL
+		SELECT 
+		sum(device_fault_num) as Cnt,5 as seq,'前4周' as dayname,'date5' as dateflag
+		FROM
+		b_device_fault_statistic
+		WHERE 1=1
+		AND
+		b_device_fault_statistic.sys_user_id in ${pd.userids} 
+		AND YEARWEEK(DATE_FORMAT(b_device_fault_statistic.tdate,'%Y-%m-%d'))=YEARWEEK(now())-4
+		UNION ALL
+		SELECT 
+		sum(device_fault_num) as Cnt,6 as seq,'前5周' as dayname,'date6' as dateflag
+		FROM
+		b_device_fault_statistic
+		WHERE 1=1
+		AND
+		b_device_fault_statistic.sys_user_id in ${pd.userids} 
+		AND YEARWEEK(DATE_FORMAT(b_device_fault_statistic.tdate,'%Y-%m-%d'))=YEARWEEK(now())-5
+		
+		UNION ALL
+		SELECT 
+		sum(device_fault_num) as Cnt,7 as seq,'前6周' as dayname,'date7' as dateflag
+		FROM
+		b_device_fault_statistic
+		WHERE 1=1
+		AND
+		b_device_fault_statistic.sys_user_id in ${pd.userids} 
+		AND YEARWEEK(DATE_FORMAT(b_device_fault_statistic.tdate,'%Y-%m-%d'))=YEARWEEK(now())-6
+		) A order by a.seq
+		]]>
+	</select>
+	
+	
+	<!--仪器损坏按month统计 -->
+	<select id="select_devicefault_month" parameterType="page" resultType="pd">
+	<![CDATA[
+	select cnt,seq,dayname,dateflag from(
+		SELECT 
+		sum(device_fault_num) as Cnt,1 as seq,DATE_FORMAT(DATE_SUB(CURRENT_DATE(),INTERVAL 0 Month),'%Y-%m') as dayname,'date1' as dateflag
+		FROM
+		b_device_fault_statistic
+		WHERE 1=1
+		AND
+		b_device_fault_statistic.sys_user_id in ${pd.userids} 
+		AND DATE_FORMAT(b_device_fault_statistic.tdate,'%Y%M')=DATE_FORMAT(DATE_SUB(CURRENT_DATE(),INTERVAL 0 Month),'%Y%M')
+		
+		UNION ALL
+		SELECT 
+		sum(device_fault_num) as Cnt,2 as seq,DATE_FORMAT(DATE_SUB(CURRENT_DATE(),INTERVAL 1 Month),'%Y-%m') as dayname,'date2' as dateflag
+		FROM
+		b_device_fault_statistic
+		WHERE 1=1
+		AND
+		b_device_fault_statistic.sys_user_id in ${pd.userids} 
+		AND DATE_FORMAT(b_device_fault_statistic.tdate,'%Y%M')=DATE_FORMAT(DATE_SUB(CURRENT_DATE(),INTERVAL 1 Month),'%Y%M')
+		
+		UNION ALL
+		SELECT 
+		sum(device_fault_num) as Cnt,3 as seq,DATE_FORMAT(DATE_SUB(CURRENT_DATE(),INTERVAL 2 Month),'%Y-%m') as dayname,'date3' as dateflag
+		FROM
+		b_device_fault_statistic
+		WHERE 1=1
+		AND
+		b_device_fault_statistic.sys_user_id in ${pd.userids} 
+		AND DATE_FORMAT(b_device_fault_statistic.tdate,'%Y%M')=DATE_FORMAT(DATE_SUB(CURRENT_DATE(),INTERVAL 2 Month),'%Y%M')
+		UNION ALL
+		SELECT 
+		sum(device_fault_num) as Cnt,4 as seq,DATE_FORMAT(DATE_SUB(CURRENT_DATE(),INTERVAL 3 Month),'%Y-%m') as dayname,'date4' as dateflag
+		FROM
+		b_device_fault_statistic
+		WHERE 1=1
+		AND
+		b_device_fault_statistic.sys_user_id in ${pd.userids} 
+		AND DATE_FORMAT(b_device_fault_statistic.tdate,'%Y%M')=DATE_FORMAT(DATE_SUB(CURRENT_DATE(),INTERVAL 3 Month),'%Y%M')
+		
+		UNION ALL
+		SELECT 
+		sum(device_fault_num) as Cnt,5 as seq,DATE_FORMAT(DATE_SUB(CURRENT_DATE(),INTERVAL 4 Month),'%Y-%m') as dayname,'date5' as dateflag
+		FROM
+		b_device_fault_statistic
+		WHERE 1=1
+		AND
+		b_device_fault_statistic.sys_user_id in ${pd.userids} 
+		AND DATE_FORMAT(b_device_fault_statistic.tdate,'%Y%M')=DATE_FORMAT(DATE_SUB(CURRENT_DATE(),INTERVAL 4 Month),'%Y%M')
+		UNION ALL
+		SELECT 
+		sum(device_fault_num) as Cnt,6 as seq,DATE_FORMAT(DATE_SUB(CURRENT_DATE(),INTERVAL 5 Month),'%Y-%m') as dayname,'date6' as dateflag
+		FROM
+		b_device_fault_statistic
+		WHERE 1=1
+		AND
+		b_device_fault_statistic.sys_user_id in ${pd.userids} 
+		AND DATE_FORMAT(b_device_fault_statistic.tdate,'%Y%M')=DATE_FORMAT(DATE_SUB(CURRENT_DATE(),INTERVAL 5 Month),'%Y%M')
+		
+		UNION ALL
+		SELECT 
+		sum(device_fault_num) as Cnt,7 as seq,DATE_FORMAT(DATE_SUB(CURRENT_DATE(),INTERVAL 6 Month),'%Y-%m') as dayname,'date7' as dateflag
+		FROM
+		b_device_fault_statistic
+		WHERE 1=1
+		AND
+		b_device_fault_statistic.sys_user_id in ${pd.userids} 
+		AND DATE_FORMAT(b_device_fault_statistic.tdate,'%Y%M')=DATE_FORMAT(DATE_SUB(CURRENT_DATE(),INTERVAL 6 Month),'%Y%M')
+		) A order by a.seq
+		]]>
+	</select>
+	
+		<!--仪器损坏按周期统计 -->
+	<update id="update" parameterType="page">
+	INSERT INTO b_device_fault_statistic(device_type,device_fault_num,tdate,sys_user_id)
+	SELECT B.type,B.cnt,B.nowdate,B.sys_user_id FROM (	
+	SELECT 3 as type ,COUNT(*) as cnt,CURRENT_TIMESTAMP as nowdate,sys_user_id
+	FROM (
+	SELECT
+		a.c_client_id,e.sys_user_id
+	
+	FROM
+		b_client_fault a,
+		c_client d,
+		c_client_attr1 e
+	WHERE
+		a.c_client_id = d.id
+	AND a.c_client_id = e.c_client_id
+	AND a.STATUS = '1'  
+	AND e.sys_user_id in ${pd.userids}
+	GROUP BY a.c_client_id,e.sys_user_id
+	) A
+	UNION ALL
+	SELECT 1,COUNT(*),CURRENT_TIMESTAMP,sys_user_id
+	FROM (
+	SELECT
+		a.c_gateway_id,e.sys_user_id
+	FROM
+		b_gateway_fault a,
+		c_gateway d,
+		c_gateway_attr1 e
+	WHERE
+		a.c_gateway_id = d.id
+	AND a.c_gateway_id = e.c_gateway_id
+	AND a.STATUS = '1'
+	AND e.sys_user_id in ${pd.userids}
+	GROUP BY a.c_gateway_id,e.sys_user_id
+	) A
+	UNION all
+	SELECT 2,COUNT(*),CURRENT_TIMESTAMP,sys_user_id
+	FROM (
+	SELECT
+		a.c_sensor_id, e.sys_user_id
+	FROM
+		b_sensor_fault a,
+		c_sensor d,
+		c_sensor_attr1 e
+	WHERE
+		a.c_sensor_id = d.id
+	AND a.c_sensor_id = e.c_sensor_id
+	AND a.STATUS = '1'
+	AND e.sys_user_id in ${pd.userids}
+	GROUP BY a.c_sensor_id,e.sys_user_id
+	) A
+	UNION all
+	SELECT 4,COUNT(*),CURRENT_TIMESTAMP,sys_user_id
+	FROM (
+	SELECT
+		a.c_breaker_id,e.sys_user_id
+	FROM
+		b_breaker_fault a,
+		c_breaker d,
+		c_breaker_attr1 e
+	WHERE
+		a.c_breaker_id = d.id
+	AND a.c_breaker_id = e.c_breaker_id
+	AND a. STATUS = '1'
+	AND e.sys_user_id in ${pd.userids}
+	GROUP BY a.c_breaker_id,e.sys_user_id
+	) A)B where B.cnt>0
+	</update>
+	
+	<!--仪器损坏按周期统计 -->
+	<update id="delete" parameterType="page" >
+		delete from b_device_fault_statistic where (sys_user_id in ${pd.userids} OR sys_user_id is null) and DATE_FORMAT(tdate,'%Y-%m-%d')=DATE_FORMAT(CURRENT_DATE,'%Y-%m-%d')
+	</update>
+</mapper>

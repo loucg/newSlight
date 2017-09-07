@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="LogMapper">
+	<!-- 获取日志列表 -->
+	<select id="getLoglistPage" parameterType="page" resultType="pd">
+		SELECT a.`comment`, DATE_FORMAT(a.tdate,'%Y-%m-%d %H:%i:%S') AS time, b.NAME AS `name`, c.`name` AS type
+		FROM `b_user_log` AS a
+		LEFT JOIN sys_user AS b ON a.sys_user_id = b.USER_ID
+		LEFT JOIN b_log_type AS c ON a.b_log_type_id = c.id
+		WHERE 1=1
+		<if test="pd.userid!=null">
+			AND a.sys_user_id = #{pd.userid}
+		</if>
+		<if test="pd.id!=null and pd.id!=''">
+			AND c.id = #{pd.id}
+		</if>
+		<if test="pd.starttime!=null and pd.starttime!=''">
+			AND a.tdate &gt; #{pd.lastStart}
+		</if>
+		<if test="pd.endtime!=null and pd.endtime!=''">
+			AND a.tdate &lt; #{pd.lastEnd}
+		</if>
+		<if test="pd.type!=null and pd.type!=''">
+			AND a.b_log_type_id = #{pd.type}
+		</if>
+		<if test="pd.username!=null and pd.username!=''">
+			AND b.NAME LIKE CONCAT(CONCAT('%', #{pd.username}),'%')
+		</if>
+		ORDER BY a.id DESC
+	</select>
+	<!-- 获取日志列表，导出专用 -->
+	<select id="getLogAllPage" parameterType="pd" resultType="pd">
+		SELECT a.`comment`, DATE_FORMAT(a.tdate,'%Y-%m-%d %H:%i:%S') AS time, b.NAME AS `name`, c.`name` AS type
+		FROM `b_user_log` AS a
+		LEFT JOIN sys_user AS b ON a.sys_user_id = b.USER_ID
+		LEFT JOIN b_log_type AS c ON a.b_log_type_id = c.id
+		WHERE 1=1
+		<if test="userid!=null">
+			AND a.sys_user_id = #{userid}
+		</if>
+		<if test="id!=null and id!=''">
+			AND c.id = #{id}
+		</if>
+		<if test="starttime!=null and starttime!=''">
+			AND a.tdate &gt; #{lastStart}
+		</if>
+		<if test="endtime!=null and endtime!=''">
+			AND a.tdate &lt; #{lastEnd}
+		</if>
+		<if test="type!=null and type!=''">
+			AND a.b_log_type_id = #{type}
+		</if>
+		<if test="username!=null and username!=''">
+			AND b.NAME LIKE CONCAT(CONCAT('%', #{username}),'%')
+		</if>
+		ORDER BY a.id DESC
+	</select>
+
+	<!-- 插入日志 -->
+	<insert id="insertLog" parameterType="pd">
+		INSERT INTO b_user_log(b_log_type_id, sys_user_id, comment, tdate)
+		VALUES (#{type}, #{userid}, #{comment}, #{time})
+	</insert>
+	
+	<!-- 获取所有日志类型-->
+	<select id="getLogTypeList" parameterType="pd" resultType="pd">
+		SELECT * 
+		FROM b_log_type
+	</select>
+	
+	<!-- 获取终端日志列表 -->
+	<select id="getDeviceLoglistPage" parameterType="page" resultType="pd">
+		SELECT g.`NAME` AS name, DATE_FORMAT(f.tdate,'%Y-%m-%d %H:%i:%S') AS operate_time, h.`name` AS cmd_type, c.`name` AS gateway,
+			b.`name` AS device, a.cmd AS `comment`, d.`name` AS `status`, DATE_FORMAT(a.tdate,'%Y-%m-%d %H:%i:%S') AS feedback_time
+		FROM b_client_log AS a
+		LEFT JOIN c_client_attr1 AS b ON a.c_client_id = b.c_client_id
+		LEFT JOIN c_gateway_attr1 AS c ON a.c_gateway_id = c.c_gateway_id
+		LEFT JOIN b_status AS d ON a.`status` = d.`value`
+		LEFT JOIN b_status_main AS e ON d.b_status_main_id = e.id
+		LEFT JOIN b_user_log AS f ON a.b_uesr_log_id = f.id
+		LEFT JOIN sys_user AS g ON f.sys_user_id = g.USER_ID
+		LEFT JOIN b_cmd_type AS h ON a.b_cmd_type_id = h.id
+		WHERE e.id = 5
+		<if test="pd.userid!=null">
+			AND f.sys_user_id = #{pd.userid}
+		</if>
+		<if test="pd.type!=null and pd.type!=''">
+			AND h.id = #{pd.type}
+		</if>
+		<if test="pd.starttime!=null and pd.starttime!=''">
+			AND f.tdate &gt; #{pd.starttime}
+		</if>
+		<if test="pd.endtime!=null and pd.endtime!=''">
+			AND f.tdate &lt; #{pd.endtime}
+		</if>
+		<if test="pd.username!=null and pd.username!=''">
+			AND g.NAME LIKE CONCAT(CONCAT('%', #{pd.username}),'%')
+		</if>
+		ORDER BY f.tdate DESC
+	</select>
+
+	<!-- 获取终端日志列表，导出专用 -->
+	<select id="getDeviceLogAllPage" parameterType="pd" resultType="pd">
+		SELECT g.`NAME` AS name, DATE_FORMAT(f.tdate,'%Y-%m-%d %H:%i:%S') AS operate_time, h.`name` AS cmd_type, c.`name` AS gateway,
+			b.`name` AS device, a.cmd AS `comment`, d.`name` AS `status`, DATE_FORMAT(a.tdate,'%Y-%m-%d %H:%i:%S') AS feedback_time
+		FROM b_client_log AS a
+		LEFT JOIN c_client_attr1 AS b ON a.c_client_id = b.c_client_id
+		LEFT JOIN c_gateway_attr1 AS c ON a.c_gateway_id = c.c_gateway_id
+		LEFT JOIN b_status AS d ON a.`status` = d.`value`
+		LEFT JOIN b_status_main AS e ON d.b_status_main_id = e.id
+		LEFT JOIN b_user_log AS f ON a.b_uesr_log_id = f.id
+		LEFT JOIN sys_user AS g ON f.sys_user_id = g.USER_ID
+		LEFT JOIN b_cmd_type AS h ON a.b_cmd_type_id = h.id
+		WHERE e.id = 5
+		<if test="userid!=null">
+			AND f.sys_user_id = #{userid}
+		</if>
+		<if test="type!=null and type!=''">
+			AND h.id = #{type}
+		</if>
+		<if test="starttime!=null and starttime!=''">
+			AND f.tdate &gt; #{starttime}
+		</if>
+		<if test="endtime!=null and endtime!=''">
+			AND f.tdate &lt; #{endtime}
+		</if>
+		<if test="username!=null and username!=''">
+			AND g.NAME LIKE CONCAT(CONCAT('%', #{username}),'%')
+		</if>
+		ORDER BY f.tdate DESC
+	</select>
+	
+	<!-- 插入终端日志列表 -->
+	<insert id="insertDeviceLog" parameterType="pd">
+		INSERT INTO b_client_log
+		(b_uesr_log_id, c_client_id, c_gateway_id, b_cmd_type_id, `status`, tdate, cmd, encryption_cmd)
+		VALUES (#{logid}, null, #{gateway}, #{cmdid}, 1,null,#{cmd}, null)
+	</insert>
+	
+	<!-- 获取所有终端日志类型-->
+	<select id="getDeviceTypeList" parameterType="pd" resultType="pd">
+		SELECT * 
+		FROM b_cmd_type
+	</select>
+	
+	
+	<select id="getGatewayid" parameterType="pd" resultType="pd">
+		SELECT c_gateway_id AS gateway 
+		FROM c_client_gateway
+		WHERE c_client_id = #{client}
+	</select>
+	
+	<select id="getDeviceListString" parameterType="pd" resultType="pd">
+		SELECT REPLACE(GROUP_CONCAT(b.client_code), ',','、') AS cmd
+		FROM c_client_gateway AS a
+		LEFT JOIN c_client AS b ON a.c_client_id = b.id
+		WHERE a.c_gateway_id = #{gateway}
+		AND a.c_client_id IN ${ids}
+	</select>
+	
+	<select id="getDeviceListString2" parameterType="pd" resultType="pd">
+		SELECT node AS param1, node2 AS param2
+		FROM c_client_gateway AS a
+		LEFT JOIN c_client_attr1 AS b ON a.c_client_id = b.id
+		WHERE a.c_gateway_id = #{gateway}
+		AND a.c_client_id IN ${ids}
+	</select>
+	
+	<select id="getDeviceCode" parameterType="pd" resultType="pd">
+		SELECT REPLACE(GROUP_CONCAT(client_code), ',','、') AS cmd
+		FROM c_client
+		WHERE id in ${ids}
+	</select>
+</mapper>

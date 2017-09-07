@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="GatewayStateMapper">
+	
+	<select id="gatewaystatelistPage" parameterType="page" resultType="pd">
+		SELECT
+		c_gateway.id,
+		c_gateway.gateway_code,
+		c_gateway_attr1.`name`,
+		c_gateway_attr1.location,
+		c_gateway_attr1.`comment`,
+		IFNULL(exist_client.client_num,0) client_num,
+		c_gateway_upload_status.voltage,
+		c_gateway_upload_status.status,
+		b_status.`name` status_name,
+		c_gateway_upload_status.interstatus,
+		c_gateway_upload_status.tdate
+		FROM
+		c_gateway
+		LEFT JOIN
+		c_gateway_attr1
+		ON
+		c_gateway.id = c_gateway_attr1.c_gateway_id
+		LEFT JOIN
+		c_gateway_upload_status
+		ON
+		c_gateway.id = c_gateway_upload_status.c_gateway_id
+		LEFT JOIN
+		b_status
+		ON
+		b_status.b_status_main_id = '3'
+		AND c_gateway_upload_status.status = b_status.value
+		LEFT JOIN
+		(
+			SELECT 
+				c_client_gateway.c_gateway_id,count(c_client_gateway.c_client_id) client_num
+			FROM
+				c_client_gateway
+			INNER JOIN
+				c_client_attr1	
+			ON
+				c_client_attr1.c_client_id = c_client_gateway.c_client_id
+			WHERE
+				c_client_attr1.staus = 1 AND c_client_attr1.sys_user_id IN ${pd.userids}
+			GROUP BY
+				c_client_gateway.c_gateway_id
+			
+		) exist_client
+		ON
+			exist_client.c_gateway_id = c_gateway.id
+		WHERE 1=1
+		AND
+		c_gateway_attr1.sys_user_id IN ${pd.userids}
+		 <if test="pd.name!=null and pd.name!=''">
+			and 
+			(
+				c_gateway_attr1.name LIKE CONCAT(CONCAT('%', #{pd.name}),'%')
+			)
+		</if>
+		<if test="pd.gateway_code!=null and pd.gateway_code!=''">
+			and 
+			(
+				c_gateway.gateway_code LIKE CONCAT(CONCAT('%', #{pd.gateway_code}),'%')
+			)
+		</if> 
+		<if test="pd.location!=null and pd.location!=''">
+			and 
+			(
+				c_gateway_attr1.location LIKE CONCAT(CONCAT('%', #{pd.location}),'%')
+			)
+		</if>
+		<if test="pd.status!=null and pd.status!=''">
+			and 
+			(
+				c_gateway_upload_status.status = #{pd.status}
+			)
+		</if>
+		GROUP BY
+		c_gateway.id
+	</select>
+
+	<!--终端列表  -->
+	<select id="clientInfolistPage" parameterType="page" resultType="pd">
+		SELECT
+		c_client_attr1.id, c_client.client_code, c_client_attr1.`name` cname,
+		c_client_attr1.location, c_client_attr1.lamp_pole_num, c_client_upload_status.temperature,
+		c_client_upload_status.voltage, c_client_upload_status.power_factor,  b_status.name as `status`,c_client_upload_status.brightness,
+		<!--b_ctrl_strategy.`name` sname,-->
+		c_client_attr1.`comment`,  c_client_upload_status.tdate, c_client_upload_status.current
+		FROM
+		c_client_gateway 
+		LEFT JOIN 
+		c_client ON c_client_gateway.c_client_id = c_client.id
+		LEFT JOIN c_client_attr1 ON c_client.id = c_client_attr1.c_client_id
+		LEFT JOIN c_client_upload_status ON c_client.id = c_client_upload_status.c_client_id
+		LEFT JOIN b_status  ON b_status.value = c_client_upload_status.status and b_status.b_status_main_id='4'
+		WHERE 1=1 
+		AND
+		c_client_attr1.sys_user_id = #{pd.sys_user_id}
+		AND
+		c_client_gateway.c_gateway_id = #{pd.id}
+	</select>
+	
+	<!--终端列表  -->
+	<select id="getgateway" parameterType="page" resultType="pd">
+		SELECT
+			gateway_code
+		FROM
+		c_gateway 
+		where id = #{pd.id}
+	</select>
+	
+	<!-- 获得所有网关状态 -->
+	<select id="getWorkStatus" parameterType="pd" resultType="pd">
+		SELECT
+			value,
+			`name`
+		FROM
+			b_status 
+		where b_status_main_id = #{main_id}
+	</select>
+</mapper>

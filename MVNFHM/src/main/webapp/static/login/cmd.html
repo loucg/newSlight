@@ -1,0 +1,14 @@
+<html>
+<script type="text/javascript">
+	function fun1() {
+		alert("获取URL携带参数");
+		var data = location.search;
+		alert(data);
+		alert("333");
+		location.href("/MVNFHM/httpcmd/receivedata"+data);
+		alert("eee");
+	}
+</script>
+<body onload="fun1();">
+</body>
+</html>

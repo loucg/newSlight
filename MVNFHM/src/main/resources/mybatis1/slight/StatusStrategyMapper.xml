@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="StatusStrategyMapper">
+	
+	<!-- 表名 -->
+	<!-- 分组表 -->
+	<sql id="groupTableName">
+		c_term
+	</sql>
+	<!-- 分组能耗日表 -->
+	<sql id="groupDayPowerTableName">
+		b_term_power_daily_report
+	</sql>
+	<!-- 分组能耗月表 -->
+	<sql id="groupMonthPowerTablename">
+		b_term_power_monthly_report
+	</sql>
+	<!-- 策略表 -->
+	<sql id="strategy">
+		b_ctrl_strategy
+	</sql>
+	<!-- 分组表 -->
+	<sql id="Field">
+		name,explain,status,sys_user_id,b_ctrl_strategy_id
+	</sql>
+	<sql id="FieldValue">
+		#{name},#{explain},#{status},#{sys_user_id},#{b_ctrl_strategy_id}
+	</sql>
+
+	
+	
+	<!-- 获取日分组策略信息-->
+	<select id="getDayGroup" parameterType="pd" resultType="pd">
+		SELECT a.`name`, TRUNCATE(AVG(c.per)+0.005,2) AS per,c.power <!-- , b.`name` AS strategy -->
+		FROM <include refid="groupTableName"></include> AS a
+		<!--LEFT JOIN <include refid="strategy"></include> AS b ON a.b_ctrl_strategy_id = b.id-->
+		LEFT JOIN <include refid="groupDayPowerTableName"></include> AS c ON a.id = c.c_term_id
+		WHERE a.sys_user_id in ${userids}
+			AND c.day &gt;=#{starttime}
+			AND c.day &lt;=#{endtime}
+		GROUP BY a.`name`
+	</select> 
+	
+	
+	<!-- 获取月分组策略信息-->
+	<select id="getMonthGroup" parameterType="pd" resultType="pd">
+		SELECT a.`name`, TRUNCATE(AVG(c.per)+0.005,2) AS per,c.power <!-- ,b.`name` AS strategy -->
+		FROM <include refid="groupTableName"></include> AS a
+		<!-- LEFT JOIN <include refid="strategy"></include> AS b ON a.b_ctrl_strategy_id = b.id -->
+		LEFT JOIN <include refid="groupMonthPowerTablename"></include> AS c ON a.id = c.c_term_id
+		WHERE a.sys_user_id in ${userids}
+			AND c.month &gt;= #{starttime}
+			AND c.month &lt;=#{endtime}
+	</select>
+	
+	<!-- 获取所有策略 -->
+	<select id="getStrategyList" parameterType="pd" resultType="pd">
+		SELECT a.`name`, <!-- a.json, -->a.`value`, a.`status`, a.`explain`, a.`tdate`, a.`datetime1`, 
+		a.`datetime2`, a.`month`, a.`day`, a.`period`, a.`days`, a.`time`
+		FROM <include refid="strategy"></include> AS a
+	</select>
+	
+	<!-- 获得组数和策略数 -->
+	<select id="getStgAndGroupCnt" parameterType="pd" resultType="pd">
+		SELECT COUNT(a.id) AS strategy_number, c.group_number
+		FROM <include refid="strategy"></include> AS a
+		JOIN (SELECT COUNT(b.id) AS group_number
+		FROM <include refid="groupTableName"></include> AS b
+		WHERE b.sys_user_id in ${userids}) AS c
+	</select>
+	<!-- 获得终端总数 -->
+	<select id="getClientTotal" parameterType="pd" resultType="pd">
+		SELECT COUNT(a.c_client_id) AS ctotal
+		FROM c_client_attr1 AS a
+		WHERE a.sys_user_id in ${userids}
+	</select>
+	
+	<!-- 获得正常终端数 -->
+	<select id="getClientNormal" parameterType="pd" resultType="pd">
+		SELECT COUNT(a.c_client_id) AS cnormal
+		FROM c_client_attr1 AS a
+		WHERE a.staus = 1
+			AND a.sys_user_id in ${userids}
+	</select>
+	<!-- 获得网关总数 -->
+	<select id="getGatewayTotal" parameterType="pd" resultType="pd">
+		SELECT COUNT(a.c_gateway_id) AS gtotal 
+		FROM c_gateway_attr1 AS a
+		WHERE a.c_gateway_type_id = 3
+			AND a.sys_user_id in ${userids}
+	</select>
+	<!-- 获得正常网关总数 -->
+	<select id="getGatewayNormal" parameterType="pd" resultType="pd">
+		SELECT COUNT(a.c_gateway_id) AS gnormal 
+		FROM c_gateway_attr1 AS a
+		WHERE a.c_gateway_type_id = 3
+			AND a.staus = 1
+			AND a.sys_user_id in ${userids}
+	</select>
+	<!-- 获得网关故障数量 -->
+	<select id="getGatewayFaultCnt" parameterType="pd" resultType="pd">
+		SELECT COUNT(DISTINCT a.c_gateway_id) AS fgateway
+		FROM b_gateway_fault AS a
+		LEFT JOIN c_gateway_attr1 AS b ON a.c_gateway_id = b.c_gateway_id
+		WHERE b.sys_user_id in ${userids}
+		AND b.c_gateway_type_id = #{type}
+		<if test="status!=null and status!=''">
+			AND (a.`status` = 2 OR 8)
+		</if>
+
+	</select>
+	<!-- 获得终端故障数量 -->
+	<select id="getClientFaultCnt" parameterType="pd" resultType="pd">
+		SELECT COUNT(DISTINCT a.c_client_id) AS fclient
+		FROM b_client_fault AS a
+		LEFT JOIN c_client_attr1 AS b ON a.c_client_id = b.c_client_id
+		WHERE b.sys_user_id in ${userids}
+		<if test="status!=null and status!=''">
+			AND (a.`status` = 2 OR 8)
+		</if>
+	</select>
+	<!-- 获得总能耗 -->
+	<select id="getTodayPower" parameterType="pd" resultType="pd">
+		SELECT SUM(a.power) AS power
+		FROM b_term_power_daily_report AS a
+		LEFT JOIN c_term AS b ON a.c_term_id = b.id
+		WHERE a.`day` = CURDATE()
+			AND b.sys_user_id in ${userids}
+	</select>
+	
+
+</mapper>

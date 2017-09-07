@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="SmartGroupMapper">
+	
+
+
+	<!-- 获取灯杆数 -->
+	<select id="LampCount" parameterType="pd" resultType="pd" >
+		SELECT
+		COUNT(*) num
+		FROM
+		(
+		SELECT
+		DISTINCT(ca.lamp_pole_num)
+		FROM
+		c_client_attr1 ca
+		WHERE
+		ca.c_client_id
+		IN
+		(
+		SELECT
+		ct.c_client_id
+		FROM
+		c_client_term ct
+		WHERE
+		ct.c_term_id = #{id}
+		)
+		) AS LampCounts
+		
+	</select>
+	
+	<!-- 功率总和 -->
+	<select id="SumPower"  parameterType="pd" resultType="double" >
+		SELECT
+		SUM(pt.power) sumpower
+		FROM
+		c_power_type pt
+		WHERE pt.id IN
+		(
+		SELECT ca2.c_power_type_id FROM c_client_attr2 ca2 WHERE ca2.c_client_id IN
+		(
+		SELECT ct.c_client_id FROM c_client_term ct WHERE ct.c_term_id = 2
+		)
+		)
+	</select>	
+	
+	<!-- 获取终端号和功率的对应列表 -->
+	<select id="ClientPower" parameterType="pd" resultType="pd" >
+		SELECT
+		term_id,
+		client_id,
+		power_id,
+		SUM(power) power
+		FROM
+		v_client_power
+		WHERE
+		v_client_power.term_id = #{id}
+		AND
+		client_id IN (SELECT * FROM v_clientid_lamp_02)
+		GROUP BY
+		v_client_power.client_id
+	</select>
+	
+	
+	<!-- 获取终端号和功率的对应列表 -->
+	<select id="GroupDetails" parameterType="pd" resultType="pd" >
+		SELECT
+		name,
+		c_term.`explain`,
+		status,
+		sys_user_id,
+		b_ctrl_strategy_id
+		FROM
+		c_term
+		WHERE
+		id = #{id}
+	</select>
+	
+	<!-- 获取终端id，灯杆号和对应的坐标 -->
+	<select id="ClientCoordinate" parameterType="pd" resultType="pd" >
+		SELECT
+		c_client_id,
+		coordinate,
+		lamp_pole_num
+		FROM
+		c_client_attr1
+		WHERE
+		c_client_id IN
+		(
+		SELECT
+		c_client_id
+		FROM
+		c_client_term
+		WHERE
+		c_term_id = #{id}
+		)
+	</select>
+	
+</mapper>

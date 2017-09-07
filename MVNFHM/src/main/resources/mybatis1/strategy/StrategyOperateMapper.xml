@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="StrategyOperateMapper">
+
+	<!-- 用策略组中策略ID查询所有网关控制分组 -->
+	<select id="getGatewayByStrategyIds" parameterType="Page" resultType="pd">
+		SELECT
+			b_strategy_gatewayterm.b_ctrl_strategy_id,
+			c_gateway_term.c_gateway_id
+		FROM
+			b_strategy_gatewayterm
+		INNER JOIN
+			c_gateway_term
+		ON
+			b_strategy_gatewayterm.c_gateway_term_id = c_gateway_term.id
+		WHERE
+			b_strategy_gatewayterm.b_ctrl_strategy_id IN ${pd.strategy_ids}
+		GROUP BY
+			c_gateway_term.c_gateway_id,
+			b_strategy_gatewayterm.b_ctrl_strategy_id
+		ORDER BY
+			c_gateway_term.c_gateway_id,
+			b_strategy_gatewayterm.b_ctrl_strategy_id
+	</select>
+	
+	<!-- 查询指定网关所包含所有策略(网关策略对应表) -->
+	<select id="getGatewayStrategyByGatewayId" parameterType="pd" resultType="pd">
+		select 
+			id,
+			b_ctrl_strategy_id,
+			c_gateway_id,
+			b_gateway_strategy
+		from
+			b_gateway_strategy 
+		where
+			c_gateway_id=#{c_gateway_id}
+	</select>	
+	
+	<!-- 新增网关策略 同一网关下最多一百条网关策略 (网关策略对应表) -->
+	<insert id="insertGatewayStrategy" useGeneratedKeys="true" keyProperty="b_gateway_strategy_id" parameterType="pd" >
+		insert into
+			b_gateway_strategy 
+			(
+				b_ctrl_strategy_id,
+				c_gateway_id,
+				b_gateway_strategy
+			) values (
+				#{b_ctrl_strategy_id},
+				#{c_gateway_id},
+				#{b_gateway_strategy}
+			)
+	</insert>
+	
+	
+	<!-- 新增网关策略与网关控制分组 (网关策略与网关控制分组对应表) -->
+	<insert id="insertStrategyGatewayTerm2" parameterType="pd" >
+		insert into
+		 b_strategy_gatewayterm2  
+			(
+				b_gateway_strategy_id,
+ 				c_gateway_term_id
+			) 
+		select 
+			#{b_gateway_strategy_id},
+			c_gateway_term.id
+		from
+			b_strategy_gatewayterm
+		inner join
+			c_gateway_term
+		on 
+			b_strategy_gatewayterm.c_gateway_term_id = c_gateway_term.id
+		where 
+			b_strategy_gatewayterm.b_ctrl_strategy_id = #{b_ctrl_strategy_id}
+			and c_gateway_term.c_gateway_id = #{c_gateway_id}
+	</insert>
+	
+
+	<!-- 查询指定策略和网关所对应的网关控制分组 -->
+	<select id="getStrategyGatewayTeamByStrategyGateway" parameterType="pd" resultType="pd">
+		select 
+			*,
+			CAST(GROUP_CONCAT( DISTINCT c_gateway_term.c_gateway_team_id separator '、') AS CHAR(10000) CHARACTER SET utf8) gateway_team
+		from
+			b_ctrl_strategy
+		inner join
+			b_strategy_gatewayterm
+		on
+			b_strategy_gatewayterm.b_ctrl_strategy_id = b_ctrl_strategy.id
+		inner join
+			c_gateway_term
+		on
+			c_gateway_term.id = b_strategy_gatewayterm.c_gateway_term_id
+		where
+			b_ctrl_strategy.id = #{b_ctrl_strategy_id}
+			and c_gateway_term.c_gateway_id = #{c_gateway_id}
+		group by
+			b_ctrl_strategy.id
+	</select>	
+
+	<!-- 新增网关策略内容 (网关策略内容表) -->
+	<insert id="insertGatewayStrategyCmd" parameterType="pd" >
+		insert into
+		 b_gateway_strategy_cmd  
+			(
+				b_gateway_strategy_id,
+				b_cmd_type_id,
+				tdate,
+				cmd
+			) values (
+				#{b_gateway_strategy_id},
+				#{b_cmd_type_id},
+				#{tdate},
+				#{cmd}
+			)
+	</insert>
+		
+	<!-- 查询指定网关ID,策略ID的网关策略对应ID(网关策略对应表) -->
+	<select id="getGatewayStrategy" parameterType="pd" resultType="pd">
+		select 
+			id,
+			b_gateway_strategy
+		from
+			b_gateway_strategy 
+		where
+			c_gateway_id=#{c_gateway_id}
+			and b_ctrl_strategy_id = #{b_ctrl_strategy_id}
+	</select>
+	
+	
+	
+	<!-- 删除网关策略内容 (网关策略内容表) -->
+	<delete id="deleteGatewayStrategyCmd" parameterType="page" >
+		delete from
+			b_gateway_strategy_cmd  
+		where
+			b_gateway_strategy_id = ${pd.b_gateway_strategy_id}
+	</delete>
+	
+	<!-- 删除网关策略与网关控制分组 (网关策略与网关控制分组对应表) -->
+	<delete id="deleteStrategyGatewayTerm2" parameterType="page" >
+		delete from
+			b_strategy_gatewayterm2  
+		where
+			b_gateway_strategy_id = ${pd.b_gateway_strategy_id}
+	</delete>	
+	
+	<!-- 删除网关策略 (网关策略对应表) -->
+	<delete id="deleteGatewayStrategy" parameterType="page" >
+		delete from
+			b_gateway_strategy 
+		where
+			id = ${pd.b_gateway_strategy_id}
+	</delete>
+	
+
+	<!-- 插入日志 -->
+	<insert id="insertUserLog" useGeneratedKeys="true" keyProperty="b_user_log_id" parameterType="pd" >
+		INSERT INTO b_user_log(b_log_type_id, sys_user_id, comment, tdate)
+		VALUES (#{b_log_type_id}, #{sys_user_id}, #{comment}, #{tdate})
+	</insert>
+	
+	<!-- 插入终端日志(每条记录最多可插入对应网关的35条命令) (终端日志/命令表) -->
+	<insert id="insertClientLog" parameterType="pd" >
+	 	INSERT INTO 
+	 	  b_client_log
+	 	  (
+	 	  	b_uesr_log_id,
+	 	  	c_gateway_id,
+	 	  	b_cmd_type_id,
+	 	  	status,
+	 	  	tdate,
+	 	  	cmd
+	 	  )
+	 	  VALUES(
+	 	    #{b_user_log_id},
+	 	    #{c_gateway_id},
+	 	    #{b_cmd_type_id},
+	 	    #{status},
+	 	    #{tdate},
+	 	    #{cmd}
+	 	  )
+	</insert>
+	
+</mapper>

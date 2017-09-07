@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="StatusMapper">
+	
+	<resultMap type="Status" id="statusResultMap">
+		<id column="value" property="value"/>
+		<result column="name" property="name"/>
+	</resultMap>
+	
+	<!-- 字段 -->
+	<sql id="Field">
+		value,
+		name
+	</sql>
+	
+	<!-- 字段值 -->
+	<sql id="FieldValue">
+		#{value},
+		#{name}
+	</sql>
+	
+	<!--表名 -->
+	<sql id="tableName">
+		B_STATUS
+	</sql>
+	
+	<!-- 列出所有状态-->
+	<select id="listAllStatusByPId" resultMap="statusResultMap">
+		select
+		<include refid="Field"></include>
+		from
+		<include refid="tableName"></include>
+		ORDER BY id
+	</select>
+	
+	<!-- 列出所有帐号状态-->
+	<select id="listAllAccountStatusById" resultMap="statusResultMap">
+		select
+		<include refid="Field"></include>
+		from
+		<include refid="tableName"></include>
+		WHERE B_STATUS_MAIN_ID = 1
+		ORDER BY id
+	</select>
+	
+	<!-- 通过id查找 -->
+	<select id="findObjectById" parameterType="pd" resultType="pd">
+		select
+		<include refid="Field"></include>
+		from 
+		<include refid="tableName"></include>
+		where id = #{id}
+	</select>
+	
+	<!-- 添加 -->
+	<insert id="insert" parameterType="pd">
+		insert into 
+		<include refid="tableName"></include>
+		(
+		<include refid="Field"></include>
+		) values (
+		<include refid="FieldValue"></include>	
+		)
+	</insert>
+	
+	<!-- 保存修改 -->
+	<update id="edit" parameterType="pd">
+		update 
+		<include refid="tableName"></include>
+		set name = #{name}
+		where id = #{id}
+	</update>
+	
+	<!-- 删除状态  -->
+	<delete id="deleteStatusById" parameterType="String">
+		delete from 
+		<include refid="tableName"></include>
+		where id=#{id}
+	</delete>
+	
+	<!-- 通过id查找 -->
+	<select id="getStatusById" parameterType="String" resultMap="statusResultMap">
+		select * from 
+		<include refid="tableName"></include>
+		where id=#{id}
+	</select>
+		
+</mapper>

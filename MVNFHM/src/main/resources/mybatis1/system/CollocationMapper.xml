@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="CollocationMapper">
+
+<!--表名 -->
+	<sql id="tableName">
+		B_SYS_CONFIG
+	</sql>
+	
+<!-- 列表 -->
+	<select id="datalistPage" parameterType="page" resultType="pd">
+		select
+		ID,
+		NAME,
+		TYPE,
+		`EXPLAIN`,
+		VALUE
+		from 
+		<include refid="tableName"></include>
+		where
+			1=1
+		<if test="pd.functionkey!= null and pd.functionkey != ''"><!-- 检索 -->
+		and NAME LIKE CONCAT(CONCAT('%', #{pd.functionkey}),'%')
+		</if>
+		<if test="pd.functiontype != null and pd.functiontype != ''"><!-- 关键词检索 -->
+			and TYPE LIKE CONCAT(CONCAT('%', #{pd.functiontype}),'%')
+		</if>
+		order by NAME
+	</select>
+	
+	<!-- 通过ID获取数据 -->
+	<select id="findById" parameterType="pd" resultType="pd">
+		select
+		ID,
+		NAME,
+		TYPE,
+		`EXPLAIN`,
+		VALUE
+		from 
+		<include refid="tableName"></include>
+		where
+			ID = #{id}
+	</select>
+	
+	<!-- 修改部门 -->
+	<update id="edit" parameterType="pd">
+		update
+		<include refid="tableName"></include>
+		set
+			NAME = #{name},
+			TYPE = #{type},
+			VALUE = #{value},
+			`EXPLAIN` = #{explain}
+		where
+		ID = #{id}
+	</update>
+	
+	<!-- 通过最大ID -->
+	<select id="getid" parameterType="String" resultType="pd">
+		select 
+		MAX(ID) AS ID
+		from 
+		<include refid="tableName"></include>
+	</select>
+	
+	<insert id="save" parameterType="pd">
+		insert into 
+	<include refid="tableName"></include>
+		(
+			ID,
+			NAME,
+			TYPE,
+			VALUE,
+			`EXPLAIN`
+		) values (
+			#{ID},
+			#{name},
+			#{type},
+			#{value},
+			#{explain}
+		)
+	</insert>
+</mapper>
