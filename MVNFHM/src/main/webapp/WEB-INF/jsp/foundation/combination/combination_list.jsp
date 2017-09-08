@@ -416,7 +416,7 @@ function cutStr(len){
 										//beforeSend: validateData,
 										cache: false,
 										success: function(data){
-											alert('终端编号：'+gatewaynum+' 设备种类：'+gatewayname+' 重置完毕。');
+											alert('终端编号：'+gatewaynum+' 终端名称：'+gatewayname+' 重置完毕。');
 										}
 									});
 							}
