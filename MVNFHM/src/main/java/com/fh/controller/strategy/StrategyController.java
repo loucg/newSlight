@@ -79,7 +79,7 @@ public class StrategyController extends BaseController {
 		ModelAndView mv = this.getModelAndView();
 		PageData pd = new PageData();
 		pd = this.getPageData();
-		String name = pd.getString("name");			//检索条件：策略名称
+		String name = pd.getString("name");				//检索条件：策略名称
 		if(null !=name && !"".equals(name)){
 			pd.put("name", name.trim());
 		}
@@ -87,13 +87,17 @@ public class StrategyController extends BaseController {
 		if(null !=explain && !"".equals(explain)){
 			pd.put("explain", explain.trim());
 		}
+		String termid = pd.getString("termid");			//组状态画面过来时使用
+		if(null !=explain && !"".equals(termid)){
+			pd.put("termid", termid.trim());
+		}
 		
 		String userids = departmentService.getUseridsInDepartment(pd);
         pd.put("userids", userids);
         
 //		if(pd.getString("op")!=null && pd.getString("op").equals("add")) {
 			//选择策略的时候只检索有效的策略
-			pd.put("status", "1");
+//			pd.put("status", "1");
 //		}
 		
 		page.setPd(pd);
