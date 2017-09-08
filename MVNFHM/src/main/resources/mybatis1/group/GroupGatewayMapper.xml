@@ -68,11 +68,13 @@
 		c_gateway.id
 	</select>
 	
-	<select id="listClientsByGatewayId" parameterType="page" resultType="pd">
+	<select id="clientslistPage" parameterType="page" resultType="pd">
 	    SELECT
 	    	c_client.id client_id,
 			c_client.client_code,
-			c_client_attr1.`name`
+			c_client_attr1.`name`,
+			c_client_attr1.lamp_pole_num,
+			c_client_type.`name` type
 		FROM
 			c_client_gateway
 		LEFT JOIN
@@ -83,6 +85,10 @@
 			c_client_attr1
 		ON
 			c_client_gateway.c_client_id = c_client_attr1.c_client_id
+		LEFT JOIN
+			c_client_type
+		ON
+			c_client_type.id = c_client_attr1.c_client_type_id
 		WHERE
 			c_client_gateway.c_gateway_id = #{pd.gateway_id}
 			and c_client_attr1.sys_user_id IN ${pd.userids}
@@ -117,7 +123,4 @@
 			)
 		</if> 
 	</select>
-	
-	
-	
 </mapper>
