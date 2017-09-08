@@ -36,7 +36,7 @@
 						<div class="col-xs-12">
 						
 						<form action="strategy/listStrategys.do" method="post" name="strategyForm" id="strategyForm">
-						<input type="hidden" id="strategysetid" name="strategysetid" value="${pd.strategysetid}">
+						<input type="hidden" id="termid" name="termid" value="${pd.termid}">
 <%-- 						<input type="hidden" id="op" name="op" value="${pd.op}"> --%>
 						<div id="zhongxin" style="padding-top: 13px;">
 
@@ -69,9 +69,11 @@
 							<thead>
 								<tr>
 									<!-- 选择框 -->
+									<c:if test="${empty pd.termid }">
 									<th class="center" style="width:35px;">
 									<label class="pos-rel"><input type="checkbox" class="ace" id="zcheckbox" /><span class="lbl"></span></label>
 									</th>
+									</c:if>
 									<th class="center" style="width:50px"><%=number %></th>
 									<th class="center" style="width:100px"><%=type %></th>
 									<th class="center"><%=strategy_name %></th>
@@ -82,14 +84,14 @@
 									<th class="center" style="width:50px"><%=time %></th>
 									<th class="center" style="width:120px"><%=adjust_value %></th>
 									<th class="center" style="width:120px"><%=brightness %></th>
+									<c:if test="${empty pd.termid }">
 									<th class="center" style="width:80px"><%=term_num_in_strategy %></th>
-<%-- 									<c:if test="${'edit' == pd.op}"> --%>
-										<th class="center"><%=send_status %></th>
-<%-- 									</c:if> --%>
+									</c:if>
+									<th class="center"><%=send_status %></th>
 									<th class="center"><%=app_explain %></th>
-<%-- 									<c:if test="${'edit' == pd.op}"> --%>
-										<th class="center" style="width:200px"><%=operate %></th>
-<%-- 									</c:if> --%>
+									<c:if test="${empty pd.termid }">
+									<th class="center" style="width:200px"><%=operate %></th>
+									</c:if>
 								</tr>
 							</thead>
 							<tbody>
@@ -101,14 +103,13 @@
 									<c:forEach items="${strategyList}" var="strategy" varStatus="vs">
 										<tr>
 											<!-- 选择框 -->	
+											<c:if test="${empty pd.termid }">
 											<td class='center'>
-												<!--  -->
-<%-- 												<c:if test="${'1'!=strategy.status2 && strategy.termcnt>0 }"> --%>
 												<label class="pos-rel"><input type='checkbox' name='ids' id="ids${vs.index}" value="${strategy.id}" class="ace" /><span class="lbl"></span></label>
-<%-- 												</c:if> --%>
 												<input type="hidden" id="status2${vs.index}" name="status2" value="${strategy.status2}">
 												<input type="hidden" id="termcnt${vs.index}" name="termcnt" value="${strategy.termcnt}">
 											</td>
+											</c:if>
 											<!-- 序号 -->	
 											<td class='center'>${vs.index+1+(page.currentPage-1)*page.showCount}</td>
 											<!-- 类型 -->	
@@ -153,6 +154,7 @@
 												<c:otherwise>${strategy.bright }</c:otherwise></c:choose>
 											</td>
 											<!-- 组数量 -->
+											<c:if test="${empty pd.termid }">
 											<td class="center">
 												<c:choose><c:when test="${strategy.termcnt>0}">
 													<a onclick="viewGroupMems('${strategy.id}')" style="cursor:pointer;">${strategy.termcnt }</a>
@@ -160,14 +162,13 @@
 													${strategy.termcnt }
 												</c:otherwise></c:choose>
 											</td>
-<%-- 											<c:if test="${'edit' == pd.op}"> --%>
+											</c:if>
 												<!-- 下发状态 -->
 												<td class="center">${strategy.send_status }</td>
-<%-- 											</c:if> --%>
 											<!-- 说明 -->
 											<td class="center">${strategy.explain }</td>
 											
-<%-- 											<c:if test="${'edit' == pd.op}"> --%>
+											<c:if test="${empty pd.termid }">
 												<!-- 操作 -->
 											 	<td class="center">
 													<c:if test="${QX.edit != 1 && QX.del != 1 }">
@@ -190,7 +191,7 @@
 													<span class="label label-large label-grey arrowed-in-right arrowed-in" title="已下发,无法操作"><i class="ace-icon fa fa-lock" ></i></span>
 													</c:if>
 												</td>
-<%-- 											</c:if> --%>
+											</c:if>
 										</tr>
 									</c:forEach>
 									</c:if>
@@ -212,6 +213,7 @@
 					<div class="page-header position-relative">
 					<table style="width:100%;">
 						<tr>
+							<c:if test="${empty pd.termid }">
 							<td style="vertical-align:top;width:150px">
 <%-- 							<c:if test="${'edit' == pd.op}"> --%>
 								<c:if test="${QX.add == 1 }">
@@ -234,6 +236,7 @@
 								</c:if>
 <%-- 							</c:if> --%>
 							</td>
+							</c:if>
 							<td style="vertical-align:top;"><div class="pagination" style="float: right;padding-top: 0px;margin-top: 0px;">${page.pageStr}</div></td>
 						</tr>
 					</table>
@@ -513,7 +516,7 @@ function makeAll(msg){
 					top.jzts();
 					$.ajax({
 						type: "POST",
-						url: '<%=basePath%>strategy/strategyset/sendS2.do?',
+						url: '<%=basePath%>strategy/sendS2.do?',
 						data: {strategy_ids:"("+str+")"},
 						dataType:'json',
 						//beforeSend: validateData,
@@ -528,7 +531,7 @@ function makeAll(msg){
 					top.jzts();
 					$.ajax({
 						type: "POST",
-						url: '<%=basePath%>strategy/strategyset/cancelS2.do?',
+						url: '<%=basePath%>strategy/cancelS2.do?',
 						data: {strategy_ids:"("+str+")"},
 						dataType:'json',
 						//beforeSend: validateData,
