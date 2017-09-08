@@ -36,6 +36,6 @@ public class GroupGatewayServiceImpl implements GroupGatewayService {
 	 */
 	@SuppressWarnings("unchecked")
 	public List<PageData> listClientsByGatewayId(Page page) throws Exception {
-		return (List<PageData>)dao.findForList("GroupGatewayMapper.listClientsByGatewayId", page);
+		return (List<PageData>)dao.findForList("GroupGatewayMapper.clientslistPage", page);
 	}
 }
