@@ -287,7 +287,7 @@
 										<tr>
 										<td align="center"  bgcolor=#9393FF>
 										
-										<font size=3px ><%=equip_light_onlinenum %></font>
+										<font size=3px ><%=equip_light_onlinenum1 %></font>
 										
 										</td>
 										<td height=10px></td>
@@ -295,7 +295,7 @@
 										<tr height=10px></tr>
 										<tr>
 										<c:forEach items="${equipmentLight}" var="equipmentlight" varStatus="vs">
-										<td><div class="circle3">${equipmentlight.onlineLightCount} 
+										<td><div class="circle3">${equipmentlight.onlineLightCount}<%=equip_unit2 %> 
 										</div></td>
 										<td width=10%></td>
 										<td width=85%>
@@ -333,7 +333,7 @@
 										<tr height=10px></tr>
 										<tr>
 										<c:forEach items="${equipment_fault}" var="equipmentfault" varStatus="vs">
-										<td><div class="circle2">${equipmentfault.faultnum}<%=equip_unit2 %>	</div></td>
+										<td><div class="circle2">${equipmentfault.faultnum}<%=equip_unit1 %>	</div></td>
 										<td width=10%></td>
 										<td width=75%>
 										<table border="1" class="table table-striped table-bordered table-hover">

@@ -539,4 +539,5 @@
 	String  sequenceselect =properties.getProperty("sequenceselect");
 	String  equip_light_onlinenum = properties.getProperty("equip_light_onlinenum");//在线设备编码？
 	String  gateway_rest = properties.getProperty("gateway_rest");
+	String equip_light_onlinenum1 =properties.getProperty("equip_light_onlinenum1");
 %>
