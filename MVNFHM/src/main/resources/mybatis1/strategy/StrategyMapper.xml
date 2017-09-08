@@ -89,6 +89,7 @@
 		where
 			<!-- 只检索有效数据 -->
 			b_ctrl_strategy.status='1'
+			and b_ctrl_strategy.b_user_id IN ${pd.userids}
 		<if test="pd.name!=null and pd.name!=''"><!-- 策略名称检索 -->
 			and 
 			(
@@ -99,6 +100,12 @@
 			and 
 			(
 				b_ctrl_strategy.explain LIKE CONCAT(CONCAT('%', #{pd.explain}),'%')
+			)
+		</if>
+		<if test="pd.termid!=null and pd.termid!=''"><!-- 分组ID 从组状态画面link过来时使用 -->
+			and 
+			(
+				b_strategy_clientterm.c_term_id = #{pd.termid}
 			)
 		</if>
 		group by
