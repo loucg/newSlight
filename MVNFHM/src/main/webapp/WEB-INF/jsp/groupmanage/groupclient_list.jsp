@@ -72,6 +72,8 @@
 									<th class="center" ><%=number %></th>
 									<th class="center" ><%=device_number %></th>
 									<th class="center" ><%=device_name %></th>
+									<th class="center" ><%=device_type %></th>
+									<th class="center" ><%=pole_number2 %></th>
 								</tr>
 							</thead>
 
@@ -92,6 +94,10 @@
 											<td class="center">${var.client_code}</td>
 											<!-- 终端描述 -->
 											<td>${fn:substring(var.name,0,50)}</td>
+											<!-- 终端类型 -->
+											<td>${var.type}</td>
+											<!-- 路灯杆号-->
+											<td>${var.lamp_pole_num}</td>
 										</tr>
 									</c:forEach>
 									</c:if>
