@@ -57,10 +57,10 @@ import com.mysql.fabric.xmlrpc.base.Array;
  * @version
  */
 @Controller
-@RequestMapping(value="/strategy/strategyset")
+@RequestMapping(value="/strategy")
 public class StrategyOperateController extends BaseController {
 	
-	String menuUrl = "/strategy/strategyset/sendS2.do"; //菜单地址(权限用)
+	String menuUrl = "/strategy/sendS2.do"; //菜单地址(权限用)
 	@Resource(name="userService")
 	private UserManager userService;
 	@Resource(name="menuService")
