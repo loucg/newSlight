@@ -63,9 +63,9 @@
 						<table id="simple-table" class="table table-striped table-bordered table-hover" style="margin-top:5px;">	
 							<thead>
 								<tr>
-									<th class="center" style="width:35px;">
-										<label class="pos-rel"><input type="checkbox" class="ace" id="zcheckbox" /><span class="lbl"></span></label>
-									</th>
+<!-- 									<th class="center" style="width:35px;"> -->
+<!-- 										<label class="pos-rel"><input type="checkbox" class="ace" id="zcheckbox" /><span class="lbl"></span></label> -->
+<!-- 									</th> -->
 									<th class="center" style="width:50px;"><%=number %></th>
 									<th class="center"><%=name %></th>
 									<th class="center"><%=summary %></th>
@@ -82,14 +82,20 @@
 									<c:if test="${QX.cha == 1 }">
 									<c:forEach items="${groupList}" var="group" varStatus="vs">
 										<tr>
-											<td class='center'>
-												<label class="pos-rel"><input type='checkbox' name='ids' value="${group.id}" class="ace" /><span class="lbl"></span></label>
-											</td>
+<!-- 											<td class='center'> -->
+<%-- 												<label class="pos-rel"><input type='checkbox' name='ids' value="${group.id}" class="ace" /><span class="lbl"></span></label> --%>
+<!-- 											</td> -->
 											<td class='center' style="width: 30px;">${vs.index+1}</td>
 											<td class='center'>${group.name}</td>
 											<td class='center'>${group.explain}</td>
 											<td class='center'>${group.STATUS}</td>
-											<td class='center'>${group.strategy_num}</td>
+											<td class='center'>
+												<c:choose><c:when test="${group.strategy_num > 0 }">
+													<a onclick="viewStrategyMems('${group.id}')" style="cursor:pointer;">${group.strategy_num }</a>
+												</c:when><c:otherwise>
+													${group.strategy_num }
+												</c:otherwise></c:choose>
+											</td>
 											<td class='center'>${group.number }</td>
 										</tr>
 									</c:forEach>
@@ -109,7 +115,11 @@
 							</tbody>
 						</table>
 						<div class="page-header position-relative">
-						
+						<table style="width:100%;">
+							<tr>
+								<td style="vertical-align:top;"><div class="pagination" style="float: right;padding-top: 0px;margin-top: 0px;">${page.pageStr}</div></td>
+							</tr>
+						</table>
 						</div>
 						</form>
 						</div>
@@ -150,6 +160,34 @@
 			top.jzts();
 			$("#Form").submit();
 		}
+		
+		//查看成员策略
+		function viewStrategyMems(id){
+			 top.jzts();
+			 var diag = new top.Dialog();
+			 diag.Drag=true;
+			 diag.Title ="<%=group_member %>";
+			 diag.URL = '<%=basePath%>strategy/listStrategys.do?termid='+id;
+			 diag.Width = 1200;
+			 diag.Height = 600;
+			 diag.Modal = true;				//有无遮罩窗口
+			 diag. ShowMaxButton = true;	//最大化按钮
+		     diag.ShowMinButton = true;		//最小化按钮
+			 diag.CancelEvent = function(){ //关闭事件
+				 if(diag.innerFrame.contentWindow.document.getElementById('zhongxin').style.display == 'none'){
+					 if('${page.currentPage}' == '0'){
+						 top.jzts();
+						 setTimeout("self.location=self.location",100);
+					 }else{
+						 nextPage('${page.currentPage}');
+					 }
+				}
+				diag.close();
+			 };
+			 diag.show();
+		}
+		
+		
 		$(function() {
 			
 			//日期框
