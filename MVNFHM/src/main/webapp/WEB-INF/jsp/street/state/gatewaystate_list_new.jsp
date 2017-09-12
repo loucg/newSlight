@@ -66,7 +66,7 @@
 								 	<select class="chosen-select form-control" name="status" id="status" data-placeholder=" " style="vertical-align:top;width: 130px;height:30px">
 										<option value=""></option>
 										<option value=""><%=total %></option>
-、										<c:forEach items="${workStatusList}" var="workStatus">
+										<c:forEach items="${workStatusList}" var="workStatus">
 											<option value="${workStatus.value }" <c:if test="${workStatus.value == pd.status }">selected</c:if>>${workStatus.name }</option>
 										</c:forEach>
 										<%-- <option value="<%=normal %>"           <c:if test="${pd.status == '<%=normal %>' }">selected</c:if> ><%=normal %></option>
@@ -104,7 +104,9 @@
 									<th class="center"><%=gateway_location %></th>
 									<th class="center"><%=signal_strength %></th>
 									<th class="center"><%=comment %></th>
+									<!-- 
 									<th class="center"><%=voltage %></th>
+									 -->
 									<th class="center"><%=device_counter %></th>
 									<th class="center"><%=work_status %></th>
 									<th class="center"><%=time %></th>
@@ -134,7 +136,9 @@
 												</c:if>
 											</td>
 											<td class='center'>${gatewayState.comment}</td>
+											<!-- 
 											<td class='center'>${gatewayState.voltage}</td>
+											 -->
 											<td class='center'>${gatewayState.client_num}</td>
 									        <td class='center'>${gatewayState.status_name}</td>
 									        <td class='center'>${gatewayState.tdate}</td>

@@ -115,19 +115,21 @@
 									<!-- 
 									<th class="center"><%=group_name %></th>
 									 -->
-									<th class="center"><%=device_number %></th>
+									<th class="center"><%=equipment_code %></th>
+									<th class="center"><%=equipment_name %></th>
 <%-- 									<th class="center"><%=device_name %></th> --%>
-									<th class="center"><%=device_comment %></th>
+									<th class="center"><%=equipment_comment %></th>
 									<th class="center"><%=work_status %></th>
 									<th class="center"><%=brightness_value %></th>
 <%-- 									<th class="center"><%=location %></th> --%>
 <%-- 									<th class="center"><%=pole_number2 %></th> --%>
 									<%--<th class="center"><%=temperature %></th> --%>
 <%-- 									<th class="center"><%=brightness_value %></th> --%>
-									
+									<!-- 
 									<th class="center"><%=print_voltagec %></th>
 									<th class="center"><%=print_current %></th>
 									<th class="center"><%=power_rate_factor %></th>
+									 -->
 <%-- 									<th class="center"><%=work_status %></th> --%>
 <%-- 									<th class="center"><%=comment %></th> --%>
 									<%-- <th class="center"><%=time %></th> --%>
@@ -148,6 +150,7 @@
 											<td class='center'>${lampState.tname}</td>
 											 -->
 											<td class='center'>${lampState.client_code }</td>
+											<td class='center'>${lampState.name }</td>
 											<%-- <td class='center'>${lampState.client_code}</td> --%>
 <%-- 											<td class='center'>${lampState.cname}</td> --%>
   											<td class='center'>${lampState.comment}</td>
@@ -156,10 +159,11 @@
 <%-- 											<td class='center'>${lampState.location}</td> --%>
 <%-- 											<td class='center'>${lampState.lamp_pole_num}</td> --%>
 <%-- 									        <td class='center'>${lampState.brightness}</td> --%>
-									       
-									        <td class='center'>${lampState.Vo}</td>
-									        <td class='center'>${lampState.power_factor}</td>
+									       <!-- 
+									        <td class='center'>${lampState.voltage}</td>
 									        <td class='center'>${lampState.current}</td>
+									        <td class='center'>${lampState.power_factor}</td>
+									        -->
 <%-- 									        <td class='center'>${lampState.status}</td> --%>
 <%-- 									        <td class='center'>${lampState.comment}</td> --%>
 									        <%-- <td class='center'>${lampState.tdate}</td> --%>

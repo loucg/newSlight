@@ -287,7 +287,7 @@
 										<tr>
 										<td align="center"  bgcolor=#9393FF>
 										
-										<font size=3px ><%=equip_light_onlinenum1 %></font>
+										<font size=3px ><%=equip_light_onlinenum %></font>
 										
 										</td>
 										<td height=10px></td>

@@ -277,6 +277,18 @@ public class ConfigureSerivceImpl implements ConfigureService {
 		// TODO Auto-generated method stub
 		dao.save("ConfigureMapper.finallyaddpagetwo", pd);
 	}
+	
+	@Override
+	public PageData getUserByNameAndPwd(PageData pd) throws Exception {
+		// TODO Auto-generated method stub
+		return (PageData)dao.findForObject("ConfigureMapper.getUserInfo", pd);
+	}
+
+	@Override
+	public void updateStatus(PageData pd) throws Exception {
+		// TODO Auto-generated method stub
+		dao.save("ConfigureMapper.updateStatus", pd);
+	}
 
 	public List<PageData> getGateWayTermInfo(Page page) throws Exception {
 		return (List<PageData>) dao.findForList("ConfigureMapper.listTermsByGatewayId", page);

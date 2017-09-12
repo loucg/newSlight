@@ -51,7 +51,7 @@ function cutStr(len){
 						<div class="col-xs-12">
 
 						<!-- 检索  -->
-						<form action="config/getDeviceList" method="post" name="Form" id="Form">
+						<form action="config/getLightConfigList" method="post" name="Form" id="Form">
 						<input type="hidden" id="excel" name="excel" value="0"/>
 						<!-- <input type="hidden" name="itype" id="itype" value="4"> -->
 						<table style="margin-top:5px;">
@@ -139,13 +139,13 @@ function cutStr(len){
 						<table id="simple-table" class="table table-striped table-bordered table-hover"  style="margin-top:5px;">
 							<thead>
 								<tr>
-									<th class="center"><%=equipment_code %></th>
-									<th class="center"><%=equipment_name %></th>
-									<th class="center"><%=equipment_type %></th>
+									<th class="center"><%=equipment_code%></th>
+									<th class="center"><%=equipment_name%></th>
+									<th class="center"><%=equipment_type%></th>
 									<th class="center"><%=location%></th>
 									<th class="center"><%=coordinate%></th>
-									<th class="center"><%=phone_number%></th>
 									<c:if test="${pd.itype==3 }">
+										<th class="center"><%=phone_number%></th>
 									</c:if>
 									<!-- 
 									<c:if test="${pd.itype==2 or pd.itype==4}">
@@ -157,11 +157,9 @@ function cutStr(len){
 										<th class="center"><%=light_standard%></th>
 									</c:if>
 									  -->
-									<!-- 
 									<c:if test="${pd.itype==3}">
 										<th class="center"><%=sensor_standard%></th>
 									</c:if>
-									 -->
 									<th class="center"><%=pole%></th>
 									<th class="center"><%=pole_number%></th>
 									<!-- 
@@ -196,8 +194,8 @@ function cutStr(len){
 											</c:if>
 											<td class="center">${var.location}</td>
 											<td class="center">${var.coordinate}</td>
-											<td class="center">${var.mobile}</td>
 											<c:if test="${pd.itype==3 }">
+												<td class="center">${var.mobile}</td>
 											</c:if>
 											<!-- 
 											<c:if test="${pd.itype==2 or pd.itype==4}">
@@ -209,11 +207,9 @@ function cutStr(len){
 												<td class="center">${var.lamp}</td>
 											</c:if>	
 											 -->
-											<!-- 
 											<c:if test="${pd.itype==3}">
 												<td class="center">${var.sensor}</td>
 											</c:if>
-											 -->
 											<td class="center">${var.pole}</td>
 											<td class="center">${var.polenumber}</td>
 											<!-- 
@@ -232,27 +228,21 @@ function cutStr(len){
 												</c:if>
 												<div class="hidden-sm hidden-xs btn-group">
 												<!-- //查看配置（有待开发） -->
-<%-- 												   <c:if test="${QX.edit == 1 && pd.itype==3}"> --%>
-<%-- 													<a class="btn btn-xs btn-danger" onclick="config('${var.id}','${var.typeid}' );"> --%>
-<%-- 														<%=viewConfig %> --%>
-<!-- 													</a> -->
-<%-- 													</c:if> --%>
-													
-													 <c:if test="${QX.edit == 1}">
-														<a class="btn btn-xs btn-danger" onclick="gatewayRest('${var.id}','${var.name}','${var.number}' );">
-															<%=gateway_rest %>
-														</a>
+												   <c:if test="${QX.edit == 1 && pd.itype==3}">
+													<a class="btn btn-xs btn-danger" onclick="viewConfig('<%=make_sure_view %>?',${var.id});">
+														<%=viewConfig %>
+													</a>
 													</c:if>
 													<!-- //初始化 -->
 												    <c:if test="${QX.del == 1 && pd.itype==3}">
-													<a class="btn btn-xs btn-danger" onclick="initial('${var.id}','${var.name}' );">
+													<a class="btn btn-xs btn-danger" onclick="initial('<%=make_sure_Initial %>?',${var.id});">	
 														<%=Initialization %>
 													</a>
 													</c:if>
 													
 													<c:if test="${QX.edit == 1 }">
 														<c:if test="${var.typeid != 5}">
-															<a class="btn btn-xs btn-success" onclick="edit('${var.id}','${var.typeid}');"><%=modify%></a>
+															<a class="btn btn-xs btn-success" onclick="edit('${var.id}');"><%=modify%></a>
 														</c:if>
 														<c:if test="${var.typeid == 5}">
 														 	<i class="ace-icon fa fa-pencil-square-o bigger-120" title="无法操作，不是适配的类型"></i>
@@ -287,11 +277,12 @@ function cutStr(len){
 								<a class="btn btn-sm btn-success" onclick="add();"><%=add2%></a>
 								</c:if>
 							</td>
-							<td style="vertical-align:top;">
+							<td style="vertical-align:top;display:none">
 								<c:if test="${QX.add == 1 }">
-								<a class="btn btn-sm btn-success" onclick="claimGateway();"><%=claimGateway %></a>
+								<a class="btn btn-sm btn-success" onclick="add();"><%=claimGateway %></a>
 								</c:if>
 							</td>
+							
 							<td style="vertical-align:top;"><div class="pagination" style="float: right;padding-top: 0px;margin-top: 0px;">${page.pageStr}</div></td>
 						</tr>
 					</table>
@@ -337,8 +328,8 @@ function cutStr(len){
 			$("#Form").submit();
 		}
 
-		function claimGateway(){
-			top.jzts();
+		function add(){
+			 top.jzts();
 			 var diag = new top.Dialog();
 			 diag.Drag=true;
 			 diag.Title ="<%=claimGateway%>";
@@ -359,12 +350,12 @@ function cutStr(len){
 			 diag.show();
 		}
 
-		function edit(Id, type){
+		function edit(Id){
 			 top.jzts();
 			 var diag = new top.Dialog();
 			 diag.Drag=true;
 			 diag.Title ="<%=modify%>";
-			 diag.URL = '<%=basePath%>config/goGatewayEdit?id='+Id+'&typeid='+type;
+			 diag.URL = '<%=basePath%>config/goDeviceEdit?id='+Id;
 			 diag.Width = 650;
 			 diag.Height = 640;
 			 diag.CancelEvent = function(){ //关闭事件
@@ -375,10 +366,28 @@ function cutStr(len){
 			 };
 			 diag.show();
 		}
+		//查看配置
+		function viewConfig(msg,Id){
+			bootbox.confirm(msg, function(result) {
+				if(result) {
+					 $.ajax({
+							type: "POST",
+							url: '<%=basePath%>config/goViewConfig?id='+Id,
+							data: {Id:Id},
+							dataType:'json',
+							//beforeSend: validateData,
+							cache: false,
+							success: function(data){
+								console.log("查看成功") 
+							}
+						});
+		   			}
+			});
+		}
 		
 		//初始化按钮
-		function initial(Id,gatewayname){
-			bootbox.confirm('正在初始化'+gatewayname+'的最新数据！请稍后。。。', function(result) {
+		function initial(msg,Id){
+			bootbox.confirm(msg, function(result) {
 				if(result) {
 					 $.ajax({
 							type: "POST",
@@ -393,50 +402,6 @@ function cutStr(len){
 						});
 		   			}
 			});
-		}
-		
-		//重置按钮
-		function gatewayRest(Id,gatewayname,gatewaynum){
-
-			 $.ajax({
-					type: "POST",
-					url: '<%=basePath%>config/gogatewaysearch?id='+Id,
-					data: {Id:Id},
-					dataType:'json',
-					//beforeSend: validateData,
-					cache: false,
-					success: function(data){
-						var list='';
-						for(var i=0;i<data.list.length;i++){
-							var item = data.list[i];
-							if(i==0){
-								 list ='分组数据：';
-								list=list+item.name;
-							}else{
-								list=list+','+item.name;
-							}
-							if(i>5){
-								list=list+'......';
-								break;
-							}
-						}
-						
-							if(confirm(list + " \n\n确定要重置吗？")){
-								 $.ajax({
-										type: "POST",
-										url: '<%=basePath%>config/gogatewayrest?id='+Id,
-										data: {Id:Id},
-										dataType:'json',
-										//beforeSend: validateData,
-										cache: false,
-										success: function(data){
-											alert('终端编号：'+gatewaynum+' 终端名称：'+gatewayname+' 重置完毕。');
-										}
-									});
-							}
-						
-					}
-				});
 		}
 		
 		

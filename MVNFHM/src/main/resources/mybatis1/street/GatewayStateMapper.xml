@@ -93,7 +93,7 @@
 		LEFT JOIN 
 		c_client ON c_client_gateway.c_client_id = c_client.id
 		LEFT JOIN c_client_attr1 ON c_client.id = c_client_attr1.c_client_id
-		LEFT JOIN c_client_upload_status ON c_client.id = c_client_upload_status.c_client_id
+		LEFT JOIN c_client_upload_status ON c_client_attr1.id = c_client_upload_status.c_client_id
 		LEFT JOIN b_status  ON b_status.value = c_client_upload_status.status and b_status.b_status_main_id='4'
 		WHERE 1=1 
 		AND
