@@ -239,6 +239,7 @@
 							<tr>
 								<td style="width:96px;text-align: right;padding-top: 13px;">*<%=device_type%>:</td>
 								<td>
+								<!-- 
 									<select class="chosen-select form-control" name="typeid" id="typeid" data-placeholder="<%=please_choose_device_type%>" style="float:left;width:95%;" onclick="change1(this.value);">
 										<option value="1" <c:if test="${pd.typeid==1}">selected</c:if>><%=integration_power%></option>
 										<option value="2" <c:if test="${pd.typeid==2}">selected</c:if>><%=single_light_controller%></option>
@@ -247,6 +248,27 @@
 										<option value="5" <c:if test="${pd.typeid==5}">selected</c:if>><%=ordinary_circuit_breaker%></option>
 										<option value="6" <c:if test="${pd.typeid==6}">selected</c:if>><%=device_combination%></option>
 								  	</select>
+								 -->
+								 <select class="chosen-select form-control" name="type" id="type" data-placeholder="<%=please_choose_device_type%>" style="height:30px;width: 160px;border-width:1px;border-color:'#fff';border-radius:4px">
+								  	<option value="0" <c:if test="${pd.type!=0}">style="display:none"</c:if>>
+								  						<c:if test="${sessionScope.session_language=='zh_CN' }">
+															${pd.name_CH}
+														</c:if>
+														<c:if test="${sessionScope.session_language=='en_US' }">
+															${pd.name_EN}
+														</c:if></option>
+												<c:forEach items="${pd.typeList}" var="type">
+													<option value="${type.id}" <c:if test="${type.id==pd.type}">selected="selected"</c:if>>
+														<c:if test="${sessionScope.session_language=='zh_CN' }">
+															${type.typeName1}
+														</c:if>
+														<c:if test="${sessionScope.session_language=='en_US' }">
+															${type.typeName2}
+														</c:if>
+													</option>
+												</c:forEach>
+									<option value="999" <c:if test="${pd.type==999}">selected="selected"</c:if>><%=all%></option>
+								 </select>
 								 </td>
 							</tr>
 

@@ -59,13 +59,13 @@ function cutStr(len){
 								
 								<td>
 									<div class="nav-search">
-									    <label><%=device_number%>：</label>
+									    <label><%=equipment_code %>：</label>
 										<input class="nav-search-input" autocomplete="off" id="nav-search-input" type="text" name="number" value="${pd.number}" />
 									</div>
 								</td>
 								<td >
 								 	<div class="nav-search">
-									    <label style="margin-left:12px;"><%=device_name%>：</label>
+									    <label style="margin-left:12px;"><%=equipment_name %>：</label>
 										<input class="nav-search-input" autocomplete="off" id="nav-search-input" type="text" name="name" value="${pd.name }"  />
 									</div>
 								</td>
@@ -73,7 +73,7 @@ function cutStr(len){
 								<c:if test="${pd.itype==3 }">
 								</c:if>
 								 -->
-								<td>&nbsp;&nbsp;<%=device_type%>：</td>
+								<td>&nbsp;&nbsp;<%=equipment_type %>：</td>
 									<td >
 										<c:if test="${pd.itype==5}">
 								 			<input type="hidden" name="itype" id="itype" value="5">
@@ -139,13 +139,13 @@ function cutStr(len){
 						<table id="simple-table" class="table table-striped table-bordered table-hover"  style="margin-top:5px;">
 							<thead>
 								<tr>
-									<th class="center"><%=device_number%></th>
-									<th class="center"><%=device_name%></th>
-									<th class="center"><%=device_type%></th>
+									<th class="center"><%=equipment_code %></th>
+									<th class="center"><%=equipment_name %></th>
+									<th class="center"><%=equipment_type %></th>
 									<th class="center"><%=location%></th>
 									<th class="center"><%=coordinate%></th>
+									<th class="center"><%=phone_number%></th>
 									<c:if test="${pd.itype==3 }">
-										<th class="center"><%=phone_number%></th>
 									</c:if>
 									<!-- 
 									<c:if test="${pd.itype==2 or pd.itype==4}">
@@ -157,9 +157,11 @@ function cutStr(len){
 										<th class="center"><%=light_standard%></th>
 									</c:if>
 									  -->
+									<!-- 
 									<c:if test="${pd.itype==3}">
 										<th class="center"><%=sensor_standard%></th>
 									</c:if>
+									 -->
 									<th class="center"><%=pole%></th>
 									<th class="center"><%=pole_number%></th>
 									<!-- 
@@ -194,8 +196,8 @@ function cutStr(len){
 											</c:if>
 											<td class="center">${var.location}</td>
 											<td class="center">${var.coordinate}</td>
+											<td class="center">${var.mobile}</td>
 											<c:if test="${pd.itype==3 }">
-												<td class="center">${var.mobile}</td>
 											</c:if>
 											<!-- 
 											<c:if test="${pd.itype==2 or pd.itype==4}">
@@ -207,9 +209,11 @@ function cutStr(len){
 												<td class="center">${var.lamp}</td>
 											</c:if>	
 											 -->
+											<!-- 
 											<c:if test="${pd.itype==3}">
 												<td class="center">${var.sensor}</td>
 											</c:if>
+											 -->
 											<td class="center">${var.pole}</td>
 											<td class="center">${var.polenumber}</td>
 											<!-- 
@@ -241,7 +245,7 @@ function cutStr(len){
 													</c:if>
 													<!-- //初始化 -->
 												    <c:if test="${QX.del == 1 && pd.itype==3}">
-													<a class="btn btn-xs btn-danger" onclick="initial('${var.id}','${var.typeid}' );">
+													<a class="btn btn-xs btn-danger" onclick="initial('${var.id}','${var.name}' );">
 														<%=Initialization %>
 													</a>
 													</c:if>
@@ -278,9 +282,14 @@ function cutStr(len){
 					<div class="page-header position-relative">
 					<table style="width:100%;">
 						<tr>
-							<td style="vertical-align:top;">
+							<td style="vertical-align:top;display:none">
 								<c:if test="${QX.add == 1 }">
 								<a class="btn btn-sm btn-success" onclick="add();"><%=add2%></a>
+								</c:if>
+							</td>
+							<td style="vertical-align:top;">
+								<c:if test="${QX.add == 1 }">
+								<a class="btn btn-sm btn-success" onclick="claimGateway();"><%=claimGateway %></a>
 								</c:if>
 							</td>
 							<td style="vertical-align:top;"><div class="pagination" style="float: right;padding-top: 0px;margin-top: 0px;">${page.pageStr}</div></td>
@@ -328,14 +337,14 @@ function cutStr(len){
 			$("#Form").submit();
 		}
 
-		function add(){
-			 top.jzts();
+		function claimGateway(){
+			top.jzts();
 			 var diag = new top.Dialog();
 			 diag.Drag=true;
-			 diag.Title ="<%=add2%>";
-			 diag.URL = '<%=basePath%>config/goDeviceCreate';
-			 diag.Width = 650;
-			 diag.Height = 640;
+			 diag.Title ="<%=claimGateway%>";
+			 diag.URL = '<%=basePath%>config/goGatewayClaim';
+			 diag.Width = 450;
+			 diag.Height = 124;
 			 diag.CancelEvent = function(){ //关闭事件
 				 if(diag.innerFrame.contentWindow.document.getElementById('zhongxin').style.display == 'none'){
 					 if('${page.currentPage}' == '0'){
@@ -355,7 +364,7 @@ function cutStr(len){
 			 var diag = new top.Dialog();
 			 diag.Drag=true;
 			 diag.Title ="<%=modify%>";
-			 diag.URL = '<%=basePath%>config/goDeviceEdit?id='+Id+'&typeid='+type;
+			 diag.URL = '<%=basePath%>config/goGatewayEdit?id='+Id+'&typeid='+type;
 			 diag.Width = 650;
 			 diag.Height = 640;
 			 diag.CancelEvent = function(){ //关闭事件
@@ -366,19 +375,24 @@ function cutStr(len){
 			 };
 			 diag.show();
 		}
+		
 		//初始化按钮
-		function initial(Id){
-			 $.ajax({
-					type: "POST",
-					url: '<%=basePath%>config/goInitial?id='+Id,
-					data: {Id:Id},
-					dataType:'json',
-					//beforeSend: validateData,
-					cache: false,
-					success: function(data){
-						console.log("初始化成功") 
-					}
-				});
+		function initial(Id,gatewayname){
+			bootbox.confirm('正在初始化'+gatewayname+'的最新数据！请稍后。。。', function(result) {
+				if(result) {
+					 $.ajax({
+							type: "POST",
+							url: '<%=basePath%>config/goInitial?id='+Id,
+							data: {Id:Id},
+							dataType:'json',
+							//beforeSend: validateData,
+							cache: false,
+							success: function(data){
+								console.log("初始化成功") 
+							}
+						});
+		   			}
+			});
 		}
 		
 		//重置按钮

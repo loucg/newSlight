@@ -350,6 +350,11 @@ public interface ConfigureService {
 
 	public void finallyaddpagetwo(PageData pd) throws Exception;
 
+	
+	public PageData getUserByNameAndPwd(PageData pd) throws Exception;
+
+	public void updateStatus(PageData pd) throws Exception;
+	
 	/**
 	 * 获取网关所在的组
 	 * 

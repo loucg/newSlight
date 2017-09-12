@@ -37,10 +37,26 @@ import com.fh.util.PathUtil;
 @RequestMapping("/config")
 public class ConfigureController extends BaseController {
 
+	//网关界面
 	private String deviceJsp = "foundation/combination/combination_list";
-	private String deviceEditJsp = "foundation/combination/combination_edit";
+		
+	//断路器界面
+	private String circuitBreakerJsp = "foundation/combination/circuit_breaker_list";
+		
+	//路灯配置界面
+	private String lightConfigJsp = "foundation/combination/lightConfig_list";
+	
+	//编辑网关页面
+	private String GatewayEditJsp = "foundation/combination/combination_edit";
+	
+	//编辑路灯页面
+	private String deviceEditJsp = "foundation/combination/light_edit";
+	
 	private String deviceCreateJsp = "foundation/combination/combination_edit";
 
+	//网关认领页面
+	private String gatewayClaimJsp="foundation/combination/combination_gatewayClaim";
+	
 	private String uploadJsp = "foundation/combination/uploadexcel";
 	private String saveRsultJsp = "save_result"; // 保存修改jsp
 
@@ -168,7 +184,7 @@ public class ConfigureController extends BaseController {
 		mv.addObject("pd", pd);
 		mv.addObject("QX", Jurisdiction.getHC()); // 按钮权限
 		mv.addObject("deviceList", deviceList);
-		mv.setViewName(deviceJsp);
+		mv.setViewName(lightConfigJsp);
 		return mv;
 
 	}
@@ -194,7 +210,7 @@ public class ConfigureController extends BaseController {
 		mv.addObject("pd", pd);
 		mv.addObject("QX", Jurisdiction.getHC()); // 按钮权限
 		mv.addObject("deviceList", list);
-		mv.setViewName(deviceJsp);
+		mv.setViewName(circuitBreakerJsp);
 		return mv;
 
 	}
@@ -247,6 +263,102 @@ public class ConfigureController extends BaseController {
 			return mv;
 		}
 	}
+	
+	/**
+	 * 路灯配置查询
+	 * @param page
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/getLightConfigList")
+	public ModelAndView getLightConfigList(Page page) throws Exception{
+		ModelAndView mv = this.getModelAndView();
+		PageData pd = new PageData();
+		pd = this.getPageData();
+ 		pd.put("userids", departmentService.getUseridsInDepartment(pd));
+		page.setPd(pd);
+		List<PageData> deviceList = null;
+		int type = Integer.valueOf((String)pd.get("type"));
+		int itype = Integer.valueOf((String)pd.get("itype"));
+		if(itype==4){
+			deviceList = configureService.getDeviceList(page);
+//			pd.put("itype", type==6?4:type);
+			pd.put("itype", 4);
+			pd.put("type", type);
+		}else if(itype==3){
+			deviceList = configureService.getGatewayList(page);
+			List<PageData> typeList = configureService.getTypeList(page);
+			pd.put("typeList", typeList);
+			pd.put("itype", 3);
+			pd.put("type", type);
+		}else if(itype==5){
+			deviceList = configureService.getBreakerList(page);
+			List<PageData> typeList = configureService.getTypeList2(page);
+			pd.put("typeList", typeList);
+			pd.put("itype", 5);
+			pd.put("type", type);
+		}
+		if(pd.get("excel")!=null&&pd.getString("excel").equals("1")){
+			ObjectExcelView erv = new ObjectExcelView();					//执行excel操作
+			mv = new ModelAndView(erv,ConfigureUtils.exportDevice(deviceList));
+			return mv;
+			
+		}else{
+			mv.addObject("pd", pd);
+			mv.addObject("QX",Jurisdiction.getHC());	//按钮权限
+			mv.addObject("deviceList", deviceList);
+			mv.setViewName(lightConfigJsp);
+			return mv;
+		}
+	}
+	
+	/**
+	 * 断路器查询
+	 * @param page
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/getCircuitBreakerList")
+	public ModelAndView getCircuitBreakerList(Page page) throws Exception{
+		ModelAndView mv = this.getModelAndView();
+		PageData pd = new PageData();
+		pd = this.getPageData();
+ 		pd.put("userids", departmentService.getUseridsInDepartment(pd));
+		page.setPd(pd);
+		List<PageData> deviceList = null;
+		int type = Integer.valueOf((String)pd.get("type"));
+		int itype = Integer.valueOf((String)pd.get("itype"));
+		if(itype==4){
+			deviceList = configureService.getDeviceList(page);
+//			pd.put("itype", type==6?4:type);
+			pd.put("itype", 4);
+			pd.put("type", type);
+		}else if(itype==3){
+			deviceList = configureService.getGatewayList(page);
+			List<PageData> typeList = configureService.getTypeList(page);
+			pd.put("typeList", typeList);
+			pd.put("itype", 3);
+			pd.put("type", type);
+		}else if(itype==5){
+			deviceList = configureService.getBreakerList(page);
+			List<PageData> typeList = configureService.getTypeList2(page);
+			pd.put("typeList", typeList);
+			pd.put("itype", 5);
+			pd.put("type", type);
+		}
+		if(pd.get("excel")!=null&&pd.getString("excel").equals("1")){
+			ObjectExcelView erv = new ObjectExcelView();					//执行excel操作
+			mv = new ModelAndView(erv,ConfigureUtils.exportDevice(deviceList));
+			return mv;
+			
+		}else{
+			mv.addObject("pd", pd);
+			mv.addObject("QX",Jurisdiction.getHC());	//按钮权限
+			mv.addObject("deviceList", deviceList);
+			mv.setViewName(circuitBreakerJsp);
+			return mv;
+		}
+	}
 
 	/**
 	 * 跳转终端修改页面
@@ -260,29 +372,27 @@ public class ConfigureController extends BaseController {
 		ModelAndView mv = this.getModelAndView();
 		PageData pd = new PageData();
 		pd = this.getPageData();
-		int typeid = Integer.valueOf((String) pd.get("typeid"));
-		List<PageData> lampList = new ArrayList<>();
+//		int typeid = Integer.valueOf((String) pd.get("typeid"));
+//		List<PageData> lampList = new ArrayList<>();
 		List<PageData> poleList = new ArrayList<>();
-		List<PageData> nPList = new ArrayList<>();
-		List<PageData> simList = new ArrayList<>();
-		List<PageData> sensorList = new ArrayList<>();
+//		List<PageData> nPList = new ArrayList<>();
+//		List<PageData> simList = new ArrayList<>();
+//		List<PageData> sensorList = new ArrayList<>();
 		// if (typeid==1||typeid==2||typeid==6) {
-		lampList = configureService.getAllLamp(pd);// 灯类型
+//		lampList = configureService.getAllLamp(pd);// 灯类型
 		// if (typeid==2||typeid==6) {
-		nPList = configureService.getAllNPower(pd);// 电源类型
+//		nPList = configureService.getAllNPower(pd);// 电源类型
 		// }
 		// }else if (typeid==3||typeid==4||typeid==5) {
-		simList = configureService.getAllSim(pd);// SIM卡号
-		sensorList = configureService.getAllSensor(pd);// 传感器类型
+//		simList = configureService.getAllSim(pd);// SIM卡号
+//		sensorList = configureService.getAllSensor(pd);// 传感器类型
 		// }
 		poleList = configureService.getAllPole(pd);// 灯杆类型
 
-		if (typeid == 1 || typeid == 2 || typeid == 6) {
+		
 			pd = configureService.getDeviceById(pd);
 
-		} else if (typeid == 3 || typeid == 4 || typeid == 5) {
-			pd = configureService.getGatewayAndBreakById(pd);
-		}
+		
 		String coordinate = pd.getString("coordinate");
 		if (coordinate.equals(",")) {
 			pd.put("longitude", "");
@@ -299,16 +409,126 @@ public class ConfigureController extends BaseController {
 			pd.put("latitude", zuobiao[1]);
 		}
 		mv.addObject("pd", pd);
-		mv.addObject("powerList", nPList);
-		mv.addObject("lampList", lampList);
+//		mv.addObject("powerList", nPList);
+//		mv.addObject("lampList", lampList);
 		mv.addObject("poleList", poleList);
-		mv.addObject("simList", simList);
-		mv.addObject("sensorList", sensorList);
+//		mv.addObject("simList", simList);
+//		mv.addObject("sensorList", sensorList);
 
 		mv.addObject("msg", "editDevice");
 		mv.setViewName(deviceEditJsp);
 		return mv;
 
+	}
+	
+	/**
+	 * 跳转网关修改页面
+	 * 
+	 * @param page
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/goGatewayEdit")
+	public ModelAndView goGatewayEdit(Page page) throws Exception {
+		ModelAndView mv = this.getModelAndView();
+		PageData pd = new PageData();
+		pd = this.getPageData();
+//		int typeid = Integer.valueOf((String) pd.get("typeid"));
+//		List<PageData> lampList = new ArrayList<>();
+		List<PageData> poleList = new ArrayList<>();
+//		List<PageData> nPList = new ArrayList<>();
+		List<PageData> simList = new ArrayList<>();
+//		List<PageData> sensorList = new ArrayList<>();
+		// if (typeid==1||typeid==2||typeid==6) {
+//		lampList = configureService.getAllLamp(pd);// 灯类型
+		// if (typeid==2||typeid==6) {
+//		nPList = configureService.getAllNPower(pd);// 电源类型
+		// }
+		// }else if (typeid==3||typeid==4||typeid==5) {
+		simList = configureService.getAllSim(pd);// SIM卡号
+//		sensorList = configureService.getAllSensor(pd);// 传感器类型
+		// }
+		poleList = configureService.getAllPole(pd);// 灯杆类型
+
+//		if (typeid == 1 || typeid == 2 || typeid == 6) {
+//			pd = configureService.getDeviceById(pd);
+//
+//		} else if (typeid == 3 || typeid == 4 || typeid == 5) {
+		
+		
+		pd = configureService.getGatewayAndBreakById(pd);
+		
+		List<PageData> typeList = configureService.getTypeList(page);
+		pd.put("typeList", typeList);
+		page.setPd(pd);
+		
+//		}
+		String coordinate = pd.getString("coordinate");
+		if (coordinate.equals(",")) {
+			pd.put("longitude", "");
+			pd.put("latitude", "");
+		} else if (coordinate.substring(0, 1).equals(",")) {
+			pd.put("longitude", "");
+			pd.put("latitude", coordinate.substring(1));
+		} else if (coordinate.substring(coordinate.length() - 1).equals(",")) {
+			pd.put("longitude", coordinate.substring(0, coordinate.length() - 1));
+			pd.put("latitude", "");
+		} else {
+			String[] zuobiao = coordinate.split(",");
+			pd.put("longitude", zuobiao[0]);
+			pd.put("latitude", zuobiao[1]);
+		}
+		mv.addObject("pd", pd);
+//		mv.addObject("powerList", nPList);
+//		mv.addObject("lampList", lampList);
+		mv.addObject("poleList", poleList);
+		mv.addObject("simList", simList);
+//		mv.addObject("sensorList", sensorList);
+
+		mv.addObject("msg", "editGateway");
+		mv.setViewName(GatewayEditJsp);
+		return mv;
+
+	}
+	
+	/**
+	 * 查看配置
+	 */
+	@RequestMapping("/goViewConfig")
+	@ResponseBody
+	public Object goViewConfig() throws Exception{
+		PageData pd = new PageData();
+		Map<String,Object> map = new HashMap<String,Object>();
+		pd = this.getPageData();
+		List<PageData> pdList = new ArrayList<PageData>();
+		String Id = pd.getString("Id");
+		System.out.println(Id +"++++++++++++++++++++++++++++++");
+		pd.put("c_gateway_id", Id);
+		//获得登录的用户id
+		User user = (User)Jurisdiction.getSession().getAttribute(Const.SESSION_USER);
+		String sys_user_id = user.getUSER_ID();
+		pd.put("sys_user_id", sys_user_id);
+		pd.put("comment","初始化");
+		pd.put("b_log_type_id", 21);
+		pd.put("tdate", new Date());//创建时间
+		System.out.println(pd +"111111=======================");
+		configureService.addUserLog(pd);
+		
+		pd.put("b_cmd_type_id",33);
+		pd.put("b_cmd_type_idDouble",34);
+		pd.put("status",1);
+		//获取b_user_log的id
+		Integer b_user_log_id = configureService.searchUserLogId(pd);
+		pd.put("b_user_log_id", b_user_log_id);
+		pd.put("cmd", "等待数据的加入");
+		System.out.println(pd +"=======================");
+		configureService.finallyaddpageone(pd); 
+		 
+		
+		pdList.add(pd);
+		map.put("list", pdList);
+		return AppUtil.returnObject(pd, map);
+	
 	}
 
 	/**
@@ -348,6 +568,53 @@ public class ConfigureController extends BaseController {
 		pdList.add(pd);
 		map.put("list", pdList);
 		return AppUtil.returnObject(pd, map);
+
+	}
+	
+	/**
+	 * 跳转网关认领页面
+	 * @param page
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/goGatewayClaim")
+	public ModelAndView goGatewayClaim() throws Exception{
+		ModelAndView mv = this.getModelAndView();
+		mv.addObject("msg", "gatewayClaim");
+		mv.setViewName(gatewayClaimJsp);
+		return mv;
+	}
+	
+	/**
+	 * 网关认领
+	 * @return
+	 * @throws Exception
+	 */
+ 
+	@RequestMapping(value="/gatewayClaim" ,produces="application/json;charset=UTF-8")
+	@ResponseBody
+	public Object gatewayClaim() throws Exception{
+		Map<String,String> map = new HashMap<String,String>();
+		PageData pd = new PageData();
+		pd = this.getPageData();
+		String errInfo = "";
+		System.out.println(pd +" --------所有数据---------"); 
+		pd = configureService.getUserByNameAndPwd(pd);	//根据用户名和密码去读取用户信息
+		if(pd!= null){
+			System.out.println(pd +" --------测试数据---------"); 
+			errInfo = "success";
+			pd.put("Status", 2);
+			User user = (User) Jurisdiction.getSession().getAttribute(Const.SESSION_USER);
+			String sys_user_id = user.getUSER_ID();
+			pd.put("sys_user_id", sys_user_id);
+			System.out.println("当前登录用户："+sys_user_id);
+			System.out.println(pd +" --------测试数据1---------");
+			//更改状态值
+			configureService.updateStatus(pd);
+		}
+		// 获得登录的用户id
+		map.put("result", errInfo);
+		return AppUtil.returnObject(new PageData(), map);
 
 	}
 
@@ -426,7 +693,73 @@ public class ConfigureController extends BaseController {
 	}
 
 	/**
-	 * 修改终端
+	 * 修改网关
+	 * 
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping("/editGateway")
+	public ModelAndView editGateway() throws Exception {
+		ModelAndView mv = this.getModelAndView();
+		PageData pd = new PageData();
+		pd = this.getPageData();
+		int typeid = Integer.valueOf((String) pd.get("typeid"));
+		pd.put("coordinate", pd.getString("longitude") + "," + pd.getString("latitude"));
+		pd.put("status", 1);
+
+		// power、sim、sensor--------pd中无这几列
+
+		// if(pd.getString("power")!=null){
+
+		if (typeid == 1) {// 一体化电源
+			if (pd.getString("pole").equals("")) {// 共用-灯杆
+				pd.put("pole", null);
+			}
+			if (pd.getString("lamp").equals("")) {// 终端-灯
+				pd.put("lamp", null);
+			}
+
+		}
+
+		if (typeid == 2 || typeid == 6) {// 单灯控制器、终端组合
+			if (pd.getString("pole").equals("")) {// 共用-灯杆
+				pd.put("pole", null);
+			}
+			if (pd.getString("lamp").equals("")) {// 终端-灯
+				pd.put("lamp", null);
+			}
+			if (pd.getString("power").equals("")) {// 终端-电源
+				pd.put("power", null);
+			}
+
+		}
+
+		if (typeid == 3 || typeid == 4 || typeid == 5) {// 网关、断路器、普通断路器
+//			if (pd.getString("mobile").equals("")) {// 网关-卡
+//				pd.put("mobile", null);
+//			}
+//			if (pd.getString("sensor").equals("")) {// 网关-传感器
+//				pd.put("sensor", null);
+//			}
+			if (pd.getString("pole").equals("")) {// 共用-灯杆
+				pd.put("pole", null);
+			}
+
+		}
+
+//		if (typeid == 1 || typeid == 2 || typeid == 6) {
+//			configureService.editDevice(pd);
+//		} else if (typeid == 3 || typeid == 4 || typeid == 5) {
+			configureService.editGateway(pd);
+
+//		}
+		mv.setViewName(saveRsultJsp);
+		return mv;
+
+	}
+	
+	/**
+	 * 修改灯终端
 	 * 
 	 * @return
 	 * @throws Exception

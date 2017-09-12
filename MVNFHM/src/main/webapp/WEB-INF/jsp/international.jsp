@@ -516,12 +516,14 @@
 	String equip_day_week2=	properties.getProperty("equip_day_week2");
 	String equip_day_week3=properties.getProperty("equip_day_week3");
 	String equip_day_week4=properties.getProperty("equip_day_week4");
-	String	equip_day_week5=properties.getProperty("equip_day_week5");
+	String equip_day_week5=properties.getProperty("equip_day_week5");
 	String	equip_day_week6=properties.getProperty("equip_day_week6");
 	String	equip_gateway_onlinenum=properties.getProperty("equip_gateway_onlinenum");
 	String	equip_gateway_num=properties.getProperty("equip_gateway_num");
 	String	equip_gateway_onlinerate=properties.getProperty("equip_gateway_onlinerate");
-	String	equip_light_onlinnum=properties.getProperty("equip_gateway_onlinerate");
+	
+	String	equip_light_num=properties.getProperty("equip_light_num");
+	String	equip_light_onlinnum=properties.getProperty("equip_light_onlinnum");
 	String	equip_light_onlinrate=properties.getProperty("equip_light_onlinrate");
 	String	equip_faultnum=properties.getProperty("equip_faultnum");
 	String	equip_num=properties.getProperty("equip_num");
@@ -530,14 +532,28 @@
 	String	equip_unit2=properties.getProperty("equip_unit2");
 	String	equip_collect=properties.getProperty("equip_collect");
 	String	equip_currentdate=properties.getProperty("equip_currentdate");
+	
 	String	equip_year=properties.getProperty("equip_year");
 	String	equip_month=properties.getProperty("equip_month");
-	String  equip_light_num = properties.getProperty("equip_light_num");
 	String  equip_7days=properties.getProperty("equip_7days");
 	String	equip_7week=properties.getProperty("equip_7week");
 	String	equip_7month=properties.getProperty("equip_7month");
 	String  sequenceselect =properties.getProperty("sequenceselect");
 	String  equip_light_onlinenum = properties.getProperty("equip_light_onlinenum");//在线设备编码？
 	String  gateway_rest = properties.getProperty("gateway_rest");
-	String equip_light_onlinenum1 =properties.getProperty("equip_light_onlinenum1");
+	
+	String claimGateway = properties.getProperty("claimGateway");
+	String make_sure_view = properties.getProperty("make_sure_view");
+	String make_sure_Initial = properties.getProperty("make_sure_Initial");
+	String code = properties.getProperty("code");
+	String claim = properties.getProperty("claim");
+	String please_type_code = properties.getProperty("please_type_code");
+	String please_type_password = properties.getProperty("please_type_password");
+	String make_sure_delete = properties.getProperty("make_sure_delete");
+	String can_not_delete = properties.getProperty("can_not_delete");
+	
+	String equipment_name = properties.getProperty("equipment_name");//设备名称
+	String equipment_code = properties.getProperty("equipment_code");//设备编号
+	String equipment_comment = properties.getProperty("equipment_comment");//设备描述
+	String equipment_type = properties.getProperty("equipment_type");//设备类型
 %>
