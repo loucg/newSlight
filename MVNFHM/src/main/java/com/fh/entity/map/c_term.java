@@ -6,11 +6,10 @@ import java.io.Serializable;
 public class c_term implements Serializable {
 	private static final long serialVersionUID = 1L;
 	private Integer id;
-	private Integer b_ctrl_strategy_id;
-	private Integer b_user_id;
-	private String explain;
 	private String name;
+	private String explain;
 	private Integer status;
+	private Integer b_user_id;
 public c_term() {
 		
 	}
@@ -22,14 +21,6 @@ public c_term() {
 		this.id = id;
 	}
 
-
-	public Integer getB_ctrl_strategy_id() {
-		return b_ctrl_strategy_id;
-	}
-
-	public void setB_ctrl_strategy_id(Integer b_ctrl_strategy_id) {
-		this.b_ctrl_strategy_id = b_ctrl_strategy_id;
-	}
 
 	public Integer getB_user_id() {
 		return b_user_id;
