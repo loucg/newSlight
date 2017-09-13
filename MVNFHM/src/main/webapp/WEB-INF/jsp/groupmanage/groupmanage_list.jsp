@@ -85,7 +85,7 @@
 											<td class='center'>${group.explain}</td>
 											<td class='center'>${group.STATUS}</td>
 <%-- 											<td class='center'>${group.strategy_num}</td> --%>
-											<td class='center'><a onclick="viewGroupMems('${group.id}')" style="cursor:pointer;">${group.number }</a></td>
+											<td class='center' style="background-color: #E1FFFF;"><a onclick="viewGroupMems('${group.id}')" style="cursor:pointer;">${group.number }</a></td>
 									   <%-- <td class='center'>${group.number}</td> --%>
 											<td class='center'>
 												<c:if test="${QX.edit != 1 && QX.del != 1 }">
