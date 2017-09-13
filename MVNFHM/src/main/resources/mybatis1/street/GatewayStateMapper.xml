@@ -80,7 +80,7 @@
 		c_gateway.id
 	</select>
 
-	<!--终端列表  -->
+	<!--终端列表 -->
 	<select id="clientInfolistPage" parameterType="page" resultType="pd">
 		SELECT
 		c_client_attr1.id, c_client.client_code, c_client_attr1.`name` cname,
