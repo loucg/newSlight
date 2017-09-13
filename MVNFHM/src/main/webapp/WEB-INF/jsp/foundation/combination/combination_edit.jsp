@@ -176,15 +176,15 @@
 	
 	function change2(value){
 		var sim = document.getElementById("sim");
-		var power = document.getElementById("power");
+	/* 	var power = document.getElementById("power");
 		var lamp = document.getElementById("lamp");
-		var sensor = document.getElementById("sensor");
+		var sensor = document.getElementById("sensor"); */
 		
 		if(value==1){
-			lamp.style.display="block ";
+			/* lamp.style.display="block "; */
 		}else if(value==2||value==6){
-			power.style.display="block ";
-			lamp.style.display="block ";
+			/* power.style.display="block ";
+			lamp.style.display="block "; */
 		}else if(value==3||value==4||value==5){
 			sim.style.display="block ";
 			sensor.style.display="block ";
@@ -220,6 +220,9 @@
 
 					<form action="config/${msg }" name="Form" id="Form" method="post">
 						<input type="hidden" name="id" id="id" value="${pd.id}"/>
+						<!-- 20170912 add by wzg start -->
+						<input type="hidden" name="typeid" id="typeid" value="${pd.typeid}"/>
+						<!-- 20170912 add by wzg end -->
 						<div id="zhongxin" style="padding-top: 13px;">
 						<table id="table_report" class="table table-striped table-bordered table-hover">
 							<tr>
