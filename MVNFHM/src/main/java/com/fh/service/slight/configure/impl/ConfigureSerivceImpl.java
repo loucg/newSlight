@@ -297,4 +297,9 @@ public class ConfigureSerivceImpl implements ConfigureService {
 	public void clearGateWayTermInfo(Page page) throws Exception {
 		dao.save("ConfigureMapper.delTermsandStrategyByGeatewayID", page);
 	}
+
+	@Override
+	public List<PageData> getAllClientType(PageData pd) throws Exception {
+		return (List<PageData>) dao.findForList("ConfigureMapper.getClientType", pd);
+	}
 }

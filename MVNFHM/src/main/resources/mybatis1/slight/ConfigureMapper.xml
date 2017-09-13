@@ -450,8 +450,8 @@
 			b.comment               =#{comment},
 			b.staus		  			=#{status},
 			b.lamp_pole_num	  		=#{polenumber},
-			c.c_lamp_type_id  		=#{lamp},
-			c.c_lamp_pole_type_id   =#{pole},
+			<!-- c.c_lamp_type_id  		=#{lamp}, -->
+			c.c_lamp_pole_type_id   =#{pole}
 			<!-- c.c_power_type_id		=#{power} -->
 		WHERE 
 			a.id 					=#{id}
@@ -472,8 +472,9 @@
 			b.staus		  			=#{status},
 			b.lamp_pole_num	  		=#{polenumber},
 			c.c_sim_id				=#{mobile},
-			c.c_lamp_pole_type_id   =#{pole},
-			c.c_sensor_type_id	    =#{sensor}
+			c.c_lamp_pole_type_id   =#{pole}
+			<!-- c.c_sensor_type_id	    =#{sensor}-->
+			
 		WHERE 
 			a.id					=#{id}
 	</update>	
@@ -858,6 +859,12 @@
 	
 	<select id="delTermsandStrategyByGeatewayID" parameterType="pd" resultType="pd" statementType="CALLABLE">
 		CALL delTermsAndTermsByGateWayID(${pd.c_gateway_id},${pd.userids})
+	</select>
+	
+	<!-- 终端类型查询 -->
+	<select id="getClientType" resultType="pd">
+		SELECT a.id, a.`name`
+		FROM c_client_type AS a	
 	</select>
 	<!-- end -->
 	

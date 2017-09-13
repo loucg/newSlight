@@ -249,9 +249,9 @@ public class TextmsgController extends BaseController {
 		try{
 			pd = this.getPageData();
 			pd.put("STATUS", "3");
-			if(textmsgService.findByKw(pd) != null || commandService.findByKw(pd) != null || imgmsgService.findByKw(pd) != null){
-				errInfo = "error";
-			}
+//			if(textmsgService.findByKw(pd) != null || commandService.findByKw(pd) != null || imgmsgService.findByKw(pd) != null){
+//				errInfo = "error";
+//			}
 		} catch(Exception e){
 			logger.error(e.toString(), e);
 		}
