@@ -53,6 +53,15 @@
 										</span>
 									</div>
 								</td>
+								<td>&nbsp;&nbsp;<%=status %>：</td>
+								<td style="vertical-align:top;padding-left:2px;"> 
+								 	<select class="chosen-select form-control" name="status" id="status" data-placeholder=" " style="vertical-align:top;width: 130px;height:30px">
+										<option value=""></option>
+										<option value="3"<c:if test="${pd.status == '3'}">selected</c:if> ><%=total %></option>
+										<option value="1"<c:if test="${pd.status == '1'}">selected</c:if> ><%=effective %></option>
+										<option value="2"<c:if test="${pd.status == '2'}">selected</c:if> ><%=invalid %></option>
+									</select>
+								</td>
 								<c:if test="${QX.cha == 1 }">
 								<td style="vertical-align:top;padding-left:2px"><a class="btn btn-light btn-xs" onclick="tosearch();"  title="<%=search2 %>" style="padding: 3px 3px;"><i id="nav-search-icon" class="ace-icon fa fa-search bigger-110 nav-search-icon blue"></i></a></td>
 								</c:if>
@@ -63,13 +72,14 @@
 						<table id="simple-table" class="table table-striped table-bordered table-hover" style="margin-top:5px;">	
 							<thead>
 								<tr>
+								<th class="center" style="width:50px;"></th>
 									<th class="center" style="width:50px;"><%=number %></th>
 									<th class="center"><%=name %></th>
 									<th class="center"><%=summary %></th>
 									<th class="center"><%=status %></th>
 <%-- 									<th class="center"><%=ctrl_strategy %></th>s --%>
 									<th class="center"><%=menber_number %></th>
-									<th class="center" style="width: 150px;"><%=operate %></th>
+									<th class="center" style="width: 250px;"><%=operate %></th>
 								</tr>
 							</thead>
 													
@@ -80,8 +90,11 @@
 									<c:if test="${QX.cha == 1 }">
 									<c:forEach items="${groupList}" var="group" varStatus="vs">
 										<tr>
-											<td class='center' style="width: 30px;">${vs.index+1}</td>
-											<td class='center'>${group.name}</td>
+										<th class="center" style="width:35px;">	
+											<label class="pos-rel"><input type="checkbox" class="ace" name='ids' id="ids${vs.index}" value="${group.id}" /><span class="lbl"></span></label>
+										</th>
+											<td class='center' style="width: 30px;">${vs.index+1}<input type='hidden' name="hdstrategyIds" value="${group.strategy_num}"/></td>
+											<td class='center'>${group.name}<input type='hidden' name="hdgroupname" value="${group.name}"/></td>
 											<td class='center'>${group.explain}</td>
 											<td class='center'>${group.STATUS}</td>
 <%-- 											<td class='center'>${group.strategy_num}</td> --%>
@@ -198,6 +211,9 @@
 									<c:if test="${QX.add == 1 }">
 									<a class="btn btn-mini btn-success" onclick="add();"><%=add_divide_group %></a>
 									</c:if>
+									<c:if test="${QX.del == 1 }">
+									<a class="btn btn-xs btn-danger" onclick="del();"><%=del_divide_group %></a>
+									</c:if>
 								</td>
 								<td style="vertical-align:top;"><div class="pagination" style="float: right;padding-top: 0px;margin-top: 0px;">${page.pageStr}</div></td>
 							</tr>
@@ -294,6 +310,58 @@
 				diag.close();
 			 };
 			 diag.show();
+		}
+		
+		//删除组
+		function del(){
+			var str='';
+			 if(confirm("确定要删除分组？")){
+				 for(var i=0;i < document.getElementsByName('ids').length;i++)
+					{
+					 	
+						if(document.getElementsByName('ids')[i].checked){
+							if(document.getElementsByName('hdstrategyIds')[i].value>0){
+								alert('分组:'+document.getElementsByName('hdgroupname')[i].value+' 不能删除,请重新选择！');
+								return;
+							}
+							if(str=='') str += document.getElementsByName('ids')[i].value;
+							else str += ',' + document.getElementsByName('ids')[i].value;
+						}
+					}
+			 }
+			 
+			 if(str==''){
+				 bootbox.dialog({
+						message: "<span class='bigger-110'><%=you_have_not_choose_anything %></span>",
+						buttons: 			
+						{ "button":{ "label":"<%=make_sure %>", "className":"btn-sm btn-success"}}
+					});
+					$("#zcheckbox").tips({
+						side:3,
+			            msg:'<%=click_this_choose_all %>',
+			            bg:'#AE81FF',
+			            time:8
+			        });
+					
+					return;
+			 }else{
+				 $.ajax({
+						type: "POST",
+						url: '<%=basePath%>group/goDel.do?',
+						data: {group_ids:""+str+""},
+						dataType:'json',
+						cache: false,
+						success: function(data){
+							if("success" == data.result){
+							 nextPage('${page.currentPage}');
+								 $("#zhongxin").hide();
+								$("#zhongxin2").show();
+				    		    top.Dialog.close(); 
+							}
+						}
+					});	
+				
+			 }
 		}
 		
 
