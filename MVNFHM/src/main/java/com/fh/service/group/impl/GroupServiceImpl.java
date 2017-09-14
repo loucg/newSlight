@@ -13,7 +13,7 @@ import com.fh.util.PageData;
 
 @Service("groupService")
 public class GroupServiceImpl implements GroupService {
-	
+
 	@Resource(name = "daoSupport")
 	private DaoSupport dao;
 
@@ -22,14 +22,14 @@ public class GroupServiceImpl implements GroupService {
 	 */
 	@SuppressWarnings("unchecked")
 	public List<PageData> listGroup(Page page) throws Exception {
-		return (List<PageData>)dao.findForList("GroupMapper.grouplistPage", page);
+		return (List<PageData>) dao.findForList("GroupMapper.grouplistPage", page);
 	}
 
 	/**
 	 * 组信息
 	 */
 	public PageData findById(PageData pd) throws Exception {
-		return (PageData)dao.findForObject("GroupMapper.findById", pd);
+		return (PageData) dao.findForObject("GroupMapper.findById", pd);
 	}
 
 	/**
@@ -50,7 +50,7 @@ public class GroupServiceImpl implements GroupService {
 	 * 获取灯杆数
 	 */
 	public PageData getLampCount(PageData pd) throws Exception {
-		return (PageData)dao.findForObject("GroupMapper.findById", pd);
+		return (PageData) dao.findForObject("GroupMapper.findById", pd);
 	}
 
 	/**
@@ -60,6 +60,11 @@ public class GroupServiceImpl implements GroupService {
 		dao.delete("GroupMapper.deleteById", id);
 	}
 
-	
+	/**
+	 * 删除分组及终端
+	 */
+	public void deleteTerms(String id) throws Exception {
+		dao.delete("GroupMapper.delTerms", id);
+	}
 
 }
