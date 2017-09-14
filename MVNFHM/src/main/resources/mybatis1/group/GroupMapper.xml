@@ -71,7 +71,8 @@
 		) select_strategy
 		ON
 			select_strategy.c_term_id = c_term.id		
-		WHERE 1=1
+		WHERE 1=1 AND 
+		b_status.value IN ${pd.status}
 		AND
 		c_term.sys_user_id IN ${pd.userids}
 		 <if test="pd.name!=null and pd.name!=''">
@@ -147,6 +148,9 @@
 		WHERE
 		id = #{id}
 	</delete>
-	
+	<!-- 删除分组及终端-->
+	<select id="delTerms" parameterType="String" statementType="CALLABLE">
+		CALL delTerms(#{id})
+	</select>
 	
 </mapper>
