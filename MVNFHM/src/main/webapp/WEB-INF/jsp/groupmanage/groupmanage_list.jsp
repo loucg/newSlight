@@ -328,8 +328,9 @@
 							else str += ',' + document.getElementsByName('ids')[i].value;
 						}
 					}
+			 }else{
+				 return ;
 			 }
-			 
 			 if(str==''){
 				 bootbox.dialog({
 						message: "<span class='bigger-110'><%=you_have_not_choose_anything %></span>",
