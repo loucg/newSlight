@@ -150,7 +150,7 @@
 											<td class='center'>${lampState.tname}</td>
 											 -->
 											<td class='center'>${lampState.client_code }</td>
-											<td class='center'>${lampState.name }</td>
+											<td class='center'>${lampState.cname }</td>
 											<%-- <td class='center'>${lampState.client_code}</td> --%>
 <%-- 											<td class='center'>${lampState.cname}</td> --%>
   											<td class='center'>${lampState.comment}</td>

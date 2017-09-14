@@ -89,7 +89,7 @@
 											<td class='center'>${group.name}</td>
 											<td class='center'>${group.explain}</td>
 											<td class='center'>${group.STATUS}</td>
-											<td class='center'>
+											<td class='center' style="background-color: #E1FFFF;">
 												<c:choose><c:when test="${group.strategy_num > 0 }">
 													<a onclick="viewStrategyMems('${group.id}')" style="cursor:pointer;">${group.strategy_num }</a>
 												</c:when><c:otherwise>

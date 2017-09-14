@@ -80,7 +80,7 @@
 		c_gateway.id
 	</select>
 
-	<!--终端列表  -->
+	<!--终端列表 -->
 	<select id="clientInfolistPage" parameterType="page" resultType="pd">
 		SELECT
 		c_client_attr1.id, c_client.client_code, c_client_attr1.`name` cname,
@@ -97,7 +97,7 @@
 		LEFT JOIN b_status  ON b_status.value = c_client_upload_status.status and b_status.b_status_main_id='4'
 		WHERE 1=1 
 		AND
-		c_client_attr1.sys_user_id = #{pd.sys_user_id}
+		c_client_attr1.sys_user_id in ${pd.userids}
 		AND
 		c_client_gateway.c_gateway_id = #{pd.id}
 	</select>

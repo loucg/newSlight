@@ -1,3 +1,13 @@
+/*
+ * 20170912 modify by wzg
+ * 
+ * 内容:
+ * typeid 项目丢失
+ * lamp,power，sensor删除
+ * 增加查询终端类型的查询
+ * 
+ */
+
 package com.fh.controller.slight.configure;
 
 import java.util.ArrayList;
@@ -375,6 +385,7 @@ public class ConfigureController extends BaseController {
 //		int typeid = Integer.valueOf((String) pd.get("typeid"));
 //		List<PageData> lampList = new ArrayList<>();
 		List<PageData> poleList = new ArrayList<>();
+		List<PageData> clientTypeList = new ArrayList<>();
 //		List<PageData> nPList = new ArrayList<>();
 //		List<PageData> simList = new ArrayList<>();
 //		List<PageData> sensorList = new ArrayList<>();
@@ -388,7 +399,7 @@ public class ConfigureController extends BaseController {
 //		sensorList = configureService.getAllSensor(pd);// 传感器类型
 		// }
 		poleList = configureService.getAllPole(pd);// 灯杆类型
-
+		clientTypeList = configureService.getAllClientType(pd);//终端类型
 		
 			pd = configureService.getDeviceById(pd);
 
@@ -412,6 +423,7 @@ public class ConfigureController extends BaseController {
 //		mv.addObject("powerList", nPList);
 //		mv.addObject("lampList", lampList);
 		mv.addObject("poleList", poleList);
+		mv.addObject("clientTypeList", clientTypeList);
 //		mv.addObject("simList", simList);
 //		mv.addObject("sensorList", sensorList);
 
@@ -715,9 +727,9 @@ public class ConfigureController extends BaseController {
 			if (pd.getString("pole").equals("")) {// 共用-灯杆
 				pd.put("pole", null);
 			}
-			if (pd.getString("lamp").equals("")) {// 终端-灯
-				pd.put("lamp", null);
-			}
+//			if (pd.getString("lamp").equals("")) {// 终端-灯
+//				pd.put("lamp", null);
+//			}
 
 		}
 
@@ -725,12 +737,12 @@ public class ConfigureController extends BaseController {
 			if (pd.getString("pole").equals("")) {// 共用-灯杆
 				pd.put("pole", null);
 			}
-			if (pd.getString("lamp").equals("")) {// 终端-灯
-				pd.put("lamp", null);
-			}
-			if (pd.getString("power").equals("")) {// 终端-电源
-				pd.put("power", null);
-			}
+//			if (pd.getString("lamp").equals("")) {// 终端-灯
+//				pd.put("lamp", null);
+//			}
+//			if (pd.getString("power").equals("")) {// 终端-电源
+//				pd.put("power", null);
+//			}
 
 		}
 
@@ -750,6 +762,9 @@ public class ConfigureController extends BaseController {
 //		if (typeid == 1 || typeid == 2 || typeid == 6) {
 //			configureService.editDevice(pd);
 //		} else if (typeid == 3 || typeid == 4 || typeid == 5) {
+		if (pd.getString("mobile").equals("")) {// 共用-灯杆
+			pd.put("mobile", null);
+		}
 			configureService.editGateway(pd);
 
 //		}
@@ -781,9 +796,9 @@ public class ConfigureController extends BaseController {
 			if (pd.getString("pole").equals("")) {// 共用-灯杆
 				pd.put("pole", null);
 			}
-			if (pd.getString("lamp").equals("")) {// 终端-灯
-				pd.put("lamp", null);
-			}
+//			if (pd.getString("lamp").equals("")) {// 终端-灯
+//				pd.put("lamp", null);
+//			}
 
 		}
 
@@ -791,12 +806,12 @@ public class ConfigureController extends BaseController {
 			if (pd.getString("pole").equals("")) {// 共用-灯杆
 				pd.put("pole", null);
 			}
-			if (pd.getString("lamp").equals("")) {// 终端-灯
-				pd.put("lamp", null);
-			}
-			if (pd.getString("power").equals("")) {// 终端-电源
-				pd.put("power", null);
-			}
+//			if (pd.getString("lamp").equals("")) {// 终端-灯
+//				pd.put("lamp", null);
+//			}
+//			if (pd.getString("power").equals("")) {// 终端-电源
+//				pd.put("power", null);
+//			}
 
 		}
 
@@ -804,9 +819,9 @@ public class ConfigureController extends BaseController {
 			if (pd.getString("mobile").equals("")) {// 网关-卡
 				pd.put("mobile", null);
 			}
-			if (pd.getString("sensor").equals("")) {// 网关-传感器
-				pd.put("sensor", null);
-			}
+//			if (pd.getString("sensor").equals("")) {// 网关-传感器
+//				pd.put("sensor", null);
+//			}
 			if (pd.getString("pole").equals("")) {// 共用-灯杆
 				pd.put("pole", null);
 			}
@@ -840,9 +855,9 @@ public class ConfigureController extends BaseController {
 		pd.put("userid", UserUtils.getUserid());
 		pd.put("coordinate", pd.getString("longitude") + "," + pd.getString("latitude"));
 		pd.put("status", 1);
-		System.out.println("power=" + pd.getString("power"));
+//		System.out.println("power=" + pd.getString("power"));
 		System.out.println("pole=" + pd.getString("pole"));
-		System.out.println("lamp=" + pd.getString("lamp"));
+//		System.out.println("lamp=" + pd.getString("lamp"));
 		if (typeid == 1 || typeid == 2 || typeid == 6) {
 			configureService.createDevice(pd);
 		} else if (typeid == 3 || typeid == 4 || typeid == 5) {

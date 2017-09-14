@@ -240,12 +240,15 @@
 								<td style="width:96px;text-align: right;padding-top: 13px;">*<%=device_type%>:</td>
 								<td>
 									<select class="chosen-select form-control" name="typeid" id="typeid" data-placeholder="<%=please_choose_device_type%>" style="float:left;width:95%;" onclick="change1(this.value);">
-										<option value="1" <c:if test="${pd.typeid==1}">selected</c:if>><%=integration_power%></option>
+										<%-- <option value="1" <c:if test="${pd.typeid==1}">selected</c:if>><%=integration_power%></option>
 										<option value="2" <c:if test="${pd.typeid==2}">selected</c:if>><%=single_light_controller%></option>
 										<option value="3" <c:if test="${pd.typeid==3}">selected</c:if>><%=gateway%></option>
 										<option value="4" <c:if test="${pd.typeid==4}">selected</c:if>><%=circuit_breaker%></option>
 										<option value="5" <c:if test="${pd.typeid==5}">selected</c:if>><%=ordinary_circuit_breaker%></option>
-										<option value="6" <c:if test="${pd.typeid==6}">selected</c:if>><%=device_combination%></option>
+										<option value="6" <c:if test="${pd.typeid==6}">selected</c:if>><%=device_combination%></option> --%>
+										<c:forEach items="${clientTypeList}" var="cType">
+											<option value="${cType.id}" <c:if test="${pd.typeid==cType.id}">selected</c:if>>${cType.name}</option>
+										</c:forEach>
 								  	</select>
 								 </td>
 							</tr>
@@ -262,14 +265,14 @@
 								<td style="width:79px;text-align: right;padding-top: 13px;"><%=latitude%>:</td>
 								<td><input style="width:95%;" type="number" name="latitude" id="latitude" value="${pd.latitude}" /></td>
 							</tr>
-							<tr id="sim">
+							<%-- <tr id="sim">
 								<td style="width:79px;text-align: right;padding-top: 13px;"><%=phone_number%>:</td>
 								<td>
-								 	<%-- <select class="chosen-select form-control" name="mobile" id="mobile" style="float:left;width:95%;">
+								 	<select class="chosen-select form-control" name="mobile" id="mobile" style="float:left;width:95%;">
 									<c:forEach items="${simList}" var="role">
 										<option value="${role.id}"><c:if test="${pd.id==role.id}">selected</c:if>${role.mobile }</option>
 									</c:forEach>
-								  	</select> --%>
+								  	</select>
 								  	<select class="chosen-select form-control" name="mobile" id="company-input" data-placeholder="<%=please_choose_phone_number%>" style="width: 95%;">
 										<option value="">请选择SIM卡号码</option>
 										<c:forEach items="${simList}" var="role">
@@ -277,7 +280,7 @@
 										</c:forEach>
 								  	</select>
 								</td>
-							</tr>
+							</tr> --%>
 							
 							<!-- 电源类型不再显示
 							<tr id="power">

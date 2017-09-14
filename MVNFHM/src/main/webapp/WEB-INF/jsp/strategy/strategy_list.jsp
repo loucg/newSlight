@@ -155,7 +155,7 @@
 											</td>
 											<!-- 组数量 -->
 											<c:if test="${empty pd.termid }">
-											<td class="center">
+											<td class="center" style="background-color:#E1FFFF;">
 												<c:choose><c:when test="${strategy.termcnt>0}">
 													<a onclick="viewGroupMems('${strategy.id}')" style="cursor:pointer;">${strategy.termcnt }</a>
 												</c:when><c:otherwise>
