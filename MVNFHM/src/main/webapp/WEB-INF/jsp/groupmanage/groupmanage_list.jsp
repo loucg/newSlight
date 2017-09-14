@@ -321,7 +321,7 @@
 					 	
 						if(document.getElementsByName('ids')[i].checked){
 							if(document.getElementsByName('hdstrategyIds')[i].value>0){
-								alert('分组:'+document.getElementsByName('hdgroupname')[i].value+' 不能删除,请重新选择！');
+								alert('分组:'+document.getElementsByName('hdgroupname')[i].value+' 有策略存在，不能删除,请重新选择！');
 								return;
 							}
 							if(str=='') str += document.getElementsByName('ids')[i].value;
