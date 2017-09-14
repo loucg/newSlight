@@ -556,4 +556,5 @@
 	String equipment_code = properties.getProperty("equipment_code");//设备编号
 	String equipment_comment = properties.getProperty("equipment_comment");//设备描述
 	String equipment_type = properties.getProperty("equipment_type");//设备类型
+	String del_divide_group = properties.getProperty("del_divide_group");//删除分组
 %>
