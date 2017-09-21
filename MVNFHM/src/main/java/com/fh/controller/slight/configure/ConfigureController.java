@@ -643,9 +643,7 @@ public class ConfigureController extends BaseController {
 		String Id = pd.getString("Id");
 		System.out.println(Id + "++++++++++++++++++++++++++++++");
 		pd.put("c_gateway_id", Id);
-		User user = (User) Jurisdiction.getSession().getAttribute(Const.SESSION_USER);
-		String sys_user_id = user.getUSER_ID();
-		pd.put("userids", sys_user_id);
+		pd.put("userids", departmentService.getUseridsInDepartment(pd));
 		page.setPd(pd);
 		List<PageData> gatewayNameList = configureService.getGateWayTermInfo(page);
 		map.put("list", gatewayNameList);
