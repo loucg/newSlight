@@ -322,7 +322,7 @@
 		SELECT a.c_gateway_id AS id, b.gateway_code AS number, a.`name`,a.c_gateway_type_id AS typeid,
 			d.`name_CH` AS type1, d.`name_EN` AS type2, a.location,a.coordinate,a.`comment`,h.`name` AS statename,
 			h.`value` AS state,e.phone_number AS mobile, <!-- f.`name` AS sensor, --> g.`name` AS pole,
-			a.`password`, a.lamp_pole_num AS polenumber
+			a.`password`, a.lamp_pole_num AS polenumber,IFNULL(exist_client.client_num,0) client_num
 		FROM c_gateway_attr1 AS a
 			LEFT JOIN c_gateway AS b ON a.c_gateway_id = b.id
 			LEFT JOIN c_gateway_attr2 AS c ON a.c_gateway_id = c.c_gateway_id
@@ -332,6 +332,24 @@
 			LEFT JOIN c_lamp_pole_type AS g ON c.c_lamp_pole_type_id = g.id
 			LEFT JOIN b_status AS h ON a.staus = h.`value`
 			LEFT JOIN b_status_main AS i ON h.b_status_main_id = i.id
+			LEFT JOIN
+		(
+			SELECT 
+				c_client_gateway.c_gateway_id,count(c_client_gateway.c_client_id) client_num
+			FROM
+				c_client_gateway
+			INNER JOIN
+				c_client_attr1	
+			ON
+				c_client_attr1.c_client_id = c_client_gateway.c_client_id
+			WHERE
+				c_client_attr1.staus = 1 AND c_client_attr1.sys_user_id IN ${pd.userids}
+			GROUP BY
+				c_client_gateway.c_gateway_id
+			
+		) exist_client
+		ON
+			exist_client.c_gateway_id = b.id
 		WHERE a.sys_user_id in ${pd.userids}
 			AND h.b_status_main_id = 1
 		<if test="pd.number!=null and pd.number!=''">
