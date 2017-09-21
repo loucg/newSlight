@@ -197,23 +197,31 @@ body,ul,li{	margin:0;
 			<div class="main-container" id="main-container" style="background:url('static/login/images/bg_01.jpg') no-repeat;width:100%;height:566px;margin-top:5px;background-size:cover">	
 	     <div class="xttblog"> 		
 			<ul class="box">
-			<li><a onclick="edit(3,'日志管理','fhlog/list.do');" ><img src="static/login/images/czrz_01.jpg"/></a></li> 
+			<!-- <li><a onclick="edit(3,'日志管理','fhlog/list.do');" ><img src="static/login/images/czrz_01.jpg"/></a></li> 
 			<li><a onclick="edit(314,'管理','strategy/listStrategys.do');" ><img src="static/login/images/clkz_01.jpg"/></a></li>
 			<li><a onclick="edit(347,'地图控制','gomap/content.do');" ><img src="static/login/images/dtkz_01.jpg"/></a></li>
 			<li><a onclick="edit(371,'故障统计','analysis/faultlist');" ><img src="static/login/images/gzbj_01.jpg"/></a></li>
+			 -->
+			 <li><a onclick="edit(3,'设备状态','equimentanaylise/retrieve.do');" ><img src="static/login/images/sbzt_01.jpg"/></a></li> 
+ 			 <li><a onclick="edit(80,'分组控制','group/listGroups.do');"><img src="static/login/images/ldfz_01.jpg"/></a></li> 
+ 			 <li><a onclick="edit(347,'地图控制','gomap/content.do');" ><img src="static/login/images/dtkz_01.jpg"/></a></li> 
 			
 			</ul>
 			 <ul class="box">
-			<li><a onclick="edit(67,'基础配置','config/goCombination');"><img src="static/login/images/jcpz_01.jpg"/></a></li>
+			<!-- <li><a onclick="edit(67,'基础配置','config/goCombination');"><img src="static/login/images/jcpz_01.jpg"/></a></li>
 			<li><a onclick="edit(80,'分组设置','group/listGroups.do');"><img src="static/login/images/ldfz_01.jpg"/></a></li>
 			<li><a onclick="edit(369,'能耗统计','poweranalysis/powerlist');"><img src="static/login/images/sjfx_01.jpg"/></a></li>
 			<li><a onclick="edit(344,'维修记录','repair/weixiu');"><img src="static/login/images/wxjl_01.jpg"/></a></li> 
+			 -->
+			 <li><a onclick="edit(314,'策略管理','strategy/listStrategys.do');" ><img src="static/login/images/clkz_01.jpg"/></a></li> 
+	 		 <li><a onclick="edit(369,'数据分析','poweranalysis/powerlist');"><img src="static/login/images/sjfx_01.jpg"/></a></li> 
+			 <li><a onclick="edit(344,'维修记录','repair/weixiu');"><img src="static/login/images/wxjl_01.jpg"/></a></li>
 			</ul>
 			</div> 
 			
 			<div style="margin-left:846px;margin-top:-353px;cursor: pointer;width: 180px;"> 
 			 <ul class="max">
-			<a onclick="edit(338,'路灯状态','state/lamp/listLamps.do');"><img src="static/login/images/ldfx_01.jpg"/></a>
+			<!-- <a onclick="edit(338,'路灯状态','state/lamp/listLamps.do');"><img src="static/login/images/ldfx_01.jpg"/></a> -->
 			</ul>
 		 </div>
 		<!-- /section:basics/sidebar -->
