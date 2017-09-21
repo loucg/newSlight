@@ -853,7 +853,7 @@
 			a.c_term_id  = b.id
 		WHERE
 			a.c_gateway_id = ${pd.c_gateway_id} 
-			and b.sys_user_id IN (${pd.userids})
+			and b.sys_user_id IN ${pd.userids}
 			
 	</select>
 	
