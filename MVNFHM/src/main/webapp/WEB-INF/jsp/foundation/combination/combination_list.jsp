@@ -145,6 +145,7 @@ function cutStr(len){
 									<th class="center"><%=location%></th>
 									<th class="center"><%=coordinate%></th>
 									<th class="center"><%=phone_number%></th>
+									<td class="center"><%=device_counter%></td>
 									<c:if test="${pd.itype==3 }">
 									</c:if>
 									<!-- 
@@ -197,6 +198,7 @@ function cutStr(len){
 											<td class="center">${var.location}</td>
 											<td class="center">${var.coordinate}</td>
 											<td class="center">${var.mobile}</td>
+											<td class="center">${var.client_num}</td>
 											<c:if test="${pd.itype==3 }">
 											</c:if>
 											<!-- 
