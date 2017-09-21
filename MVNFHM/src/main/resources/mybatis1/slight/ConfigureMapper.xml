@@ -858,7 +858,7 @@
 	</select>
 	
 	<select id="delTermsandStrategyByGeatewayID" parameterType="pd" resultType="pd" statementType="CALLABLE">
-		CALL delTermsAndTermsByGateWayID(${pd.c_gateway_id},${pd.userids})
+		CALL delTermsAndTermsByGateWayID(${pd.c_gateway_id},'${pd.userids}')
 	</select>
 	
 	<!-- 终端类型查询 -->
