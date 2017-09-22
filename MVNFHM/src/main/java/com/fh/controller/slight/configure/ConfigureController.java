@@ -668,7 +668,8 @@ public class ConfigureController extends BaseController {
 		String sys_user_id = user.getUSER_ID();
 		pd.put("userids", sys_user_id);
 		page.setPd(pd);
-		configureService.clearGateWayTermInfo(page);
+		List<PageData> resultList =configureService.clearGateWayTermInfo(page);
+		map.put("result", resultList.get(0));
 		return AppUtil.returnObject(pd, map);
 
 	}
