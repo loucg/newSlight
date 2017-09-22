@@ -286,7 +286,7 @@ public class ConfigureSerivceImpl implements ConfigureService {
 
 	@Override
 	public void updateStatus(PageData pd) throws Exception {
-		// TODO Auto-generated method stub  
+		// TODO Auto-generated method stub 
 		dao.save("ConfigureMapper.updateStatus", pd);
 	}
 
