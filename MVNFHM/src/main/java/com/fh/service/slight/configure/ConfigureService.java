@@ -373,7 +373,7 @@ public interface ConfigureService {
 	 * @return
 	 * @throws Exception
 	 */
-	public void clearGateWayTermInfo(Page page) throws Exception;
+	public List<PageData> clearGateWayTermInfo(Page page) throws Exception;
 	
 	/**
 	 * 获取所有终端类型
