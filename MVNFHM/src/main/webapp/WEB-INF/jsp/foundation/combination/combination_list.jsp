@@ -432,7 +432,13 @@ function cutStr(len){
 										//beforeSend: validateData,
 										cache: false,
 										success: function(data){
-											alert('终端编号：'+gatewaynum+' 终端名称：'+gatewayname+' 重置完毕。');
+											var ret =JSON.stringify(data.result);
+											if(ret=='{"result":"1"}'){
+												alert('网关重置失败');
+												
+											}else{
+												alert('终端编号：'+gatewaynum+' 终端名称：'+gatewayname+' 重置完毕。');
+											}
 										}
 									});
 							}
