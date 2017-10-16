@@ -557,4 +557,28 @@
 	String equipment_comment = properties.getProperty("equipment_comment");//设备描述
 	String equipment_type = properties.getProperty("equipment_type");//设备类型
 	String del_divide_group = properties.getProperty("del_divide_group");//删除分组
+	String manage_part_map= properties.getProperty("part_Map");//管理局部地图
+	String coordidate= properties.getProperty("coordidate");//坐标
+	String terminal_Num= properties.getProperty("terminal_Num");//终端数
+	String picture= properties.getProperty("picture");//图片
+	String add_part_map= properties.getProperty("add_part_map");//增加局部图片
+	String confirm= properties.getProperty("confirm");//增加局部图片
+	String part_map_markerInfo = properties.getProperty("part_map_markerInfo");//局部图片注点信息
+	String part_map_name = properties.getProperty("part_map_name");//part map maker name
+	String part_map_pic = properties.getProperty("part_map_pic");//part_map_pic
+	String part_map_coordinate =properties.getProperty("part_map_coordinate");//part map maker name
+	String part_map_add =properties.getProperty("part_map_add");//增加局部图片
+	String please_choose_jpg =properties.getProperty("please_choose_jpg");//选择局部图片
+	String part_map_delete_light =properties.getProperty("part_map_delete_light");//删除路灯配置
+	String part_map_confirm_light =properties.getProperty("part_map_confirm_light");//确定路灯配置
+	String part_map_load_light =properties.getProperty("part_map_load_light");//确定需要该位置加载路灯吗?
+	String part_map_load_light_place=properties.getProperty("part_map_load_light_place");//确定需要该位置加载路灯吗?
+	String part_map_light_exists=properties.getProperty("part_map_light_exists");//该路灯已经存在，不能重复添加，可以移动路灯位置
+	String part_map_light_del_success=properties.getProperty("part_map_light_del_success");//该路灯已经删除成功
+	String part_map_light_del_confirm=properties.getProperty("part_map_light_del_confirm");//请选择需要加载的路灯
+	String part_map_light_deleted=properties.getProperty("part_map_light_deleted");//请选择需要加载的路灯
+	String part_map_light_save_finished=properties.getProperty("part_map_light_save_finished");//请选择需要加载的路灯
+	String part_map_noLight_need_save=properties.getProperty("part_map_noLight_need_save");//请选择需要加载的路灯
+	String part_map_light_notexist_inPart =properties.getProperty("part_map_light_notexist_inPart");//请选择需要加载的路灯
+	
 %>

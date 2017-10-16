@@ -97,9 +97,12 @@
 							id="terminalid">
 								<option value=""></option>
 						</select></td>
-						<td class="tdl" style="width: 15%;"><input class="btn btn-primary"
-							id="check" type="button"  value=<%=search1%> style="padding-left:10px;"/> <!-- <input class="btn btn-warning "
+						<td class="tdl" style="width: 4%;"><input class="btn btn-primary"
+							id="check" type="button"  value=<%=search1%> style=
+							"padding-left:10px;"/> <!-- <input class="btn btn-warning "
 							id="reset" type="button" value="重   置" /> --></td>
+						<td class="tdl" style="width: 2%;">
+						<input class="btn btn-primary"	id="check" type="button" onclick="edit('','')" value=<%=manage_part_map%> style="padding-left:10px;"/> </td>
 					</tr>
 
 				</tbody>
@@ -186,7 +189,7 @@ function gpsTObbdMore(clientdata,termid,choseterm)
 }
 
 function gpsTObbdSearch(clientdata)
-{
+{	
     var accdivpre = "<div class=\"panel-default\"><div class=\"panel-heading\"><a style=\" float:left;width:10px;height:10px;border:1px solid #000}\" ><span class=\"glyphicon glyphicon-hand-right\"></span></a><a class=\"one\" id=\"search\"><span style=\"font-size:12px;color:black;  font-weight:normal;font-family:宋体\">"
 		+"<%=search_get_device%>"
 		+ "</span></a></div><ul class=\"kid\">";
@@ -423,6 +426,7 @@ function getChosetermid(){
 	$(function() {
 		init();
 	});
+	
 </script>
 
 	<script type="text/javascript">
@@ -443,6 +447,25 @@ function getChosetermid(){
 	   });
 	
 	});
+	
+	function test(){
+		alert('test111')
+	}
+
+	//修改
+	function edit(Id, type){
+		 top.jzts();
+		 var diag = new top.Dialog();
+		 diag.Drag=true;
+		 diag.Title ="局部地图";
+		 diag.URL = '<%=basePath%>gomap/goPartMap?id='+Id+'&typeid='+type;
+		 diag.Width = 650;
+		 diag.Height = 340;
+		 diag.CancelEvent = function(){ //关闭事件
+			diag.close();
+		 };
+		 diag.show();
+	}
 	
 	</script>
 </html>

@@ -249,6 +249,7 @@
 		
 		//确定新增组员
 		function makeAll(msg,id){
+			
 			bootbox.confirm(msg, function(result) {
 				if(result) {
 					var str = '';

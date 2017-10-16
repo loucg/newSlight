@@ -208,12 +208,12 @@
 						<table style="width:100%;">
 							<tr>
 								<td style="vertical-align:top;">
-									<c:if test="${QX.add == 1 }">
+<%-- 									<c:if test="${QX.add == 1 }"> --%>
 									<a class="btn btn-mini btn-success" onclick="add();"><%=add_divide_group %></a>
-									</c:if>
-									<c:if test="${QX.del == 1 }">
+<%-- 									</c:if> --%>
+<%-- 									<c:if test="${QX.del == 1 }"> --%>
 									<a class="btn btn-xs btn-danger" onclick="del();"><%=del_divide_group %></a>
-									</c:if>
+<%-- 									</c:if> --%>
 								</td>
 								<td style="vertical-align:top;"><div class="pagination" style="float: right;padding-top: 0px;margin-top: 0px;">${page.pageStr}</div></td>
 							</tr>
@@ -394,6 +394,7 @@
 		
 		//新增组员
 		function addCrew(id){
+			
 			 top.jzts();
 			 var diag = new top.Dialog();
 			 diag.Drag=true;

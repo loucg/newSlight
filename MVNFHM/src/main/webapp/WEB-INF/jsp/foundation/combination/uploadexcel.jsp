@@ -28,7 +28,7 @@
 				<div class="page-content">
 					<div class="row">
 						<div class="col-xs-12">
-							<form action="config/readExcel" name="Form" id="Form" method="post" enctype="multipart/form-data">
+							<form action="gomap/readMapJPG" name="Form" id="Form" method="post" enctype="multipart/form-data">
 								<div id="zhongxin">
 								<table style="width:95%;" >
 									<tr>
@@ -77,7 +77,7 @@
 				droppable:false,
 				onchange:null,
 				thumbnail:false, //| true | large
-				whitelist:'xls|xls',
+				whitelist:'jpg|png',
 				blacklist:'gif|png|jpg|jpeg'
 				//onchange:''
 			});

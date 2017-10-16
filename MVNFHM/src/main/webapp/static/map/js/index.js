@@ -1,5 +1,6 @@
 ﻿$(function () {
 	$('body').on("click",'.one',function() {
+		
 				// $('.kid').hide();
 				// $(this).parent().parent().find('.kid').toggle();//
 				// $(this)指<a>
@@ -36,6 +37,7 @@
     
   // $('.onekid').live("click",function () {
 	$('body').on("click",'.onekid',function () {
+		alert()
         //$('.onekid').removeClass('one-hover');
         //$(this).addClass('one-hover');
         var str=$(this).attr("id");
@@ -75,6 +77,7 @@
     var c = $('.Conframe');
     var s = $('.searchdiv');
     $('.nav-tip').click(function () {
+    	alert();
         if (l.css('left') == '8px') {
             l.animate({
                 left: -300

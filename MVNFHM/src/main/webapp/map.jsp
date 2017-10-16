@@ -86,103 +86,121 @@ body {
 </head>
 <body>
 	<div id="container"></div>
+	<input type=button id='mapclick' onclick="map.setDefaultCursor('crosshair')"></input>
+	<input type=button id='addMarker' onclick="addClickMarker()"></input>
+	<input type=button id='clearMarker' onclick="clearOverlays('')"></input>
+	<input type=button id='openMarker' onclick="openPartMap()"></input>
+	<input type=hidden id='MarkerXYCoordinate'></input>
+	<input type=hidden id='addPartMapFlag'></input>
+	<input type =hidden id='partMapName'></input>
+	<input type =hidden id='partMapURL'></input>
+	<input type =hidden id='partMapID'></input>
+	
 </body>
 <script type="text/javascript">
+
 	var choseMaker;//全局变量很重要////////////////////////////////////////////////////////////////
 	var choseMakerdata;//全局变量很重要////////////////////////////////////////////////////////////
 	var preMakerdata;//全局变量很重要////////////////////////////////////////////////////////////
-	// 定义自定义覆盖物的构造函数  
-	function SquareOverlay(center, length, data) {
-		this._center = center;
-		this._length = length;
-		this._data = data;
-	}
-	// 继承API的BMap.Overlay    
-	SquareOverlay.prototype = new BMap.Overlay();
-	//实现初始化方法  
-	SquareOverlay.prototype.initialize = function(map) {
-		// 保存map对象实例   
-		this._map = map;
-		// 创建div元素，作为自定义覆盖物的容器   
-		var div = document.createElement("div");
-		div.style.position = "absolute";
-		// 可以根据参数设置元素外观   
-		div.style.width = this._length + "px";
-		div.style.height = this._length + "px";
-		var statuscolor;
-		var clienttype;
+	var moveo='false';   //捕获到的事件
+    var moveX;  //box水平宽度
+    var moveY;  //box垂直高度
+    var gtermid;
+    var gPartMapCoordinate='';
+    var gMarker;
 
-		if ("正常" == this._data.status) {
-			statuscolor = "green";
-		} else if ("异常" == this._data.status) {
-			statuscolor = "red";
-		} else if ("断电" == this._data.status) {
-			statuscolor = "grey";
-		} else {
-			statuscolor = "green";
-		}
-		//clienttype = "light_";
-		if ( this._data.aliastypename.indexOf("灯" ) >=0) {
-			clienttype = "light_";
-		} else if (this._data.aliastypename.indexOf("断路器" ) >=0) {
-			clienttype = "breaker_";
-		} else if (this._data.aliastypename.indexOf("网关") >= 0) {
-			clienttype = "gateway_";
-		} else {
-			clienttype = "light_";
-		}
-		var backgroundimage = "url('static/map/img/" + clienttype + statuscolor
-				+ ".png')";
-		div.style.backgroundImage = backgroundimage;
-		// 将div添加到覆盖物容器中   
-		map.getPanes().markerPane.appendChild(div);
-		/* div.onclick = function() {
-		 alert("您点击了标注2");
-		 } 
-		 div.addEventListener('click', function(e) {
-		 //alert('touched');
-		 console.log(e);
-		 })
-		 */
+// 	// 定义自定义覆盖物的构造函数  
+// 	function SquareOverlay(center, length, data) {
+// 		this._center = center;
+// 		this._length = length;
+// 		this._data = data;
+// 	}
+// 	// 继承API的BMap.Overlay    
+// 	SquareOverlay.prototype = new BMap.Overlay();
+// 	//实现初始化方法  
+// 	SquareOverlay.prototype.initialize = function(map) {
+// 		// 保存map对象实例   
+// 		this._map = map;
+// 		// 创建div元素，作为自定义覆盖物的容器   
+// 		var div = document.createElement("div");
+// 		div.style.position = "absolute";
+// 		// 可以根据参数设置元素外观   
+// 		div.style.width = this._length + "px";
+// 		div.style.height = this._length + "px";
+// 		var statuscolor;
+// 		var clienttype;
 
-		// 保存div实例   
-		this._div = div;
-		// 需要将div元素作为方法的返回值，当调用该覆盖物的show、   
-		// hide方法，或者对覆盖物进行移除时，API都将操作此元素。   
-		return div;
-	}
-	//实现绘制方法   
-	SquareOverlay.prototype.draw = function() {
-		// 根据地理坐标转换为像素坐标，并设置给容器    
-		var position = this._map.pointToOverlayPixel(this._center);
-		this._div.style.left = position.x - this._length / 2 + "px";
-		this._div.style.top = position.y - this._length + "px";
-	}
+// 		if ("正常" == this._data.status) {
+// 			statuscolor = "green";
+// 		} else if ("异常" == this._data.status) {
+// 			statuscolor = "red";
+// 		} else if ("断电" == this._data.status) {
+// 			statuscolor = "grey";
+// 		} else {
+// 			statuscolor = "green";
+// 		}
+// 		//clienttype = "light_";
+// 		if ( this._data.aliastypename.indexOf("灯" ) >=0) {
+// 			clienttype = "light_";
+// 		} else if (this._data.aliastypename.indexOf("断路器" ) >=0) {
+// 			clienttype = "breaker_";
+// 		} else if (this._data.aliastypename.indexOf("网关") >= 0) {
+// 			clienttype = "gateway_";
+// 		} else {
+// 			clienttype = "light_";
+// 		}
+// 		var backgroundimage = "url('static/map/img/" + clienttype + statuscolor
+// 				+ ".png')";
+// 		div.style.backgroundImage = backgroundimage;
+// 		// 将div添加到覆盖物容器中   
+// 		//map.getPanes().markerPane.appendChild(div);
+// 		/* div.onclick = function() {
+// 		 alert("您点击了标注2");
+// 		 } 
+// 		 div.addEventListener('click', function(e) {
+// 		 //alert('touched');
+// 		 console.log(e);
+// 		 })
+// 		 */
 
-	//显示和隐藏覆盖物  
-	// 实现显示方法    
-	SquareOverlay.prototype.show = function() {
-		if (this._div) {
-			this._div.style.display = "";
-		}
-	}
-	// 实现隐藏方法    
-	SquareOverlay.prototype.hide = function() {
-		if (this._div) {
-			this._div.style.display = "none";
-		}
-	}
+// 		// 保存div实例   
+// 		this._div = div;
+// 		// 需要将div元素作为方法的返回值，当调用该覆盖物的show、   
+// 		// hide方法，或者对覆盖物进行移除时，API都将操作此元素。   
+// 		return div;
+// 	}
+// 	//实现绘制方法   
+// 	SquareOverlay.prototype.draw = function() {
+// 		// 根据地理坐标转换为像素坐标，并设置给容器    
+// 		var position = this._map.pointToOverlayPixel(this._center);
+// 		this._div.style.left = position.x - this._length / 2 + "px";
+// 		this._div.style.top = position.y - this._length + "px";
+// 	}
 
-	//添加其他覆盖物方法  
-	SquareOverlay.prototype.hello = function() {
-		if (this._div) {
-			console.log("hello");
-			}
-}
-//自定义覆盖物添加事件方法     
-	SquareOverlay.prototype.addEventListener = function(event, fun) {
-		this._div['on' + event] = fun;
-	}
+// 	//显示和隐藏覆盖物  
+// 	// 实现显示方法    
+// 	SquareOverlay.prototype.show = function() {
+// 		if (this._div) {
+// 			this._div.style.display = "";
+// 		}
+// 	}
+// 	// 实现隐藏方法    
+// 	SquareOverlay.prototype.hide = function() {
+// 		if (this._div) {
+// 			this._div.style.display = "none";
+// 		}
+// 	}
+
+// 	//添加其他覆盖物方法  
+// 	SquareOverlay.prototype.hello = function() {
+// 		if (this._div) {
+// 			console.log("hello");
+// 			}
+// }
+// //自定义覆盖物添加事件方法     
+// 	SquareOverlay.prototype.addEventListener = function(event, fun) {
+// 		this._div['on' + event] = fun;
+// 	}
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -197,7 +215,7 @@ body {
 	//map.setDefaultCursor("url('bird.cur')"); //设置地图默认的鼠标指针样式
 	map.setDefaultCursor("default"); //设置地图默认的鼠标指针样式
 	map.disableDoubleClickZoom(true);
-
+	
 	var menu = new BMap.ContextMenu();
 	var CircleAndRectangle = null;
 	var txtMenuItem = [  {
@@ -247,7 +265,14 @@ body {
 			anchor : BMAP_ANCHOR_TOP_RIGHT, //位置
 			offset : new BMap.Size(5, 5), //偏离值
 			scale : 0.8, //工具栏缩放比例
-			drawingModes : [ BMAP_DRAWING_CIRCLE, BMAP_DRAWING_RECTANGLE ]
+			drawingModes : [ BMAP_DRAWING_CIRCLE, BMAP_DRAWING_RECTANGLE],
+			drawingTypes : [
+                BMAP_DRAWING_MARKER,  
+                BMAP_DRAWING_CIRCLE,//圆的样式
+             	BMAP_DRAWING_POLYLINE,
+				BMAP_DRAWING_POLYGON,
+              	BMAP_DRAWING_RECTANGLE //矩形的样式
+				]
 		}
 	//, rectangleOptions: styleOptions //矩形的样式
 
@@ -257,6 +282,7 @@ body {
 		if (CircleAndRectangle != null) {
 			CircleAndRectangle.removeContextMenu(menu);
 		}
+		alert();
 		map.removeOverlay(CircleAndRectangle);
 		CircleAndRectangle = overlay;
 		overlay.addContextMenu(menu);
@@ -284,6 +310,12 @@ body {
 	});
 	//map.addEventListener("click", showInfo);
 	function getClientsData(mapTermpage2,mapcenter,mapzoom) {
+		//地图初始化时候，局部地图也同时初始化
+	//	alert(mapcenter);
+		if(mapcenter==null){
+			map.clearOverlays();
+		}
+		var partMaplightExists =false;
 		$.ajax({
 			url : "gomap/addClientMaker",
 			type : "POST",
@@ -293,7 +325,7 @@ body {
 			success : function(clientdata) {
 				if (clientdata.length!=0) {
 				//console.log(clientdata);
-					map.clearOverlays();
+				//	map.clearOverlays();
 					var arrpoints=[];
 					for (var i = 0; i < clientdata.length; i++) {
 						arrpoints.push( new BMap.Point(clientdata[i].xcoordinate,clientdata[i].ycoordinate));
@@ -302,6 +334,7 @@ body {
 					gpsTObbd(arrpoints,clientdata,mapcenter,mapzoom);//////坐标转换
 					//addClientMaker(clientdata,mapcenter,mapzoom); 
 				} else {
+					if(!partMaplightExists){
 					//preMakerdata = [];
 					//map.centerAndZoom("杭州", 14);
 					BootstrapDialog.show({
@@ -315,6 +348,7 @@ body {
 		                    }
 		                }]
 		            });
+				}
 				}
 			},
 			error : function() {
@@ -331,8 +365,149 @@ body {
 	            });
 			}
 		});
+		
+		if(mapcenter==null)
+		{
+			$.ajax({
+				url : "gomap/getPartMapInfo",
+				type : "POST",
+				data : {termid:mapTermpage2.termid,partMapID:$('#partMapID').val()},
+				dataType : "json",
+				success : function(aPartmap) {
+						var tempPartMapID ='';
+					if (aPartmap.length!=0) {
+						gtermid = mapTermpage2.termid
+						for(var i=0;i<aPartmap.length;i++){
+							document.getElementById('partMapID').value=aPartmap[i].id;
+							document.getElementById('MarkerXYCoordinate').value=aPartmap[i].external_coordinate;
+							if(aPartmap[i].id!=tempPartMapID){
+								addClickMarker();
+							}
+							partMaplightExists=true;
+							tempPartMapID= aPartmap[i].id;
+							//用完变量初始化
+							document.getElementById('partMapID').value='';
+						}
+					}
+				}	
+				});
+		}
 	}
-	 
+	//终端的坐标更新
+	//newCoordinate:新坐标
+	//client_attri_id：终端的ID
+	function updateClientCoordinate(newCoordinate,client_attri_id,clientType) {
+
+		$.ajax({
+			url : "gomap/upateClientMakerCoordinate.do",
+			type : "POST",
+			data: {coordinate:newCoordinate,client_attri_id:client_attri_id,clientType:clientType},
+			dataType : "json",
+			cache: false,
+			success : function(data) {
+				for(var i=0;i<preMakerdata.length;i++){
+					if(preMakerdata[i].client_attri_id==client_attri_id){
+						preMakerdata[i].xcoordinate=newCoordinate.split(",")[0];
+						preMakerdata[i].ycoordinate=newCoordinate.split(",")[1];
+					
+						break;
+					}
+				}	
+			},
+			error : function() {
+				BootstrapDialog.show({
+	                type:  BootstrapDialog.TYPE_DANGER,
+	                title: "<%=remind_infomation%>",
+	                message: "<%=wrong_search%>",
+	                buttons: [{
+	                    label: "<%=shut_down%>",
+	                    action: function(dialogItself){
+	                        dialogItself.close();
+	                    }
+	                }]
+	            });
+			}
+		});
+	}
+	
+	//获取局部图的路灯数据
+	//map.addEventListener("click", showInfo);
+	function getLightData(termid,clientid,marker) {
+		var partMapid =document.getElementById('partMapID').value;
+		if(marker!=null){
+			partMapid = marker.partMapID;
+		}
+		$.ajax({
+			url : "gomap/getClientInfo",
+			type : "POST",
+			data : {termid:termid,clientid:clientid,
+				partMapID:partMapid},
+			dataType : "json",
+			success : function(data) {
+				//alert(data.length)
+				if (data.length!=0) {
+					if(clientid==''){
+						marker.partLightData = data;
+						marker.selLight ='';
+						for(var i=0;i<data.length;i++){
+							marker.selLight +="<option value="+data[i].client_attri_id+">"+data[i].name+"</option>";
+						}
+					}else{
+ 						//路灯跳动设置
+						lightFlashSet();
+					}
+					//路灯已经在别的局部图里记载完了就不用下面的任何设置
+					$("#serial_number").html(data[0].id);
+					$("#lightName").html(data[0].name);
+					$("#poleNumber").html(data[0].lamppolenum);
+					$("#location").html(data[0].location);
+					$("#groupName").html(data[0].termname);
+					$("#brightnessValue").html(data[0].brightness);
+					
+					//局部地图上选择的路灯
+					choseMakerdata= data[0];
+					choseMakerdata.partmapflag =true;
+				} 
+// 				if(clientid==''&& data.length==0){
+//					if(!confirm('路灯已经配置完成，需要打开局部题图吗？')){
+//						return ;
+//					}
+//				}
+				openPartMapSub(marker,false);
+			},
+			error : function() {
+				BootstrapDialog.show({
+	                type:  BootstrapDialog.TYPE_DANGER,
+	                title: "<%=remind_infomation%>",
+	                message: "<%=wrong_search%>",
+	                buttons: [{
+	                    label: "<%=shut_down%>",
+	                    action: function(dialogItself){
+	                        dialogItself.close();
+	                    }
+	                }]
+	            });
+			}
+		});
+	
+	}
+	
+	//路灯跳动设置
+	function lightFlashSet(){
+		var count=$("#selLight option").length; 
+		//路灯跳动全清除
+		for(var i=0;i<count;i++){
+			var tempdiv = document.getElementById('light'+$("#selLight").get(0).options[i].value);
+			if(tempdiv!=null){
+				tempdiv.style.backgroundImage="url('uploadFiles/uploadImgs/partmap/light_green.png')";
+			}
+		}
+		if(document.getElementById('light'+$('#selLight').val())!=null){
+ 			document.getElementById('light'+$('#selLight').val()).style.backgroundImage
+ 				="url('uploadFiles/uploadImgs/partmap/light_green_active.gif')";
+		}
+	}
+		    
 		function gpsTObbd(arrpoints,clientdata,mapcenter,mapzoom) {
 		 	var len = arrpoints.length;//所有点的长度  
 	        var points = [];//将大数组分成小数组存放。  50个一组
@@ -341,7 +516,7 @@ body {
 	        var i = 0 ;  
 	        var j = 0 ;  
 	        var ajaxLen =0;//要发起几次请求。  
-	  
+	  		
 	        //数组分装  
 	        for (; i < len; i++) {     
 	            if(i%10 == 0){  //分成小数组
@@ -364,24 +539,45 @@ body {
 	                    if(data.status === 0) {  
 	                        var dateLen = data.points.length;   
 	                        for(i=0;i <dateLen;i++){
-	                           clientdata[base+i].coordinate=data.points[i].lng+","+data.points[i].lat;
-        					   clientdata[base+i].xcoordinate=data.points[i].lng;
-        		               clientdata[base+i].ycoordinate=data.points[i].lat;   
 	                           endPoints[base+i]=data.points[i];
-	                            
-	                           var markerpoint = new BMap.Point(data.points[i].lng,data.points[i].lat);
-	                           var mySquare = new SquareOverlay(markerpoint, 16, clientdata[base+i]);
-	                           map.addOverlay(mySquare);
 	                           (function(k) {
-	                           mySquare.addEventListener('mouseover', function(e) {//这里是自定义覆盖物的事件   		
-	               				map.setDefaultCursor("pointer");
-	               				//myDrag.close();
-	               				});
-	               				mySquare.addEventListener('mouseout', function(e) {//这里是自定义覆盖物的事件   		
-	               				map.setDefaultCursor("default"); //设置地图默认的鼠标指针样式
-	               				//myDrag.open();
-	               				});
-	               				mySquare.addEventListener('click', function(e) {//这里是自定义覆盖物的事件
+	                        	   //灯的状态定义
+	                        	if ("正常" == clientdata[base+k].status) {
+	                       			statuscolor = "green";
+	                       		} else if ("异常" == clientdata[base+k].status) {
+	                       			statuscolor = "red";
+	                       		} else if ("断电" == clientdata[base+k].status) {
+	                       			statuscolor = "grey";
+	                       		} else {
+	                       			statuscolor = "green";
+	                       		}
+	                        	//灯的类型定义
+	                       		if ( clientdata[base+k].aliastypename.indexOf("灯" ) >=0) {
+	                       			clienttype = "light_";
+	                       		} else if (clientdata[base+k].aliastypename.indexOf("断路器" ) >=0) {
+	                       			clienttype = "breaker_";
+	                       		} else if (clientdata[base+k].aliastypename.indexOf("网关") >= 0) {
+	                       			clienttype = "gateway_";
+	                       		} else {
+	                       			clienttype = "light_";
+	                       		}
+	                        	//灯的各种终端类型显示。（路灯，网关等）
+	                       		var imageURL = "static/map/img/" + clienttype + statuscolor+ ".png"; 
+	               				var myIcon = new BMap.Icon(imageURL, new BMap.Size(23, 25));
+	               				var point = new BMap.Point(clientdata[base+i].xcoordinate, clientdata[base+i].ycoordinate);
+	               				var marker = new BMap.Marker(point,{icon:myIcon}); //创建marker对象
+	               				marker.enableDragging(); //marker可拖拽
+	               				//灯的场合，如果局部地图上有就不加
+	               				if ( clientdata[base+k].aliastypename.indexOf("灯" ) >=0) {
+	               					marker.clientID = clientdata[base+k].id;
+	               					if(clientdata[base+k].partMaplinetCnt==0){
+	               						map.addOverlay(marker);
+	               					}
+		               			}else{
+		               				map.addOverlay(marker);
+		               			}
+	               				gtermid=clientdata[base+k].termid;
+	               				marker.addEventListener('click', function(e) {//这里是自定义覆盖物的事件
 	               				choseMakerdata = clientdata[base+k];
 	        					var sContent = getInfoContent(clientdata[base+k]);
 	        					var opts = {
@@ -392,11 +588,23 @@ body {
 	        					infoWindow.enableCloseOnClick();
 	        					var point = new BMap.Point(data.points[k].lng,data.points[k].lat);
 	        					map.openInfoWindow(infoWindow, point); //开启信息窗口   
-	               			});
+	               				});
+	               				marker.addEventListener("dragend", function(e) {//这里是定义拖动事件
+	               					var p = marker.getPosition(); 
+	               					//默认是灯
+	               					var cType ='1';
+	               					data.points[k].lng=p.lng ;
+	               					data.points[k].lat=p.lat ;
+	               					if (clientdata[base+k].aliastypename.indexOf("断路器" ) >=0) {
+	                       				cType ='3';
+	                       			} else if (clientdata[base+k].aliastypename.indexOf("网关") >= 0) {
+	                       				cType ='2';
+	                       			}
+	               					
+	               					updateClientCoordinate(p.lng+','+p.lat,clientdata[base+k].client_attri_id,cType);
+	               				});
 	                      }(i));
-
-	                           
-	                             if(clientdata.length == endPoints.length){//加载完毕。  
+	                            if(clientdata.length == endPoints.length){//加载完毕。  
 	                            	 addClientMaker(clientdata,mapcenter,mapzoom)
 	                            }   
 	                        }  
@@ -409,8 +617,8 @@ body {
 	                posTrans(points[j],callback);//坐标转换新的数据图标添加到地图上。  
 	            })();         
 	        }  
-	        
-	  
+	      
+	  	
 		}
 	//坐标转换  
     function posTrans(points,callback){  
@@ -425,6 +633,7 @@ body {
 	//添加覆盖物 
 	//var infoWindow;//全局变量，相当重要/////////////////////////////////////////////////////
 	function addClientMaker(data,mapcenter,mapzoom) {
+	
 		preMakerdata =data;//记录当前展示的数据
 		/* for (var i = 0; i < data.length; i++) {
 			var markerpoint = new BMap.Point(data[i].xcoordinate,
@@ -456,6 +665,7 @@ body {
 				});
 			}(i));
 		} */
+
 		var Xcoordinate = 0;
 		var Ycoordinate = 0;
 		var minXcoordinate = data[0].xcoordinate;
@@ -491,29 +701,499 @@ body {
 				maxYcoordinate,mapcenter,mapzoom);//设置zoom大小
 	}
 ///////////////////////////////////////////////////////////////////////////////////////////
-	map.addEventListener("click",closeinfowindow);
-	function closeinfowindow(){
-		//setTimeout(function() {map.closeInfoWindow();}, 300);
-		  
+//局部图的上传的窗口打开
+	map.addEventListener("click",function(e){
+		
+		if($('#addPartMapFlag').val()=='1'){
+			$("#addPartMapFlag").attr("value",'');//
+			map.setDefaultCursor("default");
+			top.jzts();
+			var diag = new top.Dialog();
+			diag.Drag=true;
+			diag.Title ='<%=part_map_add%>';   
+			diag.URL = '<%=basePath%>/gomap/addpartmap.do?XPoint='+e.point.lng+'&YPoint='+e.point.lat+'&termID='+gtermid
+			diag.Width = 400;
+			diag.Height = 300;
+			diag.Modal = true;				//有无遮罩窗口
+			diag.ShowMaxButton = true;	//最大化按钮
+			diag.ShowMinButton = true;		//最小化按钮
+			diag.CancelEvent = function(){ //关闭事件
+			if(diag.innerFrame.contentWindow.document.getElementById('partMapID').value!=''){
+				gMarker.partMapID = diag.innerFrame.contentWindow.document.getElementById('partMapID').value;
+				document.getElementById('partMapID').value =diag.innerFrame.contentWindow.document.getElementById('partMapID').value;
+			}
+			 if(diag.innerFrame.contentWindow.document.getElementById('zhongxin').style.display == 'none'){
+				 if('${page.currentPage}' == '0'){
+					 top.jzts();
+					 setTimeout("self.location=self.location",100);
+				 }else{
+					 nextPage('${page.currentPage}');
+				 }
+			}
+			diag.close();
+			};
+			diag.show();
+		}else{
+			getLightData(gtermid,'',null);
+		}
+	
+	});
+	//清除指定的覆盖层
+	function clearOverlays(clinetid){
+		if(clinetid==''){
+			//局部地图的覆盖层清楚
+			if(gMarker!=null){
+				if(gMarker.partMapID==document.getElementById('partMapID').value){
+					map.removeOverlay(gMarker);
+					return;
+				}
+			}
+			for(var i=0;i<map.getOverlays().length;i++){
+				var marker =map.getOverlays()[i];
+				if(marker.partMapID==document.getElementById('partMapID').value){
+					map.removeOverlay(marker);
+					return;
+				}
+			}
+		}else{
+			//灯删除
+			for(var i=0;i<map.getOverlays().length;i++){
+				var marker =map.getOverlays()[i];
+				if(marker.clientID==clinetid){
+					map.removeOverlay(marker);
+					return;
+				}
+			}
+		}
 	}
-	//叠加层点击事件    ////已经没有用了   
-	function fo(e) {
+	//打开局部子画面
+	function openPartMapSub(marker,addLight){
+		//当List画面修改的时候才追加路灯。
+		if(addLight){
+			getLightData(gtermid,'');
+		}
+		var strX = marker.coordinate.split(",")[0];
+		var strY = marker.coordinate.split(",")[1];
+		
+		document.getElementById('MarkerXYCoordinate').value=marker.coordinate;
+		document.getElementById('partMapID').value=marker.partMapID;
+		
+		var sContent = getmarkedContent(marker);
+		var opts = {
+			width : 750, // 信息窗口宽度
+			height : 550, // 信息窗口高度
+		};
+		var infoWindow = new BMap.InfoWindow(sContent, opts); // 创建信息窗口对象
 		infoWindow.enableCloseOnClick();
-		setTimeout(function() {map.removeEventListener("click", fo);}, 300); //这里取消绑定。         
-		var point = new BMap.Point(e.point.lng, e.point.lat);
-		map.openInfoWindow(infoWindow, point); //开启信息窗口    
-		infoWindow=null;
-		setTimeout(function() {map.removeEventListener("click", fo);}, 300); //这里取消绑定。                
+		var point = new BMap.Point(strX,strY);
+		map.openInfoWindow(infoWindow, point); //开启信息窗口   
+		$.ajax({
+			url : "gomap/getPartMapInfo",
+			type : "POST",
+			data : {partMapID:document.getElementById('partMapID').value},
+			dataType : "json",
+			success : function(aPartmap) {
+					var tempMarkerPoint ='';
+					if (aPartmap.length!=0) {
+						for(var i=0;i<aPartmap.length;i++){
+							addLightToMapsub(
+								aPartmap[i].inner_coordinate.split(",")[0],
+								aPartmap[i].inner_coordinate.split(",")[1],	
+								aPartmap[i].c_client_id
+							)
+						}
+						lightFlashSet();
+					}
+			
+				}	
+			});
 	}
+	
+	//打开指定的覆盖层
+	function openPartMap(){
+		if(gMarker!=null){
+			if(gMarker.partMapID==document.getElementById('partMapID').value){
+				openPartMapSub(gMarker,true);
+				return;
+			}
+		}
+		for(var i=0;i<map.getOverlays().length;i++){
+			var marker =map.getOverlays()[i];
+			if(marker.partMapID==document.getElementById('partMapID').value){
+				openPartMapSub(marker,true);
+				return;
+			}
+		}
+	}
+	
+	//增加指定的覆盖层
+	function addClickMarker(){
+		if(document.getElementById('MarkerXYCoordinate').value!=null&&
+				document.getElementById('MarkerXYCoordinate').value!=undefined){
+			strX = document.getElementById('MarkerXYCoordinate').value.split(",")[0];
+			strY = document.getElementById('MarkerXYCoordinate').value.split(",")[1];
+			var myIcon = new BMap.Icon('static/map/img/partMapMarker.jpg', new BMap.Size(23, 25));
+			var point = new BMap.Point(strX, strY);
+			var marker = new BMap.Marker(point,{icon:myIcon}); //创建marker对象
+			marker.coordinate = document.getElementById('MarkerXYCoordinate').value;
+			marker.partMapID =  document.getElementById('partMapID').value;
+			gMarker = marker;
+			if(marker!=null){
+				marker.addEventListener('click', function(e) {//这里是自定义覆盖物的事件
+					if($('#addPartMapFlag').val()!='1'){
+						getLightData(gtermid,'',marker);
+						
+					}
+				});
+				map.addOverlay(marker);
+			}
+			
+		}
+	}
+	
+
+
+		 var o, //捕获到的事件
+	     X,  //box水平宽度
+	     Y;  //box垂直高度
+	 function getObject(obj,e){    //获取捕获到的对象
+	        o = obj;
+	        document.all?o.setCapture() : window.captureEvents(Event.MOUSEMOVE);  
+	        X = e.clientX - parseInt(o.style.left);   //获取宽度，
+	        Y = e.clientY - parseInt(o.style.top);   //获取高度，
+	    }
+	 document.onmousemove = function(dis){    //鼠标移动事件处理
+	        if(!o){    //如果未获取到相应对象则返回
+	            return;
+	        }
+	        if(!dis){  //事件
+	            dis = event ;
+	        }
+	        o.style.left = dis.clientX - X +"px";     //设定box样式随鼠标移动而改变
+	        o.style.top = dis.clientY - Y + "px";
+	    };
+	    document.onmouseup = function(){    //鼠标松开事件处理
+	        if(!o){   //如果未获取到相应对象则返回
+	            return;
+	        }
+	        document.all?o.releaseCapture() : window.captureEvents(Event.MOUSEMOVE|Event.MOUSEUP)
+	        o = '';   //还空对象
+	    };
+	    
+	 //增加路灯到局部图片  (sub function)
+	function addLightToMapsub(xPoint,yPoint,clientid){
+		var div = document.createElement("div");
+		div.style.position = "absolute";
+		// 可以根据参数设置元素外观   
+		div.style.width = "15px";
+		div.style.height = "15px";
+		div.style.left = xPoint+"px";
+		div.style.top = yPoint+"px";
+		var backgroundimage = "url('uploadFiles/uploadImgs/partmap/light_green_active.gif')";
+		div.style.backgroundImage = backgroundimage;
+		div.id = "light"+clientid;
+		div.name =xPoint+','+yPoint;
+		div.onclick = function() {
+			
+		};
+		div.onmousedown = function(e){ 
+	        getObject(this,e||event);  
+	    	//this.name =o.style.left+','+o.style.top;
+	    };
+	    div.onmouseup = function(e){ 
+	    	this.name =o.style.left.replace("px","")+','+o.style.top.replace("px","");;
+	    };
+
+		document.getElementById('partMapImg').appendChild(div);
+	
+	}
+	//增加路灯到局部图片
+	function addLightToMap() 
+	{
+		if((document.getElementById('selLight').value)==''){
+			//alert('请选择需要加载的路灯');
+			alert('<%=road_light_open_faliue%>');
+		}else{
+			//if(confirm("确定需要该位置加载路灯吗?")){
+				if(confirm('<%=part_map_load_light%>')){
+				
+				 if(!document.getElementById('light'+$('#selLight').val())){
+					 	addLightToMapsub(event.offsetX,event.offsetY,$("#selLight").val());
+					}else{
+						//alert('该路灯已经存在，不能重复添加，可以移动路灯位置');
+						alert('<%=part_map_light_exists%>');
+					}
+			
+			}
+		}
+	}
+	//删除已经添加在局部地图上的路灯
+	function delLightFromPartMap(){
+		//div 存在的时候删除
+		if(confirm("确定要删除该路灯吗?")){
+			if(document.getElementById('light'+$('#selLight').val())){
+				var tempdiv = document.getElementById('light'+$('#selLight').val());
+				document.getElementById('partMapImg')
+				.removeChild(document.getElementById('light'+$('#selLight').val()))
+				$.ajax({
+					url : "gomap/delPartMapDetail",
+					type : "POST",
+					data : {
+							CLIENT_ID:tempdiv.id.replace("light",""),
+							ID:$('#partMapID').val(),
+
+					},
+					dataType : "json",
+					success : function(clientdata) {
+						//alert('该路灯已经删除成功');
+						alert('<%=part_map_light_del_success%>');
+					},
+					error : function() {
+						BootstrapDialog.show({
+			                type:  BootstrapDialog.TYPE_DANGER,
+			                title: "<%=remind_infomation%>",
+			                message:  "<%=road_light_open_faliue%>",
+			                buttons: [{
+			                    label: "<%=shut_down%>",
+			                    action: function(dialogItself){
+			                        dialogItself.close();
+			                    }
+			                }]
+			            }); 
+					}
+				});
+			}else{
+				//alert('此路灯已经删除或者不存在！');	
+				alert('<%=part_map_light_del_confirm%>')
+				
+			}
+		}
+	}
+	
+	//保存已经添加在局部地图上的路灯
+	function addLightToPartMap(){
+		var count=$("#selLight option").length; 
+		var succssflag=true;
+		var lightnum =0;
+		for(var i=0;i<count;i++){
+			var tempdiv = document.getElementById('light'+$("#selLight ").get(0).options[i].value);
+			if(tempdiv!=null){
+				lightnum++;
+				$.ajax({
+					url : "gomap/savePartMapToDetail",
+					type : "POST",
+					data : {
+							ID :$("#partMapID").val(),
+							INNER_COORDINATE:tempdiv.name.replace("px",""),
+							CLIENT_ID:tempdiv.id.replace("light",""),
+					},
+					dataType : "json",
+					success : function(clientdata) {
+						succssflag=true;	
+					},
+					error : function() {
+						BootstrapDialog.show({
+			                type:  BootstrapDialog.TYPE_DANGER,
+			                title: "<%=remind_infomation%>",
+			                message:  "<%=road_light_open_faliue%>",
+			                buttons: [{
+			                    label: "<%=shut_down%>",
+			                    action: function(dialogItself){
+			                        dialogItself.close();
+			                    }
+			                }]
+			            }); 
+						succssflag=false;
+					}
+				});
+				//删除已经追加的路灯
+				clearOverlays($("#selLight ").get(0).options[i].value);
+			}
+			if(!succssflag){
+				return;
+			}
+		}
+		if(lightnum>0){
+			//alert("路灯已保存完毕！");
+			alert('<%=part_map_light_save_finished%>');
+		}else{
+			//alert("没有要保存的路灯！");
+			alert('<%=part_map_noLight_need_save%>');
+		}
+	}
+	
+	function change_light(clientid){
+
+		getLightData(gtermid,clientid,null);
+		
+	}
+	
+	//增加路标（marker）到地图
+	function getmarkedContent(marker){
+		 //路灯
+		var xyCoordinate =marker.coordinate;
+		var id='';
+		var name='';
+		var lamppolenum='';
+		var location='';
+		var termname='';
+		var brightness='';
+		if (marker.partLightData!=null&&marker.partLightData!=''){
+			id=marker.partLightData[0].id ;
+			name =marker.partLightData[0].name;
+			lamppolenum =marker.partLightData[0].lamppolenum;
+			location =marker.partLightData[0].location;
+			termname=marker.partLightData[0].termname;
+			brightness = marker.partLightData[0].brightness;
+		}
+
+	   var sContent_light =   
+		   "<html>"+
+		   "<head>"+
+		   "<title>"+"Insert title here"+"</title>"+
+		   "<style type='text/css' > .image {border:1px solid #000;width: 380px;height:460px;overflow:hidden}"+
+		   " .image img{max-width:400px;_width:expression(this.width>400?'400px':this.width)}"+
+		   " .table_c  {border:1px solid #000;width:500px;height:500px;overflow:hidden}"+
+		   " .light_green  {width:15px;height:15px;overflow:hidden;position: absolute;background-image:url(static/map/img/light_green.png)}"+
+		   " .light_red  {width:15px;height:15px;overflow:hidden;position: absolute;background-image:url(static/map/img/light_red.png)}"+
+		   " .light_grey  {width:15px;height:15px;overflow:hidden;position: absolute;background-image:url(static/map/img/light_grey.png)}"+
+		   " .center  {text-align:center}"+
+		   "</style>"+
+		   "</head>"+
+		   "<body>"+
+		   "<table class='table-striped  table-hover' style='margin-top:5px;height=180px' border='1' width=720px>"+
+		   "<tr>"+
+		   "<td width=400px rowspan=9>"+
+		   "<div id='partMapImg' class='image'>"+
+ 		   		"<img onclick=addLightToMap() src=uploadFiles/uploadImgs/partmap/"+ xyCoordinate  +".jpg?"+ Math.random() +" />"+
+			"</div>"+
+			"</td>"+
+			"<td class='center' width='120px'>路灯选择"+
+			"</td>"+
+			"<td class='center' colspan=3 ><select id='selLight' onchange='change_light(this.options[this.options.selectedIndex].value)' style='width:220px;'>"+
+			 marker.selLight +
+			"</select>"+
+			"</td>"+
+			 "</tr>"+
+			"<tr height=5px>"+
+			"<td class='center'>"+"<%=serial_number%>"+
+			"</td>"+
+			"<td class='center' id='serial_number' colspan=3>"+id +
+			"</td>"+
+			
+		   "</tr>"+
+		   "<tr height=5px>"+
+		   "<td class='center' >"+"<%=name%>"+
+			"</td>"+
+			"<td class='center'id='lightName' colspan=3>"+name +
+			"</td>"+
+		   "</tr>"+
+		   "<tr height=5px>"+
+		   "<td class='center'>"+"<%=pole_number2%>"+
+			"</td>"+
+			"<td class='center' id='poleNumber' colspan=3>"+lamppolenum +
+			"</td>"+
+		   "</tr>"+
+		   "<tr height=5px>"+
+		   "<td class='center'>"+"<%=location%>"+
+			"</td>"+
+			"<td class='center' id='location' colspan=3>"+location +
+			"</td>"+
+		   "</tr>"+
+		   "<tr height=5px>"+
+		   "<td class='center'>"+"<%=group_name%>"+
+			"</td>"+
+			"<td class='center' id='groupName' colspan=3>"+termname +
+			"</td>"+
+		   "</tr>"+
+		   "<tr height=5px>"+
+		   "<td class='center'>"+"<%=brightness_value%>"+
+			"</td>"+
+			"<td class='center' id='brightnessValue' colspan=3>"+brightness +
+			"</td>"+
+		   "</tr>"+
+
+		   "<tr height=100px>"+
+		   "<td> "+
+		   "<div class='bottom'>"+
+     		"<div class='b1' onclick ='TurnOnLight()'>"+
+					"<div class='bimg1'>"+
+						"<img src='static/map/img/bulb_on.png'>"+
+						"<a href='javascript:void(0)'>"+"<%=open_light%>"+"</a>"+
+					"</div>"+
+			"</div>"+
+			 "</td><td width=70px> "+	
+		"<div class='b2' onclick ='TurnOffLight()'>"+
+			"<div class='bimg2'>"+
+					"<img src='static/map/img/bulb_off.png'>"+
+					"<a href='javascript:void(0)'>"+"<%=shut_down_light%>"+"</a>"+
+			"</div>"+
+		
+		"</div>"+
+		 "</td><td width=110px> "+	
+		"<div class='b3' onclick ='PolicyControl()'>"+
+			"<div class='bimg3'>"+
+					"<img src='static/map/img/policy_control.png'>"+
+					"<a href='javascript:void(0)' >"+"<%=control_strategy%>"+"</a>"+
+			"</div>"+
+		"</div>"+
+		 "</td><td width=160px> "+	
+			"<div class='btx4'>"+
+				"<%=brightness_value%>"+":"+
+				"<select style='width:60px;' onchange='change_bright(this.options[this.options.selectedIndex].value)'>"
+			        var lightop="";
+					for(var i = 0; i <=100; i=i+10){
+						var lightop2="";
+						if(marker.partLightData!=null &&marker.partLightData!=''
+								&&i!=marker.partLightData[0].brightness)
+							{
+
+								lightop2="<option value="+i+">"+i+"</option>";
+							}else{
+								lightop2="<option value="+i+" selected = 'selected'>"+i+"</option>";
+							}
+						lightop=lightop+lightop2;
+					}
+					 sContent_light=sContent_light+lightop+
+		    	"</select>"+
+	    	"</div>"+
+    	"</td>"+		
+			"</div>"+
+			"</td>"+
+		   "</tr>"+
+		   "<tr height=95px>"+
+		   "<td colspan=4 class='center'>"+
+		   "<a class='btn btn-xs btn-success' onclick='addLightToPartMap();'  onmouseover='this.style.cursor=hand'><%=part_map_confirm_light %></a>&nbsp;&nbsp;"+
+		   "<a class='btn btn-xs btn-danger' onclick='delLightFromPartMap();'  onmouseover='this.style.cursor=hand'><%=part_map_delete_light %></a>"+
+			"</td>"+
+		   "</tr>"+
+			 "</table>"+
+		   "</body>"+
+		  
+		   "</html>";
+		 
+		   return sContent_light;
+	}
+// 	//叠加层点击事件    ////已经没有用了   
+// 	function fo(e) {
+// 		infoWindow.enableCloseOnClick();
+// 		setTimeout(function() {map.removeEventListener("click", fo);}, 300); //这里取消绑定。         
+// 		var point = new BMap.Point(e.point.lng, e.point.lat);
+// 		map.openInfoWindow(infoWindow, point); //开启信息窗口    
+// 		infoWindow=null;
+// 		setTimeout(function() {map.removeEventListener("click", fo);}, 300); //这里取消绑定。                
+// 	}
 	//0.5秒后根据id改变地图的展示中心       
 	function changeCenterByid(id) {
 		var data;
 		for(var i=0;i<preMakerdata.length;i++){
 			if(id==preMakerdata[i].id)
 				{
+
 				data=preMakerdata[i];
 				var x=preMakerdata[i].xcoordinate;
 				var y=preMakerdata[i].ycoordinate;
+
 				setTimeout(function() {
 					map.panTo(new BMap.Point(x,y)); 
 					//map.setZoom(19);
@@ -522,7 +1202,7 @@ body {
 					map.setZoom(19);
 				}, 1000);
 				
-				}
+ 				}
 			
 		}
 		CenterMarker(data);
@@ -569,7 +1249,7 @@ body {
 	//清除所有覆盖物   
 	function cleanAllMaker1() {
 		//console.log(12121);
-		map.clearOverlays();
+		//map.clearOverlays();
 	}
 	//得到选择的哪一个点
 	function getMakerIconAndInfo(div, data) {
@@ -616,6 +1296,14 @@ body {
 			}
 	}
 	function TurnOnLight() {
+
+		if(choseMakerdata.partmapflag ==true){
+			if(document.getElementById('light'+$('#selLight').val())==null){
+				//alert('该路灯没有在局部图上加载。不能进行此操作');
+				alert('<%=part_map_light_notexist_inPart%>')
+				return;
+			}
+		}
 		if (choseMakerdata.brightness != 0) {
 			 BootstrapDialog.show({
 	                type:  BootstrapDialog.TYPE_DANGER,
@@ -629,7 +1317,8 @@ body {
 	                }]
 	            });  
 		} else {
-			//console.log(choseMakerdata);
+		//	console.log(choseMakerdata);
+			
 			$.ajax({
 						url : "gomap/updateClientAttr_status",
 						type : "POST",
@@ -662,7 +1351,8 @@ body {
 						            }); 
 								//infoWindow.setContent("11111");
 								//infoWindow.redraw()	;
-
+								 choseMakerdata.brightness=100;
+								 $("#brightnessValue").html(100);
 							} else {
 								BootstrapDialog.show({
 					                type:  BootstrapDialog.TYPE_DANGER,
@@ -698,6 +1388,13 @@ body {
 
 	}
 	function TurnOffLight() {
+		if(choseMakerdata.partmapflag ==true){
+			if(document.getElementById('light'+$('#selLight').val())==null){
+			//	alert('改路灯没有在局部图上加载。不能进行此操作');
+				alert('<%=part_map_light_notexist_inPart%>')
+				return;
+			}
+		}
 		if (choseMakerdata.brightness == 0) {
 			BootstrapDialog.show({
                 type:  BootstrapDialog.TYPE_DANGER,
@@ -711,8 +1408,8 @@ body {
                 }]
             }); 
 		} else {
-			$
-					.ajax({
+			
+			$.ajax({
 						url : "gomap/updateClientAttr_status",
 						type : "POST",
 						contentType : "application/json; charset=UTF-8",
@@ -757,7 +1454,8 @@ body {
 					                }]
 					            }); 
 							}
-
+							choseMakerdata.brightness=0;
+							$("#brightnessValue").html(0);
 						},
 						error : function() {
 							BootstrapDialog.show({
@@ -780,7 +1478,16 @@ body {
 	}
 
 	function change_bright(bright) {
+		
+		if(choseMakerdata.partmapflag ==true){
+			if(document.getElementById('light'+$('#selLight').val())==null){
+				//alert('改路灯没有在局部图上加载。不能进行此操作');
+				alert('<%=part_map_light_notexist_inPart%>')
+				return;
+			}
+		}
 		choseMakerdata.brightness = bright;
+		$("#brightnessValue").html(bright);
 		//console.log(bright);
 		$.ajax({
 			url : "gomap/updateClientAttr_brightness",
@@ -800,8 +1507,7 @@ body {
 					{ a=choseMakerdata;getClientsData(a,mapcenter,mapzoom);}
 				else
 						{a = parent.getmapTermpagein()[choseMakerdata.termid];getClientsData(a,mapcenter,mapzoom);}
-					
-					BootstrapDialog.show({
+						BootstrapDialog.show({
 		                type:  BootstrapDialog.TYPE_PRIMARY,
 		                title: "<%=remind_infomation%>",
 		                message:"<%=road_light_brightness_update_success%>",
@@ -814,7 +1520,7 @@ body {
 		            }); 
 
 				} else {
-					BootstrapDialog.show({
+						BootstrapDialog.show({
 		                type:  BootstrapDialog.TYPE_DANGER,
 		                title: "<%=remind_infomation%>",
 		                message: "<%=road_light_brightness_update_faliue%>",
@@ -852,6 +1558,7 @@ body {
 		
 	function TurnOnOROffLight(takeid,choseMakerdata,chosetermid,bright) {
 		var drawdataid=[];
+		
 	    for(var i=0;i<choseMakerdata.length;i++){
 	    	drawdataid.push(choseMakerdata[i].id);
 	    }
@@ -873,6 +1580,7 @@ body {
                 }]
             }); 
 		} else {
+			
 			$.ajax({
 						url : "gomap/updateClientDraw_status",
 						type : "POST",
@@ -951,7 +1659,8 @@ body {
 				havenest : false,
 				termid : data
 			};
-			getClientsData(mapTermpage2);
+
+			getClientsData(mapTermpage2,null,null);
 			parent.setChosetermid2(data);
 		} else {
 			BootstrapDialog.show({
@@ -1073,10 +1782,7 @@ function searchConerr() {
          }]
      });
 } 
- 
- function onchangeDraw_bright(bright) {
-		//console.log(bright);
-		}
+
  function setDraw_brightDialog() {
 	 var bright=$(".LightBrightnessDialog").val();
 	  //setDraw_bright(bright);
@@ -1088,7 +1794,10 @@ function searchConerr() {
 	}
 </script>
 <script type="text/javascript">
+
+
 function getInfoContent(data) {
+
 	 //路灯
    var sContent_light =   
    "<html>"+
@@ -1101,7 +1810,7 @@ function getInfoContent(data) {
    "<body>"+
    	"<div id= 'main'>"+
    		"<div class = 'head'>"+
-   			"<p>"+data .name+"</p>"+
+   			"<p>"+data.name+"</p>"+
    		"</div>"+
    		"<div class = 'mid'>"+
    			"<div class='introduction'>"+
@@ -1126,9 +1835,9 @@ function getInfoContent(data) {
 					"</li>"+
    				"</ul>"+
    			"</div>"+
-   			"<div class='image'>"+
-   				"<img src='static/map/img/light1.png' />"+
-   			"</div>"+
+//    			"<div class='image'>"+
+//    				"<img src='static/map/img/light1.png' />"+
+//    			"</div>"+
    		"</div>"+
    		"<div class='bottom'>"+
        		"<div class='b1' onclick ='TurnOnLight()'>"+
@@ -1170,9 +1879,6 @@ function getInfoContent(data) {
    						}
    					lightop=lightop+lightop2;
    				}
-   	
-
-					
 					 sContent_light=sContent_light+lightop+
 			    	"</select>"+
 			    "</div>"+
