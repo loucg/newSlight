@@ -282,7 +282,6 @@ body {
 		if (CircleAndRectangle != null) {
 			CircleAndRectangle.removeContextMenu(menu);
 		}
-		alert();
 		map.removeOverlay(CircleAndRectangle);
 		CircleAndRectangle = overlay;
 		overlay.addContextMenu(menu);
