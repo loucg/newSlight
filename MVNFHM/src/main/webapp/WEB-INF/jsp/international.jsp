@@ -580,5 +580,4 @@
 	String part_map_light_save_finished=properties.getProperty("part_map_light_save_finished");//请选择需要加载的路灯
 	String part_map_noLight_need_save=properties.getProperty("part_map_noLight_need_save");//请选择需要加载的路灯
 	String part_map_light_notexist_inPart =properties.getProperty("part_map_light_notexist_inPart");//请选择需要加载的路灯
-	
 %>
