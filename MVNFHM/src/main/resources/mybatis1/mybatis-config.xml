@@ -20,6 +20,7 @@
 		<typeAlias type="com.fh.entity.system.Strategy" alias="Strategy"/>
 		<typeAlias type="com.fh.entity.system.StrategyType" alias="StrategyType"/>
 		<typeAlias type="com.fh.entity.map.c_client" alias="cclient"/>
+		<typeAlias type="com.fh.entity.map.c_partmap" alias="cpartmap"/>
 		<typeAlias type="com.fh.entity.map.draw_client" alias="drawclient"/>
 		<typeAlias type="com.fh.entity.map.c_term" alias="cterm"/>
 		
