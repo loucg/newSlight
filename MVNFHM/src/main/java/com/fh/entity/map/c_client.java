@@ -27,6 +27,8 @@ public class c_client extends PageBean implements Serializable {
 	private Date tdate;
 	private String client_attri_id;
 
+	private int partMaplinetCnt;
+
 	public String getPartMap_Id() {
 		return partMap_Id;
 	}
@@ -44,8 +46,6 @@ public class c_client extends PageBean implements Serializable {
 	public void setPartMaplinetCnt(int partMaplinetCnt) {
 		this.partMaplinetCnt = partMaplinetCnt;
 	}
-
-	private int partMaplinetCnt;
 
 	public String getClientType() {
 		return clientType;

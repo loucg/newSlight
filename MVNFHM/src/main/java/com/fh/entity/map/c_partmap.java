@@ -5,7 +5,6 @@ import java.io.Serializable;
 public class c_partmap extends PageBean implements Serializable {
 
 	private static final long serialVersionUID = 1L;
-
 	private String partmap_name;
 	private String inner_coordinate;
 	private String c_termid;
