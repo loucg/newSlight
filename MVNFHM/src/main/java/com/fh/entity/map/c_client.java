@@ -3,9 +3,6 @@ package com.fh.entity.map;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
-
-
 
 public class c_client extends PageBean implements Serializable {
 
@@ -28,90 +25,139 @@ public class c_client extends PageBean implements Serializable {
 	private String powerup;
 	private String powerdown;
 	private Date tdate;
-	
-	
-	
-	
-	
+	private String client_attri_id;
+
+	public String getPartMap_Id() {
+		return partMap_Id;
+	}
+
+	public void setPartMap_Id(String partMap_Id) {
+		this.partMap_Id = partMap_Id;
+	}
+
+	private String partMap_Id;
+
+	public int getPartMaplinetCnt() {
+		return partMaplinetCnt;
+	}
+
+	public void setPartMaplinetCnt(int partMaplinetCnt) {
+		this.partMaplinetCnt = partMaplinetCnt;
+	}
+
+	private int partMaplinetCnt;
+
+	public String getClientType() {
+		return clientType;
+	}
+
+	public void setClientType(String clientType) {
+		this.clientType = clientType;
+	}
+
+	private String clientType;
+
+	public String getClient_attri_id() {
+		return client_attri_id;
+	}
+
+	public void setClient_attri_id(String client_attri_id) {
+		this.client_attri_id = client_attri_id;
+	}
+
 	public c_client getSearchconditions() {
 		return searchconditions;
 	}
+
 	public void setSearchconditions(c_client searchconditions) {
 		this.searchconditions = searchconditions;
 	}
 
 	private ArrayList<String> cclientgateway;
-	private c_client searchconditions =null;
+	private c_client searchconditions = null;
 	private ArrayList<Integer> drawid = new ArrayList<Integer>();
+
 	public ArrayList<Integer> getDrawid() {
 		return drawid;
 	}
+
 	public void setDrawid(ArrayList<Integer> drawid) {
 		this.drawid = drawid;
 	}
+
 	public Date getTdate() {
 		return tdate;
 	}
+
 	public void setTdate(Date tdate) {
 		this.tdate = tdate;
 	}
+
 	public ArrayList<String> getCclientgateway() {
 		return cclientgateway;
 	}
+
 	public void setCclientgateway(ArrayList<String> cclientgateway) {
 		this.cclientgateway = cclientgateway;
 	}
+
 	public boolean getPowerupisnull() {
-		if( powerup==null) return true;
-		else return false;
+		if (powerup == null)
+			return true;
+		else
+			return false;
 	}
+
 	public String getPowerup() {
 		return powerup;
 	}
+
 	public void setPowerup(String powerup) {
 		this.powerup = powerup;
 	}
+
 	public boolean getPowerdownisnull() {
-		if( powerdown==null) return true;
-		else return false;
+		if (powerdown == null)
+			return true;
+		else
+			return false;
 	}
+
 	public String getPowerdown() {
 		return powerdown;
 	}
+
 	public void setPowerdown(String powerdown) {
 		this.powerdown = powerdown;
 	}
-	
-	
+
 	public c_client() {
-		
+
 	}
+
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}
-	
-/*	public c_client(c_client c) {
-		this.id=c.getId();
-		this.typeid=c.getTypeid();
-		this.termid=c.getTermid();
-		this.name=c.getName();
-		this.coordinate=c.getCoordinate();
-		this.location=c.getLocation();
-		this.lamppolenum=c.getLamppolenum();
-		this.termname=c.getTermname();
-		this.typename=c.getTypename();
-		this.status=c.getStatus();
-		this.brightness=c.getBrightness();
-		this.xcoordinate=c.getXcoordinate();
-		this.ycoordinate=c.getYcoordinate();
-		
-	}*/
+
+	/*
+	 * public c_client(c_client c) { this.id=c.getId(); this.typeid=c.getTypeid();
+	 * this.termid=c.getTermid(); this.name=c.getName();
+	 * this.coordinate=c.getCoordinate(); this.location=c.getLocation();
+	 * this.lamppolenum=c.getLamppolenum(); this.termname=c.getTermname();
+	 * this.typename=c.getTypename(); this.status=c.getStatus();
+	 * this.brightness=c.getBrightness(); this.xcoordinate=c.getXcoordinate();
+	 * this.ycoordinate=c.getYcoordinate();
+	 * 
+	 * }
+	 */
 	public String getAliastypename() {
 		return aliastypename;
 	}
+
 	public void setAliastypename(String aliastypename) {
 		this.aliastypename = aliastypename;
 	}
+
 	public Integer getTermid() {
 		return termid;
 	}
@@ -119,6 +165,7 @@ public class c_client extends PageBean implements Serializable {
 	public void setTermid(Integer termid) {
 		this.termid = termid;
 	}
+
 	public Integer getTypeid() {
 		return typeid;
 	}
@@ -158,8 +205,6 @@ public class c_client extends PageBean implements Serializable {
 	public void setYcoordinate(double ycoordinate) {
 		this.ycoordinate = ycoordinate;
 	}
-
-
 
 	public String getTermname() {
 		return termname;
@@ -201,7 +246,6 @@ public class c_client extends PageBean implements Serializable {
 		this.location = location;
 	}
 
-
 	public Integer getId() {
 		return this.id;
 	}
@@ -218,6 +262,4 @@ public class c_client extends PageBean implements Serializable {
 		this.name = name;
 	}
 
-
-	
 }
