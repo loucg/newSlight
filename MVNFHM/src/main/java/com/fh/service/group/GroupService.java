@@ -23,6 +23,15 @@ public interface GroupService {
 	List<PageData> listGroup(Page page) throws Exception;
 
 	/**
+	 * 获取指定分组所包含的策略包列表
+	 * 
+	 * @param page
+	 * @return
+	 * @throws Exception
+	 */
+	List<PageData> listStrategySetById(Page page) throws Exception;
+
+	/**
 	 * 根据id获取分组信息
 	 * 
 	 * @param pd
