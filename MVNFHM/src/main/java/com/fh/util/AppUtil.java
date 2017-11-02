@@ -117,5 +117,23 @@ public class AppUtil  {
 		}else{
 			return map;
 		}
+	}	
+	
+	/**把色光/冷暖调节值value拆分成value1,value2,value3
+	 * @return
+	 */
+	public static PageData splitAdjustValue(PageData pd) {
+		// C：30、40、30 T：40、60、0
+		String value = pd.getString("value");
+
+		if(value!=null && value.length()>2) {
+			value = value.substring(2);
+			String[] valList = value.split("、");
+			pd.put("value1", valList[0]);
+			pd.put("value2", valList[1]);
+			pd.put("value3", valList[2]);
+		}
+		
+		return pd;
 	}
 }
