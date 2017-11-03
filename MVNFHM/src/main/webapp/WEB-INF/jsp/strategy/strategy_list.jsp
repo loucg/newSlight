@@ -1,5 +1,4 @@
-﻿<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+﻿<%@ page language="java" contentType="text/html; charset=UTF-8"	pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions"%>
@@ -36,8 +35,8 @@
 						<div class="col-xs-12">
 						
 						<form action="strategy/listStrategys.do" method="post" name="strategyForm" id="strategyForm">
-						<input type="hidden" id="termid" name="termid" value="${pd.termid}">
-<%-- 						<input type="hidden" id="op" name="op" value="${pd.op}"> --%>
+						<input type="hidden" id="c_term_id" name="c_term_id" value="${pd.c_term_id}">
+						<input type="hidden" id="strategysetid" name="strategysetid" value="${pd.strategysetid}">
 						<div id="zhongxin" style="padding-top: 13px;">
 
 						<!-- 检索  -->
@@ -69,7 +68,7 @@
 							<thead>
 								<tr>
 									<!-- 选择框 -->
-									<c:if test="${empty pd.termid }">
+									<c:if test="${empty pd.c_term_id }">
 									<th class="center" style="width:35px;">
 									<label class="pos-rel"><input type="checkbox" class="ace" id="zcheckbox" /><span class="lbl"></span></label>
 									</th>
@@ -84,13 +83,13 @@
 									<th class="center" style="width:50px"><%=time %></th>
 									<th class="center" style="width:120px"><%=adjust_value %></th>
 									<th class="center" style="width:120px"><%=brightness %></th>
-									<c:if test="${empty pd.termid }">
+									<%-- <c:if test="${empty pd.c_term_id }">
 									<th class="center" style="width:80px"><%=term_num_in_strategy %></th>
 									</c:if>
-									<th class="center"><%=send_status %></th>
+									<th class="center"><%=send_status %></th> --%>
 									<th class="center"><%=app_explain %></th>
-									<c:if test="${empty pd.termid }">
-									<th class="center" style="width:200px"><%=operate %></th>
+									<c:if test="${empty pd.c_term_id && empty pd.strategysetid }">
+									<th class="center" style="width:100px"><%=operate %></th>
 									</c:if>
 								</tr>
 							</thead>
@@ -103,7 +102,7 @@
 									<c:forEach items="${strategyList}" var="strategy" varStatus="vs">
 										<tr>
 											<!-- 选择框 -->	
-											<c:if test="${empty pd.termid }">
+											<c:if test="${empty pd.c_term_id }">
 											<td class='center'>
 												<label class="pos-rel"><input type='checkbox' name='ids' id="ids${vs.index}" value="${strategy.id}" class="ace" /><span class="lbl"></span></label>
 												<input type="hidden" id="status2${vs.index}" name="status2" value="${strategy.status2}">
@@ -154,7 +153,7 @@
 												<c:otherwise>${strategy.bright }</c:otherwise></c:choose>
 											</td>
 											<!-- 组数量 -->
-											<c:if test="${empty pd.termid }">
+											<%-- <c:if test="${empty pd.c_term_id }">
 											<td class="center" style="background-color:#E1FFFF;">
 												<c:choose><c:when test="${strategy.termcnt>0}">
 													<a onclick="viewGroupMems('${strategy.id}')" style="cursor:pointer;">${strategy.termcnt }</a>
@@ -162,13 +161,13 @@
 													${strategy.termcnt }
 												</c:otherwise></c:choose>
 											</td>
-											</c:if>
+											</c:if> --%>
 												<!-- 下发状态 -->
-												<td class="center">${strategy.send_status }</td>
+												<%-- <td class="center">${strategy.send_status }</td> --%>
 											<!-- 说明 -->
 											<td class="center">${strategy.explain }</td>
 											
-											<c:if test="${empty pd.termid }">
+											<c:if test="${empty pd.c_term_id && empty pd.strategysetid }">
 												<!-- 操作 -->
 											 	<td class="center">
 													<c:if test="${QX.edit != 1 && QX.del != 1 }">
@@ -179,12 +178,12 @@
 														<c:if test="${QX.edit == 1 }">
 															<a class="btn btn-mini btn-info" title="<%=edit %>" onclick="editStrategy(${strategy.id});"><%=edit %></a>
 														</c:if>
-														<c:if test="${QX.add == 1 }">
+														<%-- <c:if test="${QX.add == 1 }">
 															<a class="btn btn-mini btn-success" title="<%=add_group %>" onclick="selectGroup(${strategy.id});"><%=add_group%></a>
 														</c:if>
 														<c:if test="${QX.del == 1 }">
 															<a class="btn btn-xs btn-danger" title="<%=keck_delete_group %>" onclick="deleteGroup('${strategy.id}');"><%=keck_delete_group %></a>
-														</c:if>
+														</c:if> --%>
 														</div>
 													</c:if>
 													<c:if test="${strategy.status2=='1' }">
@@ -213,30 +212,38 @@
 					<div class="page-header position-relative">
 					<table style="width:100%;">
 						<tr>
-							<c:if test="${empty pd.termid }">
-							<td style="vertical-align:top;width:150px">
-<%-- 							<c:if test="${'edit' == pd.op}"> --%>
-								<c:if test="${QX.add == 1 }">
-									<!-- 新增策略 -->
-									<a class="btn btn-mini btn-success" onclick="addStrategy();"><%=add_strategy %></a>
-								</c:if>
-								<c:if test="${QX.del == 1 }">
-									<!-- 删除策略 -->
-									<a class="btn btn-mini btn-danger" title="<%=delete %>" onclick="makeAll('<%=make_sure_del_strategy%>');"><%=delete_strategy %></a>
-								</c:if>
-							</td>
+<%-- 							<c:if test="${empty pd.c_term_id }"> --%>
+							<c:if test="${empty pd.strategysetid}">
+								<td style="vertical-align:top;width:150px" >
+									<c:if test="${QX.add == 1 }">
+										<!-- 新增策略 -->
+										<a class="btn btn-mini btn-success" onclick="addStrategy();"><%=add_strategy %></a>
+									</c:if>
+									<c:if test="${QX.del == 1 }">
+										<!-- 删除策略 -->
+										<a class="btn btn-mini btn-danger" title="<%=delete %>" onclick="makeAll('<%=make_sure_del_strategy%>',null);"><%=delete_strategy %></a>
+									</c:if>
+								</td>
+							</c:if>
 							<td style="vertical-align:top;">
-								<c:if test="${QX.add == 1 }">
+								<c:if test="${not empty pd.strategysetid}">
+									<!-- 添加策略到策略包 -->
+									<td style="vertical-align:top;">
+										<c:if test="${QX.add == 1 }">
+										<a class="btn btn-mini btn-success" onclick="makeAll('<%=make_sure_add_strategy %>',${pd.strategysetid});"><%=add1 %></a>
+										</c:if>
+									</td>
+								</c:if>
+								<%-- <c:if test="${QX.add == 1 }">
 									<!-- 下发策略 -->
 									<a class="btn btn-mini btn-success" title="<%=send_strategy %>" onclick="makeAll('<%=make_sure_send_strategy%>');"><%=send_strategy %></a>
 								</c:if>
 								<c:if test="${QX.del == 1 }">
 									<!-- 注销策略 -->
 									<a class="btn btn-mini btn-danger" title="<%=cancel_strategy %>" onclick="makeAll('<%=make_sure_cancel_strategy%>');"><%=cancel_strategy %></a>
-								</c:if>
-<%-- 							</c:if> --%>
+								</c:if> --%>
 							</td>
-							</c:if>
+<%-- 							</c:if> --%>
 							<td style="vertical-align:top;"><div class="pagination" style="float: right;padding-top: 0px;margin-top: 0px;">${page.pageStr}</div></td>
 						</tr>
 					</table>
@@ -318,7 +325,7 @@ function addStrategy(){
 
 
 //添加应用组
-function selectGroup(strategy_id){
+<%-- function selectGroup(strategy_id){
 	 top.jzts();
 	 var diag = new top.Dialog();
 	 diag.Drag=true;
@@ -339,12 +346,12 @@ function selectGroup(strategy_id){
 			 }
 		}
 		diag.close();
-	 };
+	 }; 
 	 diag.show();
-}
+} --%>
 
 //踢删应用组
-function deleteGroup(strategy_id){
+<%-- function deleteGroup(strategy_id){
 	top.jzts();
 	 var diag = new top.Dialog();
 	 diag.Drag=true;
@@ -367,7 +374,7 @@ function deleteGroup(strategy_id){
 		diag.close();
 	 };
 	 diag.show();
-}
+} --%>
 
 //修改策略
 function editStrategy(strategy_id){
@@ -388,7 +395,7 @@ function editStrategy(strategy_id){
 }
 
 //查看所选分组
-function viewGroupMems(strategy_id){
+<%-- function viewGroupMems(strategy_id){
 	top.jzts();
 	 var diag = new top.Dialog();
 	 diag.Drag=true;
@@ -412,10 +419,10 @@ function viewGroupMems(strategy_id){
 	 };
 	 diag.show();
 }
-
+ --%>
 
 //批量操作 删除策略/下发策略/注销策略
-function makeAll(msg){
+function makeAll(msg, strategySet_id){
 	bootbox.confirm(msg, function(result) {
 		if(result) {
 			var str = '';
@@ -440,7 +447,7 @@ function makeAll(msg){
 					        });
 							return;
 						}					
-					}else if(msg == "<%=make_sure_send_strategy %>"){						
+					<%-- }else if(msg == "<%=make_sure_send_strategy %>"){						
 						//已下发的不能再下发
 						if(document.getElementsByName('status2')[index].value=='1'){
 							$("#"+idsid).tips({
@@ -471,7 +478,7 @@ function makeAll(msg){
 					            time:8
 					        });
 							return;
-						}
+						} --%>
 					}
 	
 					if(str=='') str += document.getElementsByName('ids')[i].value;
@@ -512,7 +519,7 @@ function makeAll(msg){
 							}
 						}
 					});	
-				}else if(msg == "<%=make_sure_send_strategy %>"){
+				<%-- }else if(msg == "<%=make_sure_send_strategy %>"){
 					top.jzts();
 					$.ajax({
 						type: "POST",
@@ -541,7 +548,26 @@ function makeAll(msg){
 								nextPage('${page.currentPage}');
 							}
 						}
+					});	 --%>				
+				}else if(msg == '<%=make_sure_add_strategy %>'){
+					top.jzts();
+					$.ajax({
+						type: "POST",
+						url: '<%=basePath%>strategy/saveS2.do?strategyset_id='+strategySet_id,
+						data: {strategy_ids:"("+str+")"},
+						dataType:'json',
+						//beforeSend: validateData,
+						cache: false,
+						success: function(data){
+							if("success" == data.result){
+								nextPage('${page.currentPage}');
+								$("#zhongxin").hide();
+								$("#zhongxin2").show();
+				    		    top.Dialog.close(); 
+							}
+						}
 					});					
+					
 				}
 			}
 		}

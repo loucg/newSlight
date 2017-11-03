@@ -36,24 +36,32 @@
 						<input type="hidden" id="excel" name="excel" value="0"/>
 						<table style="margin-top:5px;">
 							<tr>
-
-								<td >
-								 	<div class="nav-search">
-									    <label><%=standard%>：</label>
-										<input class="nav-search-input" autocomplete="off" id="nav-search-input" type="text" name="name" value="${pd.name }" />
+								
+								<td>
+									<div class="nav-search">
+									    <label><%=device_number%>：</label>
+										<input class="nav-search-input" autocomplete="off" id="nav-search-input" type="text" name="number" value="${pd.number}" />
 									</div>
 								</td>
 								<td >
 								 	<div class="nav-search">
-									    <label style="margin-left:12px;"><%=vendor%>：</label>
-										<input class="nav-search-input" autocomplete="off" id="nav-search-input" type="text" name="vendor" value="${pd.vendor}"/>
+									    <label style="margin-left:12px;"><%=device_name%>：</label>
+										<input class="nav-search-input" autocomplete="off" id="nav-search-input" type="text" name="name" value="${pd.name }"  />
 									</div>
 								</td>
-								<c:if test="${QX.cha == 1 }">
-								<td style="vertical-align:top;padding-left:2px;"><a class="btn btn-light btn-xs" onclick="tosearch();"  title="<%=search1%>"><i id="nav-search-icon" class="ace-icon fa fa-search bigger-110 nav-search-icon blue"></i></a></td>
+								<td>&nbsp;&nbsp;<%=device_type%>：</td>
+									<td >
+									 	<select class="chosen-select form-control" name="type" id="type" data-placeholder="<%=please_choose_device_type%>" style="height:30px;width: 160px;border-width:1px;border-color:'#fff';border-radius:4px">
+											<option value="0" <c:if test="${pd.type!=0}"> style="display:none"</c:if>>请选择类型</option>
+											<c:forEach items="${typeList}" var="type">
+												<option value="${type.id}" <c:if test="${type.id==pd.type}">selected="selected"</c:if>>${type.name}</option>
+											</c:forEach>
+											<option value="999" <c:if test="${pd.type==999}">selected="selected"</c:if>><%=all%></option>
+									  	</select>
+									</td>
+								<c:if test="${QX.cha == 1 }"><td style="vertical-align:top;padding-left:2px;"><button class="btn btn-light btn-xs" onclick="search();"  title="<%=search2%>"><i id="nav-search-icon" class="ace-icon fa fa-search bigger-110 nav-search-icon blue"></i></button></td></c:if>
 								<c:if test="${QX.toExcel == 1 }"><td style="vertical-align:top;padding-left:2px;"><a class="btn btn-light btn-xs" onclick="toExcel();" title="<%=export_to_excel%>"><i id="nav-search-icon" class="ace-icon fa fa-download bigger-110 nav-search-icon blue"></i></a></td></c:if>
-								<c:if test="${QX.FromExcel == 1 }"><td style="vertical-align:top;padding-left:2px;"><a class="btn btn-light btn-xs" onclick="fromExcel();" title="<%=importt%>"><i id="nav-search-icon" class="ace-icon fa fa-cloud-upload bigger-110 nav-search-icon blue"></i></a></td></c:if>
-								</c:if>
+								<c:if test="${QX.FromExcel == 1 }"><td style="vertical-align:top;padding-left:2px;"><a class="btn btn-light btn-xs" onclick="fromExcel();" title="<%=import_from_excel%>"><i id="nav-search-icon" class="ace-icon fa fa-cloud-upload bigger-110 nav-search-icon blue"></i></a></td></c:if>
 							</tr>
 						</table>
 						<!-- 检索  -->
@@ -76,7 +84,6 @@
 									<th class="center"><%=coordinate%></th>
 									<th class="center"><%=pole%></th>
 									<th class="center"><%=pole_number%></th>
-									<th class="center"><%=password%></th>
 									<th class="center"><%=comment%></th>
 									<th class="center"><%=operate%></th>
 								</tr>
@@ -109,18 +116,7 @@
 											</c:if>
 											<td class="center">${var.pole}</td>
 											<td class="center">${var.polenumber}</td>
-											<td class="center">${var.password}</td>
 											<td class="center">${var.comment}</td>
-										<!--
-											<td class='center' style="width: 30px;">${vs.index+1+(page.currentPage-1)*page.showCount}</td>
-											<td class="center">${var.name}</td>
-											<td class="center">${ fn:substring(var.vendor ,0,50)}</td>											
-											<td style="width: 60px;" class="center">
-												<c:if test="${var.type == '1' }"><span class="label label-important arrowed-in"><%=system%></span></c:if>
-												<c:if test="${var.type == '2' }"><span class="label label-success arrowed"><%=self_prepare%></span></c:if>
-											</td>
-											<td class="center">${var.comment}</td>
-										-->
 											<td class="center" style="width:50px;">
 												<c:if test="${QX.edit != 1 && QX.del != 1 }">
 												<span class="label label-large label-grey arrowed-in-right arrowed-in"><i class="ace-icon fa fa-lock" title="<%=no_permission%>"></i></span>
@@ -152,12 +148,12 @@
 					<div class="page-header position-relative">
 					<table style="width:100%;">
 						<tr>
-							<td style="vertical-align:top;">
+							<%-- <td style="vertical-align:top;">
 								<c:if test="${QX.add == 1 }">
 								<a class="btn btn-sm btn-success" onclick="add();"><%=add2%></a>
 								</c:if>
 
-							</td>
+							</td> --%>
 							<td style="vertical-align:top;"><div class="pagination" style="float: right;padding-top: 0px;margin-top: 0px;">${page.pageStr}</div></td>
 						</tr>
 					</table>
@@ -212,7 +208,7 @@
 			 diag.Title ="<%=add2%>";
 			 diag.URL = '<%=basePath%>sensor/goSensorCreate';
 			 diag.Width = 650;
-			 diag.Height = 224;
+			 diag.Height = 640;
 			 diag.CancelEvent = function(){ //关闭事件
 				 if(diag.innerFrame.contentWindow.document.getElementById('zhongxin').style.display == 'none'){
 					 if('${page.currentPage}' == '0'){
@@ -237,7 +233,7 @@
 			 diag.Title ="<%=edit%>";
 			 diag.URL = '<%=basePath%>sensor/goSensorEdit?id='+Id;
 			 diag.Width = 650;
-			 diag.Height = 224;
+			 diag.Height = 624;
 			 diag.CancelEvent = function(){ //关闭事件
 				 if(diag.innerFrame.contentWindow.document.getElementById('zhongxin').style.display == 'none'){
 					 nextPage(${page.currentPage});
@@ -255,6 +251,7 @@
 		function toExcel(){
 			$("#excel").val("1");
 			$("#Form").submit();
+			$("#excel").val("0");
 		}
 		
 		//打开上传excel页面

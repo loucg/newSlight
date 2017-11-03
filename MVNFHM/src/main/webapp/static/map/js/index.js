@@ -1,6 +1,6 @@
 ﻿$(function () {
 	$('body').on("click",'.one',function() {
-		
+				
 				// $('.kid').hide();
 				// $(this).parent().parent().find('.kid').toggle();//
 				// $(this)指<a>
@@ -15,17 +15,17 @@
 					setChosetermid();
 					//console.log($(this).attr("id"));
 					if ($(this).attr("id") != "search" && $(this).attr("id") != "draw") {
-						Conframe.window.cleanAllMaker();// 清除所有覆盖物
+						//Conframe.window.cleanAllMaker();// 清除所有覆盖物
 						Conframe.window.getClientsData(mapTermpagein[$(this)
 								.attr("id")]);// 加载对应组的终端maker
 					} else if ($(this).attr("id") == "search"){
-						Conframe.window.cleanAllMaker();// 清除所有覆盖物
+					//	Conframe.window.cleanAllMaker();// 清除所有覆盖物
 						//Conframe.window.changePreMakerdata(searchdata);
 						//console.log(mapTermpage[-1]);
 						Conframe.window.getClientsData(mapTermpage[-1]);
 						//Conframe.window.addClientMaker(searchdata);	
 					}else if ($(this).attr("id") == "draw"){
-						Conframe.window.cleanAllMaker();// 清除所有覆盖物
+					//	Conframe.window.cleanAllMaker();// 清除所有覆盖物
 						//console.log(mapTermpage[-2]);
 						Conframe.window.getClientsData(mapTermpage[-2]);
 						//Conframe.window.changePreMakerdata(drawdata);
@@ -37,11 +37,11 @@
     
   // $('.onekid').live("click",function () {
 	$('body').on("click",'.onekid',function () {
-		alert()
         //$('.onekid').removeClass('one-hover');
         //$(this).addClass('one-hover');
         var str=$(this).attr("id");
         if(str!="more"){
+        	
         	Conframe.window.changeCenterByid(str);
         }else{
         	$(this).parent().remove();
@@ -77,7 +77,6 @@
     var c = $('.Conframe');
     var s = $('.searchdiv');
     $('.nav-tip').click(function () {
-    	alert();
         if (l.css('left') == '8px') {
             l.animate({
                 left: -300

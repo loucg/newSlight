@@ -43,6 +43,7 @@
 						<table id="table_report" class="table table-striped table-bordered table-hover" border="1">
 							<tr style="display:none">
 						   		 <td><input type="text" name="ID" id="id" value="${pd.id }" /></td>
+						   		 <td><input type="text" name="strategyset_id" id="strategyset_id" value="${pd.strategyset_id }" /></td>
 						    </tr>
 						    <!-- 名称 -->
 							<tr>
@@ -57,7 +58,7 @@
 										onchange="switchAdjustItems(this.value)">
 										<option value=""><%=please_choose_type %></option>
 										<c:forEach items="${strategyTypeList}" var="strategyType">
-											<option value="${strategyType.id }" <c:if test="${strategyType.id == pd.b_strategy_type_id }">selected</c:if>>${strategyType.name }</option>
+											<option value="${strategyType.id }" <c:if test="${strategyType.id == pd.b_strategy_type_id }">selected</c:if> >${strategyType.name }</option>
 										</c:forEach>
 									</select>
 								</td>

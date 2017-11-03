@@ -8,6 +8,7 @@ import java.util.Map;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.shiro.session.Session;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -26,11 +27,16 @@ import com.fh.entity.map.c_client;
 import com.fh.entity.map.c_partmap;
 import com.fh.entity.map.c_term;
 import com.fh.entity.map.draw_client;
+import com.fh.entity.system.User;
 import com.fh.service.map.C_clientManager;
 import com.fh.service.system.fhlog.FHlogManager;
+import com.fh.service.system.user.UserManager;
 import com.fh.util.AppUtil;
+import com.fh.util.Const;
 import com.fh.util.FileUpload;
+import com.fh.util.Jurisdiction;
 import com.fh.util.PageData;
+import com.fh.util.PathUtil;
 
 @Controller
 @RequestMapping(value = "/gomap")
@@ -44,6 +50,8 @@ public class MapContentController extends BaseController {
 
 	@Resource(name = "fhlogService")
 	private FHlogManager fhlogService;
+	@Resource(name = "userService")
+	private UserManager userService;
 
 	/**
 	 * add part map to db, and
@@ -83,31 +91,39 @@ public class MapContentController extends BaseController {
 		String fileName = null;
 		String filePath = null;
 		if (null != file && !file.isEmpty()) {
-			// String filePath = PathUtil.getClasspath() + Const.FILEPATHMAPIMG; // 文件上传路径
-			// logBefore(logger, filePath + " uploaded file path");
-			filePath = "C:\\Projects\\light\\git\\newSlight\\MVNFHM\\src\\main\\webapp\\uploadFiles\\uploadImgs\\partmap\\";
-			fileName = FileUpload.fileUp(file, filePath, request.getParameter("xycoordinate")); // 执行上传
-		}
-		if (null != request.getParameter("xycoordinate")) {
-			pd.put("XPoint", request.getParameter("xycoordinate").split(",")[0]);
-			pd.put("YPoint", request.getParameter("xycoordinate").split(",")[1]);
-		}
-		// 保存局部图概要信息
-		c_partmap cp = new c_partmap();
-		cp.setId(request.getParameter("partMapid"));
-		cp.setC_termid(request.getParameter("termID"));
-		cp.setExternal_coordinate(request.getParameter("xycoordinate"));
-		cp.setMap_pictrue_path(fileName);
-		cp.setPartmap_name(request.getParameter("mapPicName"));
-		cp.setC_client_type_id("1");
-		pd.put("mapPicName", request.getParameter("mapPicName"));
-		if (cp.getId() != null && cp.getId().trim().length() > 0) {
-			c_clientService.updatePartMapHeader(cp);
+			filePath = PathUtil.getClasspath() + Const.FILEPATHMAPIMG; //
+			// 文件上传路径
+			logBefore(logger, filePath + " uploaded file path");
+			String xypointFileName = request.getParameter("xycoordinate");
+			xypointFileName = xypointFileName.replace(".", "-").replace(".", "-");
+			// filePath =
+			// "C:\\loucg\\github\\git\\MVNFHM\\src\\main\\webapp\\uploadFiles\\uploadImgs\\partmap\\";
+			fileName = FileUpload.fileUp(file, filePath, xypointFileName); // 执行上传
 
-		} else {
-			c_clientService.insertPartMapHeader(cp);
+			if (null != request.getParameter("xycoordinate")) {
+				pd.put("XPoint", request.getParameter("xycoordinate").split(",")[0]);
+				pd.put("YPoint", request.getParameter("xycoordinate").split(",")[1]);
+			}
+			// fileName.replaceAll(".", "-");
+			// 保存局部图概要信息
+			c_partmap cp = new c_partmap();
+			cp.setId(request.getParameter("partMapid"));
+			cp.setC_termid(request.getParameter("termID"));
+			cp.setExternal_coordinate(request.getParameter("xycoordinate"));
+			cp.setMap_pictrue_path(fileName);
+			cp.setPartmap_name(request.getParameter("mapPicName"));
+			cp.setC_client_type_id("1");
+			pd.put("mapPicName", request.getParameter("mapPicName"));
+			if (cp.getId() != null && cp.getId().trim().length() > 0) {
+				c_clientService.updatePartMapHeader(cp);
+
+			} else {
+				c_clientService.insertPartMapHeader(cp);
+			}
+
+			pd.put("partMapid", cp.getId());
+			pd.put("termID", cp.getC_termid());
 		}
-		pd.put("partMapid", cp.getId());
 		mv.addObject("pd", pd);
 		mv.setViewName("map/partmap_add");
 		mv.addObject("msg", "success");
@@ -142,7 +158,8 @@ public class MapContentController extends BaseController {
 	// String xpoint = pd.getString("XPoint");
 	// String ypoint = pd.getString("YPoint");
 	//
-	// BufferedImage buffImg = NewImageUtils.watermark(new File(sourceFilePath), new
+	// BufferedImage buffImg = NewImageUtils.watermark(new File(sourceFilePath),
+	// new
 	// File(waterFilePath),
 	// Integer.parseInt(xpoint), Integer.parseInt(ypoint), 1.0f);
 	// newImageUtils.generateWaterFile(buffImg, saveFilePath);
@@ -158,8 +175,28 @@ public class MapContentController extends BaseController {
 	public ModelAndView content() throws Exception {
 		// System.out.println(1);
 		ModelAndView mv = this.getModelAndView();
+		PageData pd = new PageData();
+		pd = this.getPageData();
 		mv.setViewName("map/mapContent");
+		String companyid = getCompanyID();
+		if ("1".equals(companyid)) {
+			pd.put("maptype", "1");
+		} else {
+			pd.put("maptype", "2");
+		}
+		mv.addObject("pd", pd);
 		return mv;
+	}
+
+	private String getCompanyID() throws Exception {
+		Session session = Jurisdiction.getSession();
+		User user = (User) session.getAttribute(Const.SESSION_USER); // 读取session中的用户信息(单独用户信息)
+		if (user != null) {
+			User userr = (User) session.getAttribute(Const.SESSION_USERROL); // 读取session中的用户信息(含角色信息)
+			PageData company = userService.findcompanyByUsername(user.getUSERNAME());
+			return company.getString("map_type");
+		}
+		return "";
 	}
 
 	// 左边列表的controller
@@ -388,6 +425,7 @@ public class MapContentController extends BaseController {
 		cc.setClient_attri_id(pd.getString("client_attri_id"));
 		cc.setCoordinate(pd.getString("coordinate"));
 		cc.setClientType(pd.getString("clientType"));
+		cc.setMapFlag(pd.getString("mapFlag"));
 		c_clientService.updateClientAttr_Coordinate(cc);
 		List<PageData> pdList = new ArrayList<PageData>();
 		pdList.add(pd);
@@ -466,7 +504,9 @@ public class MapContentController extends BaseController {
 		PageData pd = new PageData();
 		pd = this.getPageData();
 		c_client cc = new c_client();
-		cc.setTermid(Integer.parseInt(pd.getString("termid")));
+		if (pd.getString("termid") != null) {
+			cc.setTermid(Integer.parseInt(pd.getString("termid")));
+		}
 		cc.setClient_attri_id(pd.getString("clientid"));
 		cc.setPartMap_Id(pd.getString("partMapID"));
 		List<c_client> clientlist = c_clientService.getSearchClient(cc);

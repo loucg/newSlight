@@ -131,14 +131,12 @@
 	<select id="getSensorlistPage" parameterType="page" resultType="pd">
 		SELECT a.c_sensor_id AS id, b.sensor_code AS number, a.`name`,a.c_sensor_type_id AS typeid,
 			d.`name` AS type,a.location,a.coordinate,a.`comment`,h.`name` AS statename,
-			h.`value` AS state,<!-- e.`name` AS power, f.`name` AS lamp,--> g.`name` AS pole,
+			h.`value` AS state, g.`name` AS pole,
 			a.`password`, a.lamp_pole_num AS polenumber
 		FROM c_sensor_attr1 AS a
 			LEFT JOIN c_sensor AS b ON a.c_sensor_id = b.id
 			LEFT JOIN c_sensor_attr2 AS c ON a.c_sensor_id = c.c_sensor_id
 			LEFT JOIN c_sensor_type AS d ON a.c_sensor_type_id = d.id
-			<!-- LEFT JOIN c_power_type AS e ON c.c_power_type_id = e.id --> 
-			<!-- LEFT JOIN c_lamp_type AS f ON c.c_lamp_type_id = f.id -->
 			LEFT JOIN c_lamp_pole_type AS g ON c.c_lamp_pole_type_id = g.id
 			LEFT JOIN b_status AS h ON a.status = h.`value`
 			LEFT JOIN b_status_main AS i ON h.b_status_main_id = i.id 
@@ -151,11 +149,9 @@
 		<if test="pd.name!=null and pd.name!=''">
 			AND a.name LIKE CONCAT(CONCAT('%', #{pd.name}), '%')
 		</if>
-		<!-- 
 		<if test="pd.type!=0 and pd.type!=null and pd.type!=999">
 			AND d.id = #{pd.type, jdbcType=INTEGER}
 		</if>
-		-->
 	</select>
 	<!--
 	<select id="getSensorlistPage" parameterType="page" resultType="pd">
@@ -172,13 +168,23 @@
 	-->
 	<!-- 传感器修改 -->
 	<update id="editSensor" parameterType="pd">
-		UPDATE <include refid="sensorTableName"/>
-		SET 
-			name = #{name},
-			vendor = #{vendor},
-			type = #{type},
-			comment = #{comment}
-		WHERE id = #{id}
+		UPDATE c_sensor AS a
+			JOIN c_sensor_attr1 AS b ON a.id = b.c_sensor_id
+			JOIN c_sensor_attr2 AS c ON a.id = c.c_sensor_id
+		SET a.sensor_code           =#{number},
+			b.name                  =#{name},
+			b.password              =#{password},
+			b.c_sensor_type_id      =#{typeid},
+			b.location              =#{location},
+			b.coordinate            =#{coordinate},
+			b.comment               =#{comment},
+			b.status		  			=#{status},
+			b.lamp_pole_num	  		=#{polenumber},
+			<!-- c.c_lamp_type_id  		=#{lamp}, -->
+			c.c_lamp_pole_type_id   =#{pole}
+			<!-- c.c_power_type_id		=#{power} -->
+		WHERE 
+			a.id 					=#{id}
 	</update>
 	<!-- 传感器新增 -->
 	<insert id="createSensor" parameterType="pd">
@@ -401,7 +407,7 @@
 			LEFT JOIN c_lamp_pole_type AS g ON c.c_lamp_pole_type_id = g.id
 			LEFT JOIN b_status AS h ON a.status = h.`value`
 			LEFT JOIN b_status_main AS i ON h.b_status_main_id = i.id
-		WHERE a.sys_user_id in ${pd.userids}
+		WHERE a.sys_user_id in ${pd.userids} 
 			AND h.b_status_main_id = 1
 			AND a.id = c.id
 		<if test="pd.number!=null and pd.number!=''">
@@ -482,15 +488,15 @@
 			JOIN c_gateway_attr2 AS c ON a.id = c.c_gateway_id
 		SET a.gateway_code          =#{number},
 			b.name                  =#{name},
-			b.password              =#{password},
+			<!-- b.password              =#{password}, -->
 			b.c_gateway_type_id     =#{typeid},
 			b.location              =#{location},
 			b.coordinate            =#{coordinate},
 			b.comment               =#{comment},
-			b.staus		  			=#{status},
-			b.lamp_pole_num	  		=#{polenumber},
-			c.c_sim_id				=#{mobile},
-			c.c_lamp_pole_type_id   =#{pole}
+			<!-- b.staus		  			=#{status}, -->
+			<!-- b.lamp_pole_num	  		=#{polenumber}, -->
+			c.c_sim_id				=#{mobile}
+			<!-- c.c_lamp_pole_type_id   =#{pole} -->
 			<!-- c.c_sensor_type_id	    =#{sensor}-->
 			
 		WHERE 
@@ -692,9 +698,19 @@
 	</select>
 	<!-- 根据id获取传感器 -->
 	<select id="getSensorById" resultType="pd">
-		SELECT *
-		FROM <include refid="sensorTableName"/>
-		WHERE id=#{id, jdbcType=INTEGER}
+		SELECT a.c_sensor_id AS id, b.sensor_code AS number, a.`name`,a.c_sensor_type_id AS typeid,
+			d.`name` AS type,a.location,a.coordinate,a.`comment`,h.`name` AS statename,
+			h.`value` AS state, g.`id` AS poleid, g.`name` AS pole,
+			a.`password`, a.lamp_pole_num AS polenumber
+		FROM c_sensor_attr1 AS a
+			LEFT JOIN c_sensor AS b ON a.c_sensor_id = b.id
+			LEFT JOIN c_sensor_attr2 AS c ON a.c_sensor_id = c.c_sensor_id
+			LEFT JOIN c_sensor_type AS d ON a.c_sensor_type_id = d.id
+			LEFT JOIN c_lamp_pole_type AS g ON c.c_lamp_pole_type_id = g.id
+			LEFT JOIN b_status AS h ON a.status = h.`value`
+			LEFT JOIN b_status_main AS i ON h.b_status_main_id = i.id
+		WHERE a.c_sensor_id = #{id ,jdbcType=INTEGER}
+			AND i.id = 1
 	</select>
 	<!-- 获取所有Sim卡 -->
 	<select id="getAllSim" resultType="pd">
@@ -884,7 +900,81 @@
 		SELECT a.id, a.`name`
 		FROM c_client_type AS a	
 	</select>
-	<!-- end -->
 	
+	<select id="getSensorByNumber" resultType="pd">
+		SELECT COUNT(*) AS count
+		FROM c_sensor
+		WHERE sensor_code = #{number}
+	</select>
+	
+	<!-- 插入传感器表 -->
+	<sql id="sensorTable">
+		c_sensor
+	</sql>
+	<sql id="sensorCodeField">
+		sensor_code
+	</sql>
+	<sql id="sensorCodeFieldValue">
+		#{number, jdbcType=VARCHAR}
+	</sql>
+	<insert id="insertSensor" parameterType="pd">
+		insert into <include refid="sensorTable"/>(
+			<include refid="sensorCodeField"/>
+		) values (
+			<include refid="sensorCodeFieldValue"/>
+		)
+	</insert>
+	<!-- 插入属性表1-->
+	<sql id="sensorAttr1Table">
+		c_sensor_attr1
+	</sql>
+	<sql id="sensorAttr1Field">
+		c_sensor_id,name,password,c_sensor_type_id,location,coordinate,comment,status,lamp_pole_num,sys_user_id
+	</sql>
+	<sql id="sensorAttr1FieldValue">
+		#{id, jdbcType=BIGINT},#{name, jdbcType=VARCHAR},#{password,jdbcType=VARCHAR},#{typeid,jdbcType=INTEGER},
+		#{location,jdbcType=VARCHAR},#{coordinate,jdbcType=VARCHAR},#{comment,jdbcType=VARCHAR},#{status,jdbcType=INTEGER},
+		#{polenumber,jdbcType=VARCHAR},#{userid,jdbcType=BIGINT}
+	</sql>
+	<insert id="insertSensorAttr1" parameterType="pd">
+		insert into <include refid="sensorAttr1Table"/>(
+			<include refid="sensorAttr1Field"/>
+		) values (
+			<include refid="sensorAttr1FieldValue"/>
+		)
+	</insert>
+	<!-- 插入属性表2-->
+	<sql id="sensorAttr2Table">
+		c_sensor_attr2
+	</sql>
+	<sql id="sensorAttr2Field">
+		c_sensor_id,c_lamp_pole_type_id
+	</sql>
+	<sql id="sensorAttr2FieldValue">
+		#{id, jdbcType=BIGINT},#{lamp,jdbcType=INTEGER}
+	</sql>
+	<insert id="insertSensorAttr2" parameterType="pd">
+		insert into <include refid="sensorAttr2Table"/>(
+			<include refid="sensorAttr2Field"/>
+		) values (
+			#{id, jdbcType=BIGINT},
+			null
+		)
+	</insert>
+	<!-- 查看网关配置 -->
+	<select id="viewGatewayInfo" resultType="pd">
+		SELECT 
+			number,
+			number2,
+			number3,
+			number4,
+			number5,
+			number6,
+			`count`
+		FROM c_gateway_attr3
+		WHERE c_gateway_id = #{c_gateway_id}
+	</select>
+	
+	<!-- end -->
 	
 </mapper>

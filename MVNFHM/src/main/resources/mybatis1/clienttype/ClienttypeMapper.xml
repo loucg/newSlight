@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ClienttypeMapper">
+	
+	<!-- 表名 -->
+	<sql id="sensorTableName">
+		c_sensor_type
+	</sql>
+	<sql id="clientTableName">
+		c_client_type
+	</sql>
+	<sql id="gatewayTableName">
+		c_gateway_type
+	</sql>
+	<sql id="breakerTableName">
+		c_breaker_type
+	</sql>
+	<sql id="lampTableName">
+		c_lamp_type
+	</sql>
+	
+	<!-- 字段 -->
+	<!-- 断路器 -->
+	<sql id="breakerField">
+		name,loop_amount,`explain`,Vmax,Imax,Vset,Iset
+	</sql>
+	<sql id="breakerFieldValue">
+		#{name},#{loop_amount},#{explain},#{Vmax},#{Imax},#{Vset},#{Iset}
+	</sql>
+	<!-- 路灯 -->
+	<sql id="clientField">
+		name,`explain`,status,Vmax,Imax,Vset,Iset
+	</sql>
+	
+	<sql id="clientFieldValue">
+		#{name},#{explain},#{status},#{Vmax},#{Imax},#{Vset},#{Iset}
+	</sql>
+	
+	<!-- 传感器 -->
+	<sql id="sensorField">
+		name,image,`explain`,status,Vmax,Imax,Vset,Iset
+	</sql>
+	<sql id="sensorFieldValue">
+		#{name},#{image},#{explain},#{status},#{Vmax},#{Imax},#{Vset},#{Iset}
+	</sql>
+	<!-- 网关 -->
+	<sql id="gatewayField">
+		name_EN,name_CH,`explain`,status,Vmax,Imax,Vset,Iset
+	</sql>
+	<sql id="gatewayFieldValue">
+		#{name},#{name},#{explain},#{status},#{Vmax},#{Imax},#{Vset},#{Iset}
+	</sql>
+		<!-- 灯 -->
+	<sql id="lampField">
+		name,vendor,type,image,comment
+	</sql>
+	
+	<sql id="lampFieldValue">
+		#{name},#{vendor},#{type},#{image},#{comment}
+	</sql>
+	<!-- ====断路器 start===== -->
+	<!-- 1.查询所有断路器 -->
+	<select id="getBreakerListPage" parameterType="page" resultType="pd">
+		SELECT * 
+		FROM <include refid="breakerTableName"></include>
+	</select>
+	
+	<!-- 3.根据id获取断路器 -->
+	<select id="getBreakerById" resultType="pd" parameterType="pd">
+		SELECT *
+		FROM <include refid="breakerTableName"/>
+		WHERE id=#{id, jdbcType=INTEGER}
+	</select>
+	
+	<!-- 4.新增断路器 -->
+	<insert id="createBreaker" parameterType="pd">
+		insert into <include refid="breakerTableName"/>(
+			<include refid="breakerField"></include>
+		) values (
+			<include refid="breakerFieldValue"/>
+		)
+	</insert> 
+	<!-- ====断路器 end===== -->
+	<!-- ====传感器 start===== -->
+	<!-- 传感器修改 -->
+	<update id="editSensor" parameterType="pd">
+		UPDATE <include refid="sensorTableName"/>
+		SET 
+			name = #{name},
+			image = #{image},
+			status = #{status},
+			`explain` = #{explain},
+			Vmax = #{Vmax},
+			Imax = #{Imax},
+			Vset = #{Vset},
+			Iset = #{Iset}
+		WHERE id = #{id}
+	</update>
+	<!-- 传感器新增 -->
+	<insert id="createSensor" parameterType="pd">
+		insert into <include refid="sensorTableName"/>(
+			<include refid="sensorField"/>
+		) values (
+			<include refid="sensorFieldValue"/>
+		)
+	</insert> 
+	<!-- 获取所有传感器 -->
+	<select id="getSensorlistPage" resultType="pd" parameterType="page">
+		SELECT *
+		FROM c_sensor_type 
+		WHERE id != 0
+	</select>
+	<!-- 根据id获取传感器 -->
+	<select id="getSensorById" resultType="pd" parameterType="pd">
+		SELECT *
+		FROM <include refid="sensorTableName"/>
+		WHERE id=#{id, jdbcType=INTEGER}
+	</select>
+	<!-- ====传感器 end===== -->
+	<!-- ====网关 start===== -->
+	<!-- 网关修改 -->
+	<update id="editGateway" parameterType="pd">
+		UPDATE <include refid="gatewayTableName"/>
+		SET 
+			name_EN = #{name_EN},
+			name_CH = #{name_CH},
+			status = #{status},
+			`explain` = #{explain},
+			Vmax = #{Vmax},
+			Imax = #{Imax},
+			Vset = #{Vset},
+			Iset = #{Iset}
+		WHERE id = #{id}
+	</update>
+	<!-- 新增网关 -->
+	<insert id="createGateway" parameterType="pd">
+		insert into c_gateway_type(
+			name_EN,name_CH,`explain`,status,Vmax,Imax,Vset,Iset
+		) values (
+			#{name_EN},#{name_CH},#{explain},#{status},#{Vmax},#{Imax},#{Vset},#{Iset}
+		)
+	</insert> 
+	
+	<!-- 根据id获取网关类型 -->
+	<select id="getGatewayById" resultType="pd" parameterType="pd">
+		SELECT *
+		FROM <include refid="gatewayTableName"/>
+		WHERE id=#{id, jdbcType=INTEGER}
+	</select>
+	<!-- ====网关 end===== -->
+	
+	<!-- ====终端 start===== -->
+	<!-- 终端修改 -->
+	<update id="editClient" parameterType="pd">
+		UPDATE <include refid="clientTableName"/>
+		SET 
+			name = #{name},
+			status = #{status},
+			`explain` = #{explain},
+			Vmax = #{Vmax},
+			Imax = #{Imax},
+			Vset = #{Vset},
+			Iset = #{Iset}
+		WHERE id = #{id}
+	</update>
+	<!-- 新增终端 -->
+	<insert id="createClient" parameterType="pd">
+		insert into <include refid="clientTableName"/>(
+			<include refid="clientField"/>
+		) values (
+			<include refid="clientFieldValue"/>
+		)
+	</insert> 
+	<!-- 获取所有终端类型 -->
+	<select id="getClientlistPage" resultType="pd" parameterType="page">
+		SELECT *
+		FROM <include refid="clientTableName"/>
+		WHERE id != 0
+	</select>
+	<!-- 根据id获取终端类型 -->
+	<select id="getClientById" resultType="pd" parameterType="pd">
+		SELECT *
+		FROM <include refid="clientTableName"/>
+		WHERE id=#{id, jdbcType=INTEGER}
+	</select>
+	<!-- ====终端 end===== -->
+	<!-- 灯新增 -->
+	<insert id="createLamp" parameterType="pd">
+		insert into <include refid="lampTableName"/>(
+			<include refid="lampField"/>
+		) values (
+			<include refid="lampFieldValue"/>
+		)
+	</insert>
+	<!-- 灯修改 -->
+	<update id="editLamp" parameterType="pd">
+		UPDATE <include refid="lampTableName"/>
+		SET 
+			name = #{name},
+			vendor = #{vendor},
+			type = #{type},
+			comment = #{comment},
+		WHERE id = #{id}
+	</update>
+	<!-- 获取所有灯 -->
+	<select id="getLamplistPage" parameterType="page" resultType="pd">
+		SELECT * 
+		FROM <include refid="lampTableName"/>
+
+	</select>
+	<!-- 根据id获取灯 -->
+	<select id="getLampById" resultType="pd" parameterType="pd">
+		SELECT *
+		FROM <include refid="lampTableName"/>
+		WHERE id=#{id, jdbcType=INTEGER}
+	</select>
+	<select id="lastInsertId" resultType="int">
+		SELECT LAST_INSERT_ID()
+	</select>
+	<!-- 获取所有网关类型 -->
+	<select id="getGatewaylistPage" parameterType="page" resultType="pd">
+		SELECT * 
+		FROM <include refid="gatewayTableName"></include>
+		WHERE id != 0
+	</select>
+	
+	<!-- 删除-->
+	<delete id="delGateway" parameterType="pd">
+		delete from <include refid="gatewayTableName"></include>
+		where 
+			id = #{id}
+	</delete>
+	<!-- 删除-->
+	<delete id="delSensor" parameterType="pd">
+		delete from <include refid="sensorTableName"></include>
+		where 
+			id = #{id}
+	</delete>
+	<!-- 删除-->
+	<delete id="delLamp" parameterType="pd">
+		delete from <include refid="clientTableName"></include>
+		where 
+			id = #{id}
+	</delete>
+		<!-- 删除图片 -->
+	<update id="delSensorPic" parameterType="pd">
+		update  <include refid="sensorTableName"></include>
+			set 
+				image			= null
+			where 
+				id = #{id}
+	</update>
+	<!-- 确认终端是否使用中 -->
+	<select id="getClientTypeCount" resultType="pd" parameterType="pd">
+		SELECT count(*) `count`
+		FROM c_client_attr1
+		WHERE c_client_type_id in (#{id, jdbcType=INTEGER})
+	</select>
+	<!-- 确认传感器是否使用中 -->
+	<select id="getSensorTypeCount" resultType="pd" parameterType="pd">
+		SELECT count(*) `count`
+		FROM c_sensor_attr1
+		WHERE c_sensor_type_id in (#{id, jdbcType=INTEGER})
+	</select>
+		<!-- 确认网关是否使用中 -->
+	<select id="getGatewayTypeCount" resultType="pd" parameterType="pd">
+		SELECT count(*) `count`
+		FROM c_gateway_attr1
+		WHERE c_gateway_type_id in (#{id, jdbcType=INTEGER})
+	</select>
+</mapper>

@@ -67,8 +67,11 @@ public class ConfigureSerivceImpl implements ConfigureService {
 
 	@Override
 	public void createSensor(PageData pd) throws Exception {
-		// TODO Auto-generated method stub
-		dao.save("ConfigureMapper.createSensor", pd);
+		dao.save("ConfigureMapper.insertSensor", pd);
+		int lastid = (Integer) dao.findForObject("ConfigureMapper.lastInsertId", pd);
+		pd.put("id", lastid);
+		dao.save("ConfigureMapper.insertSensorAttr1", pd);
+		dao.save("ConfigureMapper.insertSensorAttr2", pd);
 	}
 
 	@Override
@@ -302,5 +305,15 @@ public class ConfigureSerivceImpl implements ConfigureService {
 	@Override
 	public List<PageData> getAllClientType(PageData pd) throws Exception {
 		return (List<PageData>) dao.findForList("ConfigureMapper.getClientType", pd);
+	}
+	
+	@Override
+	public PageData getSensorByNumber(PageData pd) throws Exception {
+		// TODO Auto-generated method stub
+		return (PageData) dao.findForObject("ConfigureMapper.getSensorByNumber", pd);
+	}
+	@Override
+	public PageData viewGatewayNet(PageData pd) throws Exception{
+		return (PageData) dao.findForObject("ConfigureMapper.viewGatewayInfo", pd);
 	}
 }

@@ -45,7 +45,7 @@
 										</span>
 									</div>
 								</td>
-								<td>&nbsp;&nbsp;<%=explain_item %>：</td>
+								<td>&nbsp;&nbsp;<%=summary %>：</td>
 								<td>
 									<div class="nav-search">
 										<span class="input-icon">
@@ -53,7 +53,7 @@
 										</span>
 									</div>
 								</td>
-								<td>&nbsp;&nbsp;<%=status %>：</td>
+								<%-- <td>&nbsp;&nbsp;<%=status %>：</td>
 								<td style="vertical-align:top;padding-left:2px;"> 
 								 	<select class="chosen-select form-control" name="status" id="status" data-placeholder=" " style="vertical-align:top;width: 130px;height:30px">
 										<option value=""></option>
@@ -61,7 +61,7 @@
 										<option value="1"<c:if test="${pd.status == '1'}">selected</c:if> ><%=effective %></option>
 										<option value="2"<c:if test="${pd.status == '2'}">selected</c:if> ><%=invalid %></option>
 									</select>
-								</td>
+								</td> --%>
 								<c:if test="${QX.cha == 1 }">
 								<td style="vertical-align:top;padding-left:2px"><a class="btn btn-light btn-xs" onclick="tosearch();"  title="<%=search2 %>" style="padding: 3px 3px;"><i id="nav-search-icon" class="ace-icon fa fa-search bigger-110 nav-search-icon blue"></i></a></td>
 								</c:if>
@@ -72,14 +72,21 @@
 						<table id="simple-table" class="table table-striped table-bordered table-hover" style="margin-top:5px;">	
 							<thead>
 								<tr>
-								<th class="center" style="width:50px;"></th>
+									<th class="center" style="width:35px;">
+										<label class="pos-rel">
+											<input type="checkbox" class="ace" id="zcheckbox" />
+											<span class="lbl"></span>
+										</label>
+									</th>
 									<th class="center" style="width:50px;"><%=number %></th>
 									<th class="center"><%=name %></th>
 									<th class="center"><%=summary %></th>
-									<th class="center"><%=status %></th>
-<%-- 									<th class="center"><%=ctrl_strategy %></th>s --%>
-									<th class="center"><%=menber_number %></th>
-									<th class="center" style="width: 250px;"><%=operate %></th>
+<%-- 									<th class="center"><%=status %></th> --%>
+<%-- 									<th class="center"><%=ctrl_strategy %></th> --%>
+									<th class="center" style="width:100px;"><%=menber_number %></th>
+									<!-- 策略包 -->
+									<th class="center" style="width:400px;"><%=strategy_set %></th>
+									<th class="center" style="width:200px;"><%=operate %></th>
 								</tr>
 							</thead>
 													
@@ -90,16 +97,41 @@
 									<c:if test="${QX.cha == 1 }">
 									<c:forEach items="${groupList}" var="group" varStatus="vs">
 										<tr>
-										<th class="center" style="width:35px;">	
+										<th class="center">	
 											<label class="pos-rel"><input type="checkbox" class="ace" name='ids' id="ids${vs.index}" value="${group.id}" /><span class="lbl"></span></label>
 										</th>
 											<td class='center' style="width: 30px;">${vs.index+1}<input type='hidden' name="hdstrategyIds" value="${group.strategy_num}"/></td>
 											<td class='center'>${group.name}<input type='hidden' name="hdgroupname" value="${group.name}"/></td>
 											<td class='center'>${group.explain}</td>
-											<td class='center'>${group.STATUS}</td>
+<%-- 											<td class='center'>${group.STATUS}</td> --%>
 <%-- 											<td class='center'>${group.strategy_num}</td> --%>
+											<!-- 成员数量 -->
 											<td class='center' style="background-color: #E1FFFF;"><a onclick="viewGroupMems('${group.id}')" style="cursor:pointer;">${group.number }</a></td>
-									   <%-- <td class='center'>${group.number}</td> --%>
+											<!-- 策略包 -->
+									   		<td class='center'>
+										   		<table style="width:100%;">
+										   		<tr><td>
+<%-- 										   			<select class="chosen-select form-control" name="strategyset" id="strategyset${vs.index}" style="height:30px;width: 158px;border-width:1px;border-color:'#fff';border-radius:4px"> --%>
+<%-- 										   			<c:forEach items="${group.strategysetList}" var="strategyset" varStatus="strategysetvs">  --%>
+<%-- 											 			<option value=${strategyset.id}>${strategyset.name}</option> --%>
+<%-- 										   			</c:forEach> --%>
+<!-- 													</select> -->
+														<c:forEach items="${group.strategysetList}" var="strategyset" varStatus="strategysetvs"><a onclick="viewStrategyMems('${group.id}','${strategyset.id}')" style="cursor:pointer;">${strategyset.name} </a></c:forEach>
+												</td><td  style="width:35px;">
+													<c:if test="${group.number>0 }">
+<%-- 													<a class="btn btn-xs btn-danger" onclick="deleteStrategySet('${group.id}','strategyset${vs.index}')" ><%=del_apply_strategyset %></a> --%>
+<%-- 													<a class="btn btn-xs btn-success" onclick="selectStrategySet('${group.id}','${group.number }')" ><%=add_apply_strategyset %></a> --%>
+														<c:if test="${QX.del == 1 && group.strategy_num > 0}">
+														<a onclick="deleteStrategySet('${group.id}','${group.strategysetList[0].id}')" style="cursor:pointer;" alt="<%=del_apply_strategyset %>" title="<%=del_apply_strategyset %>"><img src="<%=basePath%>static/images/remove.jpg" /></a>
+														</c:if><c:if test="${QX.add == 1 && group.strategy_num <= 0}">														
+														<a onclick="selectStrategySet('${group.id}','${group.number }')" style="cursor:pointer;" alt="<%=add_apply_strategyset %>" title="<%=add_apply_strategyset %>"><img src="<%=basePath%>static/images/add.jpg" /></a>
+														</c:if>
+													</c:if>
+												</td></tr>
+										   		</table>
+<%-- 										   		<a class="btn btn-xs btn-success" onclick="selectStrategySet('${group.id}')" ><%=add2 %></a> --%>
+<%-- 										   		<a onclick="selectStrategySet('${group.id}')" style="cursor:pointer;">&nbsp;+&nbsp;</a> --%>
+									   		</td>
 											<td class='center'>
 												<c:if test="${QX.edit != 1 && QX.del != 1 }">
 												<span class="label label-large label-grey arrowed-in-right arrowed-in"><i class="ace-icon fa fa-lock" title="<%=no_permission %>"></i></span>
@@ -208,12 +240,12 @@
 						<table style="width:100%;">
 							<tr>
 								<td style="vertical-align:top;">
-<%-- 									<c:if test="${QX.add == 1 }"> --%>
+									<c:if test="${QX.add == 1 }">
 									<a class="btn btn-mini btn-success" onclick="add();"><%=add_divide_group %></a>
-<%-- 									</c:if> --%>
-<%-- 									<c:if test="${QX.del == 1 }"> --%>
+									</c:if>
+									<c:if test="${QX.del == 1 }">
 									<a class="btn btn-xs btn-danger" onclick="del();"><%=del_divide_group %></a>
-<%-- 									</c:if> --%>
+									</c:if>
 								</td>
 								<td style="vertical-align:top;"><div class="pagination" style="float: right;padding-top: 0px;margin-top: 0px;">${page.pageStr}</div></td>
 							</tr>
@@ -291,82 +323,23 @@
 					if(which == 2) $('#form-field-select-4').addClass('tag-input-style');
 					 else $('#form-field-select-4').removeClass('tag-input-style');
 				});
-			}  
+			} 
+			
+			//复选框全选控制
+			var active_class = 'active';
+			$('#simple-table > thead > tr > th input[type=checkbox]').eq(0).on('click', function(){
+				var th_checked = this.checked;//checkbox inside "TH" table header
+				$(this).closest('table').find('tbody > tr').each(function(){
+					var row = this;
+					if(th_checked) $(row).addClass(active_class).find('input[type=checkbox]').eq(0).prop('checked', true);
+					else $(row).removeClass(active_class).find('input[type=checkbox]').eq(0).prop('checked', false);
+				});
+			});
+
 		});	
 		
-		//修改
-		function editGroup(id){
-			 top.jzts();
-			 var diag = new top.Dialog();
-			 diag.Drag=true;
-			 diag.Title ="<%=modify %>";
-			 diag.URL = '<%=basePath%>group/goUpdate.do?id='+id;
-			 diag.Width = 469;
-			 diag.Height = 188;
-			 diag.CancelEvent = function(){ //关闭事件
-				 if(diag.innerFrame.contentWindow.document.getElementById('zhongxin').style.display == 'none'){
-					nextPage('${page.currentPage}');
-				}
-				diag.close();
-			 };
-			 diag.show();
-		}
-		
-		//删除组
-		function del(){
-			var str='';
-			 if(confirm("确定要删除分组？")){
-				 for(var i=0;i < document.getElementsByName('ids').length;i++)
-					{
-					 	
-						if(document.getElementsByName('ids')[i].checked){
-							if(document.getElementsByName('hdstrategyIds')[i].value>0){
-								alert('分组:'+document.getElementsByName('hdgroupname')[i].value+' 有策略存在，不能删除,请重新选择！');
-								return;
-							}
-							if(str=='') str += document.getElementsByName('ids')[i].value;
-							else str += ',' + document.getElementsByName('ids')[i].value;
-						}
-					}
-			 }else{
-				 return ;
-			 }
-			 if(str==''){
-				 bootbox.dialog({
-						message: "<span class='bigger-110'><%=you_have_not_choose_anything %></span>",
-						buttons: 			
-						{ "button":{ "label":"<%=make_sure %>", "className":"btn-sm btn-success"}}
-					});
-					$("#zcheckbox").tips({
-						side:3,
-			            msg:'<%=click_this_choose_all %>',
-			            bg:'#AE81FF',
-			            time:8
-			        });
-					
-					return;
-			 }else{
-				 $.ajax({
-						type: "POST",
-						url: '<%=basePath%>group/goDel.do?',
-						data: {group_ids:""+str+""},
-						dataType:'json',
-						cache: false,
-						success: function(data){
-							if("success" == data.result){
-							 nextPage('${page.currentPage}');
-								 $("#zhongxin").hide();
-								$("#zhongxin2").show();
-				    		    top.Dialog.close(); 
-							}
-						}
-					});	
-				
-			 }
-		}
-		
 
-		//新增组
+		//新增分组
 		function add(){
 			 top.jzts();
 			 var diag = new top.Dialog();
@@ -391,10 +364,147 @@
 			 };
 			 diag.show();
 		}
+
+		//修改分组
+		function editGroup(id){
+			 top.jzts();
+			 var diag = new top.Dialog();
+			 diag.Drag=true;
+			 diag.Title ="<%=modify %>";
+			 diag.URL = '<%=basePath%>group/goUpdate.do?id='+id;
+			 diag.Width = 469;
+			 diag.Height = 188;
+			 diag.CancelEvent = function(){ //关闭事件
+				 if(diag.innerFrame.contentWindow.document.getElementById('zhongxin').style.display == 'none'){
+					nextPage('${page.currentPage}');
+				}
+				diag.close();
+			 };
+			 diag.show();
+		}
+		
+		//删除分组
+		function del(){
+			var str='';
+			 if(confirm("确定要删除分组？")){
+				for(var i=0;i < document.getElementsByName('ids').length;i++){
+					if(document.getElementsByName('ids')[i].checked){
+						if(document.getElementsByName('hdstrategyIds')[i].value>0){
+							alert('分组:'+document.getElementsByName('hdgroupname')[i].value+' 有策略存在，不能删除,请重新选择！');
+							return;
+						}
+						if(str=='') str += document.getElementsByName('ids')[i].value;
+						else str += ',' + document.getElementsByName('ids')[i].value;
+					}
+				}
+			 }else{
+				 return ;
+			 }
+			 if(str==''){
+				 bootbox.dialog({
+						message: "<span class='bigger-110'><%=you_have_not_choose_anything %></span>",
+						buttons: 			
+						{ "button":{ "label":"<%=make_sure %>", "className":"btn-sm btn-success"}}
+					});
+					$("#zcheckbox").tips({
+						side:3,
+			            msg:'<%=click_this_choose_all %>',
+			            bg:'#AE81FF',
+			            time:8
+			        });
+					return;
+			 }else{
+				 $.ajax({
+						type: "POST",
+						url: '<%=basePath%>group/goDel.do?',
+						data: {group_ids:""+str+""},
+						dataType:'json',
+						cache: false,
+						success: function(data){
+							if("success" == data.result){
+							 nextPage('${page.currentPage}');
+								 $("#zhongxin").hide();
+								$("#zhongxin2").show();
+				    		    top.Dialog.close(); 
+							}
+						}
+					});	
+			 }
+		}
+		
+		//加入策略包
+		function selectStrategySet(group_id){
+			 top.jzts();
+			 var diag = new top.Dialog();
+			 diag.Drag=true;
+			 diag.Title ="<%=add_apply_strategyset %>";
+			 diag.URL = "<%=basePath%>strategy/goSelectSet.do?c_term_id="+group_id;
+			 diag.Width = 1200;
+			 diag.Height = 600;
+			 diag.Modal = true;				//有无遮罩窗口
+			 diag. ShowMaxButton = true;	//最大化按钮
+		     diag.ShowMinButton = true;		//最小化按钮
+			 diag.CancelEvent = function(){ //关闭事件
+				 if(diag.innerFrame.contentWindow.document.getElementById('zhongxin').style.display == 'none'){
+					 if('${page.currentPage}' == '0'){
+						 top.jzts();
+						 setTimeout("self.location=self.location",100);
+					 }else{
+						 nextPage('${page.currentPage}');
+					 }
+				}
+				diag.close();
+			 };
+			 diag.show();
+		}
+		
+		//查看策略包中策略 
+		function viewStrategyMems(group_id, strategysetid){
+			top.jzts();
+			 var diag = new top.Dialog();
+			 diag.Drag=true;
+			 diag.Title ="<%=strategyset_member %>";
+			 diag.URL = "<%=basePath%>strategy/listStrategy2Apply.do?c_term_id="+group_id+"&strategysetid="+strategysetid;
+			 diag.Width = 1200;
+			 diag.Height = 600;
+			 diag.Modal = true;				//有无遮罩窗口
+			 diag. ShowMaxButton = true;	//最大化按钮
+		     diag.ShowMinButton = true;		//最小化按钮
+			 diag.CancelEvent = function(){ //关闭事件
+				 if(diag.innerFrame.contentWindow.document.getElementById('zhongxin').style.display == 'none'){
+					 if('${page.currentPage}' == '0'){
+						 top.jzts();
+						 setTimeout("self.location=self.location",100);
+					 }else{
+						 nextPage('${page.currentPage}');
+					 }
+				}
+				diag.close();
+			 };
+			 diag.show();
+		}
+		
+		//删除策略包
+		function deleteStrategySet(group_id, strategysetid){
+			if(confirm('<%=make_sure_del_strategyset %>')){
+				$.ajax({
+					type: "POST",
+					url: '<%=basePath%>strategy/delApplySet.do',
+			    	data: {c_term_id:group_id,strategyset_id:strategysetid},
+					dataType:'json',
+					cache: false,
+					success: function(data){
+						nextPage('${page.currentPage}');
+						$("#zhongxin").hide();
+						$("#zhongxin2").show();
+		    		    top.Dialog.close(); 
+					}
+				});
+			}
+		}
 		
 		//新增组员
 		function addCrew(id){
-			
 			 top.jzts();
 			 var diag = new top.Dialog();
 			 diag.Drag=true;
@@ -448,6 +558,30 @@
 
 		//查看组员
 		function viewGroupMems(id){
+			top.jzts();
+			var diag = new top.Dialog();
+			diag.Drag=true;
+			diag.Title ="<%=group_member %>";
+			diag.URL = '<%=basePath%>group/listGateways.do?term_id='+id+'&op=v';	//v 查看
+			diag.Width = 1200;
+			diag.Height = 600;
+			diag.Modal = true;				//有无遮罩窗口
+			diag. ShowMaxButton = true;	//最大化按钮
+		    diag.ShowMinButton = true;		//最小化按钮
+			diag.CancelEvent = function(){ //关闭事件
+				if(diag.innerFrame.contentWindow.document.getElementById('zhongxin').style.display == 'none'){
+					if('${page.currentPage}' == '0'){
+						top.jzts();
+						setTimeout("self.location=self.location",100);
+					}else{
+						nextPage('${page.currentPage}');
+					}
+				}
+				diag.close();
+		    };
+			diag.show();
+		}
+		<%-- function viewGroupMems(id){
 			 top.jzts();
 			 var diag = new top.Dialog();
 			 diag.Drag=true;
@@ -470,7 +604,8 @@
 				diag.close();
 			 };
 			 diag.show();
-		}
+		} --%>
+			
 		
 		
 		//智能拆分组-奇偶分组
@@ -520,7 +655,6 @@
 				}
 			});
 		}
-		
 		
 		
 		

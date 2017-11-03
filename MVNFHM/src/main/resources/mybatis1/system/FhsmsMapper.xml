@@ -134,6 +134,68 @@
                  #{item}
 		</foreach>
 	</delete>
+	<select id="smslistPage" parameterType="page" resultType="pd">
+		select
+		id,
+		name,
+		b_note_url,
+		comment,
+		contact,
+		status
+	  from 
+		b_note
+	</select>
 	
+		<!-- 删除-->
+	<delete id="deleteSms" parameterType="pd">
+		delete from b_note
+		where 
+			id = #{id}
+	</delete>
+	
+	<!-- 修改 状态-->
+	<update id="editSms" parameterType="pd">
+		update
+		 b_note
+		set 
+			STATUS = #{STATUS},
+			name = #{NAME},
+			b_note_url = #{B_NOTE_URL},
+			contact = #{CONTACT}
+		where 
+		id = #{id}
+	</update>
+	
+	<!-- 新增-->
+	<insert id="saveSms" parameterType="pd">
+		insert into 
+			b_note
+		(
+			name,
+			b_note_url,
+			comment,
+			contact,
+			status
+		) values (
+			#{NAME},	
+		#{B_NOTE_URL},	
+		null,	
+		#{CONTACT},	
+		#{STATUS}
+		)
+	</insert>
+	
+	<select id="findBySmsId" parameterType="pd" resultType="pd">
+		select 
+			name,
+			b_note_url,
+			comment,
+			contact,
+			status
+		from 
+			b_note
+		where 
+			id = #{id}
+	</select>
 	<!-- fh313596790qq(青苔) -->
 </mapper>

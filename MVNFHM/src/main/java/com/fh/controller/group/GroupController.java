@@ -24,7 +24,9 @@ import com.fh.util.PageData;
 /**
  * 分组设置
  * 
- * @author xiaozhou 创建时间：2017年1月17日 @001 删除分组页面 add 2017/09/13
+ * @author xiaozhou 创建时间：2017年1月17日 
+ * @001 删除分组页面 add 2017/09/13
+ * @002 删除分组页面状态列，加入策略包列  2017/10/14 wap
  */
 @Controller
 @RequestMapping(value = "/group")
@@ -55,15 +57,15 @@ public class GroupController extends BaseController {
 		if (null != explain && !"".equals(explain)) {
 			pd.put("explain", explain.trim());
 		}
-		String status = pd.getString("status"); // 检索条件：说明项
-		if (status == null) {
-			pd.put("status", "('1')");
-			status = "1";
-		} else if ("3".equals(status) || "".equals(status)) {
-			pd.put("status", "('1','2')");
-		} else if (null != status && !"".equals(status)) {
-			pd.put("status", "('" + status.trim() + "')");
-		}
+//		String status = pd.getString("status"); // 检索条件：说明项
+//		if (status == null) {
+//			pd.put("status", "('1')");
+//			status = "1";
+//		} else if ("3".equals(status) || "".equals(status)) {
+//			pd.put("status", "('1','2')");
+//		} else if (null != status && !"".equals(status)) {
+//			pd.put("status", "('" + status.trim() + "')");
+//		}
 		// 获得登录的用户id
 		User user = (User) Jurisdiction.getSession().getAttribute(Const.SESSION_USER);
 		String sys_user_id = user.getUSER_ID();
@@ -75,9 +77,17 @@ public class GroupController extends BaseController {
 		page.setPd(pd);
 
 		List<PageData> groupList = groupService.listGroup(page); // 获取列表
+		for(int i=0;i<groupList.size();i++) {
+			PageData group = groupList.get(i);
+			pd.put("c_term_id", group.get("id").toString());
+			page.setPd(pd);
+			List<PageData> strategysetList = groupService.listStrategySetById(page);
+			group.put("strategysetList", strategysetList);
+		}
+		
 		mv.setViewName("groupmanage/groupmanage_list");
 		mv.addObject("groupList", groupList);
-		pd.put("status", status);
+//		pd.put("status", status);
 		mv.addObject("pd", pd);
 		mv.addObject("QX", Jurisdiction.getHC());
 
@@ -140,11 +150,13 @@ public class GroupController extends BaseController {
 		String sys_user_id = user.getUSER_ID();
 		pd.put("sys_user_id", sys_user_id);
 
+		// 默认有效
+		pd.put("status", "1");
+		
 		String userids = departmentService.getUseridsInDepartment(pd);
 		pd.put("userids", userids);
 
-		// logBefore(logger,
-		// pd.getString("name")+pd.getString("explain")+pd.getString("type"));
+		logBefore(logger, pd.getString("name")+pd.getString("explain")+pd.getString("status"));
 		groupService.addGroup(pd);
 
 		mv.addObject("msg", "success");
@@ -192,7 +204,7 @@ public class GroupController extends BaseController {
 		String userids = departmentService.getUseridsInDepartment(pd);
 		pd.put("userids", userids);
 
-		logBefore(logger, pd.getString("name") + pd.getString("explain") + pd.getString("status"));
+		logBefore(logger, pd.getString("name") + pd.getString("explain") );
 		groupService.updateGroup(pd);
 
 		mv.addObject("msg", "success");

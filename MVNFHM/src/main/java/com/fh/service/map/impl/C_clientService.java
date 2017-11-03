@@ -237,7 +237,13 @@ public class C_clientService implements C_clientManager {
 	@Override
 	@SuppressWarnings("unchecked")
 	public void updateClientAttr_Coordinate(c_client cc) throws Exception {
-		dao.update("C_clientMapper.updateClientAttr_Coordinate", cc);
+		if ("1".equals(cc.getMapFlag())) {
+			// google map 的场合
+			dao.update("C_clientMapper.updateClientAttr_Coordinate_google", cc);
+		} else {
+			// baidu map 的场合
+			dao.update("C_clientMapper.updateClientAttr_Coordinate", cc);
+		}
 
 	}
 
@@ -262,13 +268,14 @@ public class C_clientService implements C_clientManager {
 			if (c.getTypename().contains("网关")) {
 				a = (ArrayList<String>) querGatewayClient(c);
 				c.setCclientgateway(a);
-			} else {
-				b = (ArrayList<c_client>) querGatewayPower(c);
-				if (!c.getPowerupisnull())
-					c.setPowerup(b.get(0).getPowerup());
-				if (!c.getPowerdownisnull())
-					c.setPowerdown(b.get(0).getPowerdown());
 			}
+			// else {
+			// b = (ArrayList<c_client>) querGatewayPower(c);
+			// if (!c.getPowerupisnull())
+			// c.setPowerup(b.get(0).getPowerup());
+			// if (!c.getPowerdownisnull())
+			// c.setPowerdown(b.get(0).getPowerdown());
+			// }
 		}
 		return qtg;
 	}

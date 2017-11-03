@@ -158,16 +158,16 @@ function cutStr(len){
 										<th class="center"><%=light_standard%></th>
 									</c:if>
 									  -->
-									<!-- 
+									<%-- <!-- 
 									<c:if test="${pd.itype==3}">
 										<th class="center"><%=sensor_standard%></th>
-									</c:if>
-									 -->
-									<th class="center"><%=pole%></th>
-									<th class="center"><%=pole_number%></th>
-									<!-- 
+									</c:if> 
+									 -->--%>
+									<%-- <th class="center"><%=pole%></th>
+									<th class="center"><%=pole_number%></th> --%>
+									<%-- <!-- 
 									<th class="center"><%=password%></th>
-									 -->
+									 --> --%>
 									<th class="center"><%=comment%></th>
 									<th class="center"><%=operate%></th>
 
@@ -216,8 +216,8 @@ function cutStr(len){
 												<td class="center">${var.sensor}</td>
 											</c:if>
 											 -->
-											<td class="center">${var.pole}</td>
-											<td class="center">${var.polenumber}</td>
+											<%-- <td class="center">${var.pole}</td>
+											<td class="center">${var.polenumber}</td> --%>
 											<!-- 
 											<td class="center">${var.password}</td>
 											 -->
@@ -228,18 +228,22 @@ function cutStr(len){
 												<c:if test="${var.STATUS == '1' }"><span class="label label-success arrowed">有效</span></c:if>
 											</td>
 											-->
-											<td class="center">
+											<td class="center" style="width:200px;">
 												<c:if test="${QX.edit != 1 && QX.del != 1 }">
 												<span class="label label-large label-grey arrowed-in-right arrowed-in"><i class="ace-icon fa fa-lock" title="<%=no_permission%>"></i></span>
 												</c:if>
 												<div class="hidden-sm hidden-xs btn-group">
-												<!-- //查看配置（有待开发） -->
-<%-- 												   <c:if test="${QX.edit == 1 && pd.itype==3}"> --%>
-<%-- 													<a class="btn btn-xs btn-danger" onclick="config('${var.id}','${var.typeid}' );"> --%>
-<%-- 														<%=viewConfig %> --%>
-<!-- 													</a> -->
-<%-- 													</c:if> --%>
-													
+<%-- 												   <c:if test="${QX.edit == 1 && pd.itype==3}">
+<%-- 													<a class="btn btn-xs btn-danger" onclick="config('${var.id}','${var.typeid}' );"> 
+<%-- 														<%=viewConfig %>
+<!-- 													</a>
+<%-- 													</c:if> 
+													<%-- --%>
+													<c:if test="${QX.edit == 1 && pd.itype==3}">
+														<a class="btn btn-xs btn-danger" onclick="viewConfig('${var.id}');">
+															<%=viewConfig %>
+														</a>
+													</c:if>
 													 <c:if test="${QX.edit == 1}">
 														<a class="btn btn-xs btn-danger" onclick="gatewayRest('${var.id}','${var.name}','${var.number}' );">
 															<%=gateway_rest %>
@@ -368,7 +372,7 @@ function cutStr(len){
 			 diag.Title ="<%=modify%>";
 			 diag.URL = '<%=basePath%>config/goGatewayEdit?id='+Id+'&typeid='+type;
 			 diag.Width = 650;
-			 diag.Height = 640;
+			 diag.Height = 440;
 			 diag.CancelEvent = function(){ //关闭事件
 				 if(diag.innerFrame.contentWindow.document.getElementById('zhongxin').style.display == 'none'){
 					 nextPage('${page.currentPage}');
@@ -405,7 +409,7 @@ function cutStr(len){
 					url: '<%=basePath%>config/gogatewaysearch?id='+Id,
 					data: {Id:Id},
 					dataType:'json',
-					//beforeSend: validateData,
+					//beforeSend: validateData,wu ai ping done
 					cache: false,
 					success: function(data){
 						var list='';
@@ -423,7 +427,7 @@ function cutStr(len){
 							}
 						}
 						
-							if(confirm(list + " \n\n确定要重置吗？")){
+							if(confirm(list + " \n\n确定要重置吗？ ")){
 								 $.ajax({
 										type: "POST",
 										url: '<%=basePath%>config/gogatewayrest?id='+Id,
@@ -477,7 +481,24 @@ function cutStr(len){
 			$("#excel").val("1");
 			$("#Form").submit();
 		}
+		
+		//查看配置
+		function viewConfig(Id){
+			 top.jzts();
+			 var diag = new top.Dialog();
+			 diag.Drag=true;
+			 diag.Title ="<%=view_gateway_net%>";
+			 diag.URL = '<%=basePath%>config/goViewGatewayNet?id='+Id;
+			 diag.Width = 650;
+			 diag.Height = 440;
+			 diag.CancelEvent = function(){ //关闭事件
+				 if(diag.innerFrame.contentWindow.document.getElementById('zhongxin').style.display == 'none'){
+					 nextPage('${page.currentPage}');
+				}
+				diag.close();
+			 };
+			 diag.show();
+		}
 		</script>
-
 </body>
 </html>

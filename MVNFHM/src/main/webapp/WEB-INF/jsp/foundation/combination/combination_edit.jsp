@@ -207,7 +207,7 @@
 	
 </script>
 </head>
-<body class="no-skin" onload="init(typeid.value)">
+<body class="no-skin">
 
 <!-- /section:basics/navbar.layout -->
 <div class="main-container" id="main-container">
@@ -252,8 +252,8 @@
 										<option value="6" <c:if test="${pd.typeid==6}">selected</c:if>><%=device_combination%></option>
 								  	</select>
 								 -->
-								 <select class="chosen-select form-control" name="type" id="type" data-placeholder="<%=please_choose_device_type%>" style="height:30px;width: 160px;border-width:1px;border-color:'#fff';border-radius:4px">
-								  	<option value="0" <c:if test="${pd.type!=0}">style="display:none"</c:if>>
+								 <select class="chosen-select form-control" name="typeid" id="typeid" data-placeholder="<%=please_choose_device_type%>" style="height:30px;width: 160px;border-width:1px;border-color:'#fff';border-radius:4px">
+								  	<option value="0" <c:if test="${pd.typeid!=0}">style="display:none"</c:if>>
 								  						<c:if test="${sessionScope.session_language=='zh_CN' }">
 															${pd.name_CH}
 														</c:if>
@@ -261,7 +261,7 @@
 															${pd.name_EN}
 														</c:if></option>
 												<c:forEach items="${pd.typeList}" var="type">
-													<option value="${type.id}" <c:if test="${type.id==pd.type}">selected="selected"</c:if>>
+													<option value="${type.id}" <c:if test="${type.id==pd.typeid}">selected="selected"</c:if>>
 														<c:if test="${sessionScope.session_language=='zh_CN' }">
 															${type.typeName1}
 														</c:if>
@@ -345,7 +345,7 @@
 								</td>
 							</tr>
 							 -->
-							<tr>
+							<%-- <tr>
 								<td style="width:79px;text-align: right;padding-top: 13px;"><%=pole%>:</td>
 								<td>
 								 	<select class="chosen-select form-control" name="pole" id="pole" style="float:left;width:95%;">
@@ -363,7 +363,7 @@
 							<tr>
 								<td style="width:79px;text-align: right;padding-top: 13px;display:none"><%=password%>:</td>
 								<td><input style="width:95%;display:none" type="text" name="password" id="password" value="${pd.password}" maxlength="500"/></td>
-							</tr>
+							</tr> --%>
 							<tr>
 								<td style="width:79px;text-align: right;padding-top: 13px;"><%=comment%>:</td>
 								<td><input style="width:95%;" type="text" name="comment" id="comment" value="${pd.comment}" maxlength="500" /></td>

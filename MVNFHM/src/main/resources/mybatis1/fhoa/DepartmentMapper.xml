@@ -115,6 +115,8 @@
 			TELEPHONE,
 			LOGO_PATH,
 			ISDISPLAYLOGO,
+			MAP_TYPE,
+			SMSPLATFORM,
 			STATUS
 		) values (
 			#{ID},
@@ -137,6 +139,8 @@
 			<if test="ISDISPLAYLOGO != '' and ISDISPLAYLOGO=='false'">
 			false,
 			</if>
+			#{MAP_TYPE},
+			#{SMSPLATFORM},
 			#{STATUS}
 		)
 	</insert>
@@ -181,6 +185,8 @@
 			ADDRESS = #{ADDRESS},
 			CONTACTS = #{CONTACTS},
 			TELEPHONE = #{TELEPHONE},
+			MAP_TYPE = #{MAP_TYPE},
+			SMSPLATFORM = #{SMSPLATFORM},
 			<if test="ISDISPLAYLOGO == 'true'">
 			ISDISPLAYLOGO = true,
 			</if>
@@ -223,6 +229,8 @@
 		u.TELEPHONE,
 		u.LOGO_PATH,
 		u.ISDISPLAYLOGO,
+		u.MAP_TYPE,
+		u.SMSPLATFORM,
 		p.NAME AS STATUSNAME
 		from 
 		B_COMPANY u,B_STATUS p
@@ -313,13 +321,19 @@
 		u.ADDRESS,
 		u.CONTACTS,
 		u.TELEPHONE,
+		u.MAP_TYPE,
+		m.NAME AS MAP_NAME,
+		u.SMSPLATFORM,
+		n.NAME AS SMSPLATFORM_NAME,
 		u.LOGO_PATH,
 		u.ISDISPLAYLOGO,
 		p.NAME AS STATUSNAME
 		from 
-		B_COMPANY u,B_STATUS p
+		B_COMPANY u LEFT JOIN B_STATUS p ON u.STATUS=p.id
+		 LEFT JOIN B_MAP m ON u.MAP_TYPE = m.id
+		 LEFT JOIN B_NOTE n ON u.SMSPLATFORM = n.id
 		where
-			u.STATUS=p.id
+		 1=1
 		<if test="pd.companyname!= null and pd.companyname != ''">
 		and u.NAME LIKE CONCAT(CONCAT('%', #{pd.companyname}),'%')
 		</if>
@@ -399,5 +413,16 @@
 		SELECT a.b_department_id AS departmentid
 		FROM b_user_company AS a
 		WHERE a.b_user_id = #{userid}
+	</select>
+	
+		<!-- 获取地图类型 -->
+	<select id="getMapList" parameterType="pd" resultType="pd">
+		SELECT *
+		FROM b_map
+	</select>
+			<!-- 获取地图类型 1-->
+	<select id="getSmsplatform" parameterType="pd" resultType="pd">
+		SELECT *
+		FROM b_note
 	</select>
 </mapper>

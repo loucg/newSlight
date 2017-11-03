@@ -59,6 +59,9 @@ public class ConfigureController extends BaseController {
 	//编辑网关页面
 	private String GatewayEditJsp = "foundation/combination/combination_edit";
 	
+	//查看网关配置页面
+	private String GatewayViewJsp = "foundation/combination/gatewayparam_view";
+	
 	//编辑路灯页面
 	private String deviceEditJsp = "foundation/combination/light_edit";
 	
@@ -722,41 +725,41 @@ public class ConfigureController extends BaseController {
 
 		// if(pd.getString("power")!=null){
 
-		if (typeid == 1) {// 一体化电源
-			if (pd.getString("pole").equals("")) {// 共用-灯杆
-				pd.put("pole", null);
-			}
-//			if (pd.getString("lamp").equals("")) {// 终端-灯
-//				pd.put("lamp", null);
+//		if (typeid == 1) {// 一体化电源
+//			if (pd.getString("pole").equals("")) {// 共用-灯杆
+//				pd.put("pole", null);
 //			}
+////			if (pd.getString("lamp").equals("")) {// 终端-灯
+////				pd.put("lamp", null);
+////			}
+//
+//		}
 
-		}
-
-		if (typeid == 2 || typeid == 6) {// 单灯控制器、终端组合
-			if (pd.getString("pole").equals("")) {// 共用-灯杆
-				pd.put("pole", null);
-			}
-//			if (pd.getString("lamp").equals("")) {// 终端-灯
-//				pd.put("lamp", null);
+//		if (typeid == 2 || typeid == 6) {// 单灯控制器、终端组合
+//			if (pd.getString("pole").equals("")) {// 共用-灯杆
+//				pd.put("pole", null);
 //			}
-//			if (pd.getString("power").equals("")) {// 终端-电源
-//				pd.put("power", null);
-//			}
+////			if (pd.getString("lamp").equals("")) {// 终端-灯
+////				pd.put("lamp", null);
+////			}
+////			if (pd.getString("power").equals("")) {// 终端-电源
+////				pd.put("power", null);
+////			}
+//
+//		}
 
-		}
-
-		if (typeid == 3 || typeid == 4 || typeid == 5) {// 网关、断路器、普通断路器
-//			if (pd.getString("mobile").equals("")) {// 网关-卡
-//				pd.put("mobile", null);
+//		if (typeid == 3 || typeid == 4 || typeid == 5) {// 网关、断路器、普通断路器
+////			if (pd.getString("mobile").equals("")) {// 网关-卡
+////				pd.put("mobile", null);
+////			}
+////			if (pd.getString("sensor").equals("")) {// 网关-传感器
+////				pd.put("sensor", null);
+////			}
+//			if (pd.getString("pole").equals("")) {// 共用-灯杆
+//				pd.put("pole", null);
 //			}
-//			if (pd.getString("sensor").equals("")) {// 网关-传感器
-//				pd.put("sensor", null);
-//			}
-			if (pd.getString("pole").equals("")) {// 共用-灯杆
-				pd.put("pole", null);
-			}
-
-		}
+//
+//		}
 
 //		if (typeid == 1 || typeid == 2 || typeid == 6) {
 //			configureService.editDevice(pd);
@@ -935,4 +938,39 @@ public class ConfigureController extends BaseController {
 		return pd;
 
 	}
+	
+	/**
+	 * 查看网关配置
+	 */
+	@RequestMapping("/goViewGatewayNet")
+	public ModelAndView goViewGatewayNet() throws Exception{
+		ModelAndView mv = this.getModelAndView();
+		PageData pd = new PageData();
+		pd = this.getPageData();
+		String id = pd.getString("id");
+		pd.put("c_gateway_id", id);
+		//获得登录的用户id
+		User user = (User)Jurisdiction.getSession().getAttribute(Const.SESSION_USER);
+		String sys_user_id = user.getUSER_ID();
+		pd.put("sys_user_id", sys_user_id);
+		pd.put("comment","网关配置");
+		pd.put("b_log_type_id", 22);
+		pd.put("tdate", new Date());//创建时间
+		configureService.addUserLog(pd);
+		
+		pd.put("b_cmd_type_id",33);
+		pd.put("b_cmd_type_idDouble",34);
+		pd.put("status",1);
+		//获取b_user_log的id
+		Integer b_user_log_id = configureService.searchUserLogId(pd);
+		pd.put("b_user_log_id", b_user_log_id);
+		pd.put("cmd", "等待数据的加入");
+		configureService.finallyaddpageone(pd); 
+		// 查看网关配置
+		pd = configureService.viewGatewayNet(pd);
+		mv.addObject("pd", pd);
+		mv.setViewName(GatewayViewJsp);
+		return mv;
+	}
+	
 }

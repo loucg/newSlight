@@ -59,7 +59,7 @@
 		#{BRIGHT}
 	</sql>
 	
-	<!-- 查询指定策略组中所有有效策略 -->
+	<!-- 查询所有有效策略 -->
 	<select id="strategylistPage" parameterType="page" resultType="pd">
 	    select
 		   <include refid="Field"></include>,
@@ -102,10 +102,10 @@
 				b_ctrl_strategy.explain LIKE CONCAT(CONCAT('%', #{pd.explain}),'%')
 			)
 		</if>
-		<if test="pd.termid!=null and pd.termid!=''"><!-- 分组ID 从组状态画面link过来时使用 -->
+		<if test="pd.c_term_id!=null and pd.c_term_id!=''"><!-- 分组ID 从组状态画面link过来时使用 -->
 			and 
 			(
-				b_strategy_clientterm.c_term_id = #{pd.termid}
+				b_strategy_clientterm.c_term_id = #{pd.c_term_id}
 			)
 		</if>
 		group by

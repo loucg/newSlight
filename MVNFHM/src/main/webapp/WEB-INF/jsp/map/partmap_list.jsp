@@ -55,10 +55,10 @@
 											<td class='center'><img src="<%=basePath%>uploadFiles/uploadImgs/partmap/${var.map_pictrue_path}" width="100" height=50px></td>
 											<td class='center'>
 											<a class="btn btn-xs btn-danger" onclick="edit('${var.external_coordinate}','${var.ID}');">
-												修改	
+												<%=modify %>
 											</a>
 											<a class="btn btn-xs btn-success" onclick="del('${var.ID}');">
-														删除
+														<%=delete %>
 											</a>
 											
 											</td>
@@ -87,7 +87,7 @@
 							<tr>
 								<td style="vertical-align:top;">
 <%-- 									<c:if test="${QX.add == 1 }"> --%>
-									<a class="btn btn-mini btn-success" onclick="add();"  onmouseover="this.style.cursor='hand'"><%=confirm %></a>
+									<a class="btn btn-mini btn-success" onclick="add();"  onmouseover="this.style.cursor='hand'"><%=part_map_add %></a>
 									<td style="vertical-align:top;"><div class="pagination" style="float: right;padding-top: 0px;margin-top: 0px;">${page.pageStr}</div></td>
 <%-- 									</c:if> --%>
 								</td>
@@ -120,8 +120,12 @@
 		<script type="text/javascript">
 		$(top.hangge());
 		function add(){
-			window.parent.window.frames["mainFrame"].frames["page_347"].frames["Conframe"].document.getElementById('mapclick').click();
-			window.parent.window.frames["mainFrame"].frames["page_347"].frames["Conframe"].document.getElementById('addPartMapFlag').value= '1';
+			var pagename = "page_z347";
+			if(window.parent.window.frames["mainFrame"].frames[pagename]==null){
+				pagename = "page_347";
+			}
+			window.parent.window.frames["mainFrame"].frames[pagename].frames["Conframe"].document.getElementById('mapclick').click();
+			window.parent.window.frames["mainFrame"].frames[pagename].frames["Conframe"].document.getElementById('addPartMapFlag').value= '1';
 			top.Dialog.close(); 
   		}
 		//删除组
@@ -144,15 +148,23 @@
 								}
 						}
 					});
-				 window.parent.window.frames["mainFrame"].frames["page_347"].frames["Conframe"].document.getElementById('partMapID').value=partmapID
-				 window.parent.window.frames["mainFrame"].frames["page_347"].frames["Conframe"].document.getElementById('clearMarker').click();
+				 var pagename = "page_z347";
+					if(window.parent.window.frames["mainFrame"].frames[pagename]==null){
+						pagename = "page_347";
+					}
+				 window.parent.window.frames["mainFrame"].frames[pagename].frames["Conframe"].document.getElementById('partMapID').value=partmapID
+				 window.parent.window.frames["mainFrame"].frames[pagename].frames["Conframe"].document.getElementById('clearMarker').click();
 			 }
 		}
 		
 		function edit(xycoordinate,partmapID){
-			window.parent.window.frames["mainFrame"].frames["page_347"].frames["Conframe"].document.getElementById('partMapID').value=partmapID;
-			window.parent.window.frames["mainFrame"].frames["page_347"].frames["Conframe"].document.getElementById('MarkerXYCoordinate').value=xycoordinate;
-			window.parent.window.frames["mainFrame"].frames["page_347"].frames["Conframe"].document.getElementById('openMarker').click();
+			var pagename = "page_z347";
+			if(window.parent.window.frames["mainFrame"].frames[pagename]==null){
+				pagename = "page_347";
+			}
+			window.parent.window.frames["mainFrame"].frames[pagename].frames["Conframe"].document.getElementById('partMapID').value=partmapID;
+			window.parent.window.frames["mainFrame"].frames[pagename].frames["Conframe"].document.getElementById('MarkerXYCoordinate').value=xycoordinate;
+			window.parent.window.frames["mainFrame"].frames[pagename].frames["Conframe"].document.getElementById('openMarker').click();
 			top.Dialog.close();
 	}
 		

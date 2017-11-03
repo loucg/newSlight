@@ -99,15 +99,23 @@
 				return false;
 			}
 			if($("#mapPicName").val()==""){
-				alert('请输入局部图名称');
+				alert('<%=Part_map_light_input_mapname%>');
+				return false
+			}
+			if($("#xycoordinat").val()==""){
+				alert('<%=Part_map_light_input_Coordinate%>');
 				return false
 			}
 			$("#Form").submit();
 			$("#zhongxin").hide();
 			$("#zhongxin2").show();
-			window.parent.window.frames["mainFrame"].frames["page_347"].frames["Conframe"].document.getElementById('MarkerXYCoordinate').value=document.getElementById('xycoordinat').value;
-			window.parent.window.frames["mainFrame"].frames["page_347"].frames["Conframe"].document.getElementById('addMarker').click();
-			window.parent.window.frames["mainFrame"].frames["page_347"].frames["Conframe"].document.getElementById('partMapName').value= document.getElementById('mapPicName').value;
+			var pagename = "page_z347";
+			if(window.parent.window.frames["mainFrame"].frames[pagename]==null){
+				pagename = "page_347";
+			}
+			window.parent.window.frames["mainFrame"].frames[pagename].frames["Conframe"].document.getElementById('MarkerXYCoordinate').value=document.getElementById('xycoordinat').value;
+			window.parent.window.frames["mainFrame"].frames[pagename].frames["Conframe"].document.getElementById('addMarker').click();
+			window.parent.window.frames["mainFrame"].frames[pagename].frames["Conframe"].document.getElementById('partMapName').value= document.getElementById('mapPicName').value;
 		}
 		function fileType(obj){
 			var fileType=obj.value.substr(obj.value.lastIndexOf(".")).toLowerCase();//获得文件后缀名

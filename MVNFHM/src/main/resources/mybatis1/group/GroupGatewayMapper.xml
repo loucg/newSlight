@@ -6,7 +6,7 @@
 	<!-- 表名 -->
 	<sql id="tableName">c_gateway</sql>
 	
-	<select id="getGatewaylistPage" parameterType="page" resultType="pd">
+	<select id="gatewaylistPage" parameterType="page" resultType="pd">
 	    SELECT
 	    	c_gateway.id gateway_id,
 			c_gateway.gateway_code,
@@ -67,14 +67,65 @@
 		GROUP BY
 		c_gateway.id
 	</select>
-	
+
 	<select id="clientslistPage" parameterType="page" resultType="pd">
 	    SELECT
 	    	c_client.id client_id,
 			c_client.client_code,
 			c_client_attr1.`name`,
 			c_client_attr1.lamp_pole_num,
-			c_client_type.`name` type
+			CASE WHEN node2='0' THEN node ELSE CONCAT_WS('.',node,node2) END AS node,
+			c_client_type.`name` type,
+			c_gateway.gateway_code
+		FROM
+			c_client_term
+		LEFT JOIN
+			c_client_gateway
+		ON
+			c_client_term.c_client_id = c_client_gateway.c_client_id
+		LEFT JOIN
+			c_client
+		ON
+			c_client_gateway.c_client_id  = c_client.id
+		LEFT JOIN
+			c_client_attr1
+		ON
+			c_client_gateway.c_client_id = c_client_attr1.c_client_id
+		LEFT JOIN
+			c_client_type
+		ON
+			c_client_type.id = c_client_attr1.c_client_type_id
+		LEFT JOIN
+			c_gateway
+		ON
+			c_client_gateway.c_gateway_id = c_gateway.id
+		WHERE
+			c_client_gateway.c_gateway_id = #{pd.gateway_id}
+			and c_client_attr1.sys_user_id IN ${pd.userids}
+			and c_client_term.c_term_id = #{pd.term_id}
+		 <if test="pd.name!=null and pd.name!=''">
+			and 
+			(
+				c_client_attr1.name LIKE CONCAT(CONCAT('%', #{pd.name}),'%')
+			)
+		</if>
+		<if test="pd.code!=null and pd.code!=''">
+			and 
+			(
+				c_client.client_code LIKE CONCAT(CONCAT('%', #{pd.code}),'%')
+			)
+		</if> 
+	</select>
+		
+	<select id="otherClientslistPage" parameterType="page" resultType="pd">
+	    SELECT
+	    	c_client.id client_id,
+			c_client.client_code,
+			c_client_attr1.`name`,
+			c_client_attr1.lamp_pole_num,
+			CASE WHEN node2='0' THEN node ELSE CONCAT_WS('.',node,node2) END AS node,
+			c_client_type.`name` type,
+			c_gateway.gateway_code
 		FROM
 			c_client_gateway
 		LEFT JOIN
@@ -89,6 +140,10 @@
 			c_client_type
 		ON
 			c_client_type.id = c_client_attr1.c_client_type_id
+		LEFT JOIN
+			c_gateway
+		ON
+			c_client_gateway.c_gateway_id = c_gateway.id
 		WHERE
 			c_client_gateway.c_gateway_id = #{pd.gateway_id}
 			and c_client_attr1.sys_user_id IN ${pd.userids}

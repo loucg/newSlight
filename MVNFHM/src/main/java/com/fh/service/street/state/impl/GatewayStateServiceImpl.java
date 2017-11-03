@@ -60,5 +60,17 @@ public class GatewayStateServiceImpl implements GatewayStateService {
 	public List<PageData> getWorkStatus(PageData pd) throws Exception {
 		return (List<PageData>) dao.findForList("GatewayStateMapper.getWorkStatus", pd);
 	}	
+	
+	/**
+	 * 获取指定网关 下的所有传感器信息
+	 * 
+	 * @param page
+	 * @return
+	 * @throws Exception
+	 */
+	@Override
+	public List<PageData> viewSensorDetail(Page page) throws Exception {
+		return (List<PageData>) dao.findForList("GatewayStateMapper.sensorInfolistPage", page);
+	}
 
 }

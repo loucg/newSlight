@@ -104,9 +104,7 @@
 									<th class="center"><%=gateway_location %></th>
 									<th class="center"><%=signal_strength %></th>
 									<th class="center"><%=comment %></th>
-									<!-- 
 									<th class="center"><%=voltage %></th>
-									 -->
 									<th class="center"><%=device_counter %></th>
 									<th class="center"><%=work_status %></th>
 									<th class="center"><%=time %></th>
@@ -136,11 +134,9 @@
 												</c:if>
 											</td>
 											<td class='center'>${gatewayState.comment}</td>
-											<!-- 
 											<td class='center'>${gatewayState.voltage}</td>
-											 -->
 											<td class='center'>${gatewayState.client_num}</td>
-									        <td class='center'>${gatewayState.status_name}</td>
+											<td class='center'>${gatewayState.status_name}</td>
 									        <td class='center'>${gatewayState.tdate}</td>
 										</tr>
 									</c:forEach>
@@ -243,7 +239,7 @@
 		
 		//查看同一网关下的终端信息
 		function viewLampDetailUnderGateway(id){
-			 top.jzts();
+			 <%-- top.jzts();
 			 var diag = new top.Dialog();
 			 diag.Drag=true;
 			 diag.Title ="<%=detail %>";
@@ -251,6 +247,30 @@
 			 diag.Width = 1400;
 			 diag.Height = 320;
 			 diag.CancelEvent = function(){ //关闭事件
+				diag.close();
+			 };
+			 diag.show(); --%>
+			selectBranch(id);
+		}
+
+		//打开选择页面
+		function selectBranch(id){
+			 top.jzts();
+			 var diag = new top.Dialog();
+			 diag.Drag=true;
+			 diag.Title ="<%=please_select_page%>";
+			 diag.URL = '<%=basePath%>state/street/goSenlampStatePage?id='+id;
+			 diag.Width = 260;
+			 diag.Height = 80;
+			 diag.CancelEvent = function(){ //关闭事件
+				 if(diag.innerFrame.contentWindow.document.getElementById('zhongxin').style.display == 'none'){
+					 if('${page.currentPage}' == '0'){
+						 top.jzts();
+						 setTimeout("self.location.reload()",100);
+					 }else{
+						 nextPage('${page.currentPage}');
+					 }
+				}
 				diag.close();
 			 };
 			 diag.show();

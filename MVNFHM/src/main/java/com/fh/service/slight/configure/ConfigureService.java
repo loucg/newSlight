@@ -382,4 +382,8 @@ public interface ConfigureService {
 	 * @throws Exception
 	 */
 	public List<PageData> getAllClientType(PageData pd) throws Exception;
+	
+	public PageData getSensorByNumber(PageData pd) throws Exception;
+	
+	public PageData viewGatewayNet(PageData pd) throws Exception;
 }

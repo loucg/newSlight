@@ -87,9 +87,9 @@ public class StrategyController extends BaseController {
 		if(null !=explain && !"".equals(explain)){
 			pd.put("explain", explain.trim());
 		}
-		String termid = pd.getString("termid");			//组状态画面过来时使用
-		if(null !=explain && !"".equals(termid)){
-			pd.put("termid", termid.trim());
+		String termid = pd.getString("termid");			//组状态画面过来时使用 TODO:to delete
+		if(null !=termid && !"".equals(termid)){
+			pd.put("c_term_id", termid.trim());
 		}
 		
 		String userids = departmentService.getUseridsInDepartment(pd);

@@ -51,15 +51,15 @@
 								<td style="width:75px;text-align: right;padding-top: 13px;"><%=summary %>:</td>
 								<td><input type="text" name="explain" id="explain" value="${pd.explain }" maxlength="100" title="<%=summary %>" style="width:98%;" /></td>
 							</tr>
-							<tr>
-								<td style="width:75px;text-align: right;padding-top: 13px;"><%=status %>:</td>
-								<td>
-									<select name="status" maxlength="100" title="<%=status %>" style="width:98%;">
-										<option value="1" <c:if test="${pd.status == '1' }">selected</c:if> ><%=effective %></option>
-										<option value="2" <c:if test="${pd.status == '2' }">selected</c:if> ><%=invalid %></option>
-									</select>
-								</td>
-							</tr>
+<!-- 							<tr> -->
+<%-- 								<td style="width:75px;text-align: right;padding-top: 13px;"><%=status %>:</td> --%>
+<!-- 								<td> -->
+<%-- 									<select name="status" maxlength="100" title="<%=status %>" style="width:98%;"> --%>
+<%-- 										<option value="1" <c:if test="${pd.status == '1' }">selected</c:if> ><%=effective %></option> --%>
+<%-- 										<option value="2" <c:if test="${pd.status == '2' }">selected</c:if> ><%=invalid %></option> --%>
+<!-- 									</select> -->
+<!-- 								</td> -->
+<!-- 							</tr> -->
 							
 							<tr>
 								<td style="text-align: center;" colspan="10">
@@ -123,13 +123,14 @@
 				$("#zhongxin2").show();
 			}
 			
-		}
+		}	
 		
 
 			//清除空格
 		String.prototype.trim=function(){
 		     return this.replace(/(^\s*)|(\s*$)/g,'');
-		};
+		};		
+
 		</script>
 </body>
 </html>

@@ -195,4 +195,40 @@ public class ConfigureUtils {
 		dataMap.put("varList", varList);
 		return dataMap;
 	}
+	
+	public static Map<String, Object> exportSensor(List<PageData> list,List<PageData> typeList){
+		Map<String, Object> dataMap = new HashMap<>();
+		List<String> titles = new ArrayList<>();
+		titles.add("终端编号");
+		titles.add("终端名称");
+		titles.add("终端类型");
+		titles.add("位置");
+		titles.add("坐标");
+		titles.add("电杆号");
+		titles.add("备注");
+		dataMap.put("titles", titles);
+		
+		List<PageData> varList = new ArrayList<PageData>();
+		for(int i=0;i<list.size();i++){
+			String t = list.get(i).get("typeid").toString();
+			String tName = "";
+			for(PageData pd : typeList){
+				if(pd.get("id").toString().equals(t)) {
+					tName = pd.getString("name");
+					break;
+				}
+			}
+			PageData vpd = new PageData();
+			vpd.put("var1", list.get(i).getString("number"));		
+			vpd.put("var2", list.get(i).getString("name"));
+			vpd.put("var3", tName);	
+			vpd.put("var4", list.get(i).getString("location"));		
+			vpd.put("var5", list.get(i).getString("coordinate"));	
+			vpd.put("var6", list.get(i).getString("polenumber"));
+			vpd.put("var7", list.get(i).getString("comment"));
+			varList.add(vpd);
+		}
+		dataMap.put("varList", varList);
+		return dataMap;
+	}
 }

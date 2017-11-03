@@ -91,11 +91,17 @@
 									<label class="pos-rel"><input type="checkbox" class="ace" id="zcheckbox" /><span class="lbl"></span></label>
 									</th>
 									<th class="center" style="width:50px;"><%=number %></th>
-									<th class="center"><%=device_number2 %></th>
-									<th class="center"><%=device_name %></th>
-									<th class="center"><%=pole_number2 %></th>
-									<th class="center"><%=location %></th>
-									<th class="center"><%=device_type %></th>
+<%-- 									<th class="center"><%=device_number2 %></th> --%>
+<%-- 									<th class="center"><%=device_name %></th> --%>
+<%-- 									<th class="center"><%=pole_number2 %></th> --%>
+<%-- 									<th class="center"><%=location %></th> --%>
+<%-- 									<th class="center"><%=device_type %></th> --%>
+									<th class="center" ><%=client_node_info %></th>
+									<th class="center" ><%=gateway_number %></th>
+									<th class="center" ><%=device_number %></th>
+									<th class="center" ><%=device_name %></th>
+									<th class="center" ><%=device_type %></th>
+									<th class="center" ><%=pole_number2 %></th>
 									  
 								</tr>
 							</thead>
@@ -111,11 +117,23 @@
 												<label class="pos-rel"><input type='checkbox' name='ids' value="${groupmem.id}" class="ace" /><span class="lbl"></span></label>
 											</td>
 											<td class='center' style="width: 30px;">${vs.index+1}</td>
-											<td class='center'>${groupmem.client_code}</td> 
-											<td class='center'>${groupmem.clientname }</td>
-											<td class='center'>${groupmem.lamp_pole_num }</td>
-											<td class='center'>${groupmem.location }</td>
-											<td class='center'>${groupmem.ctyname }</td>
+<%-- 											<td class='center'>${groupmem.client_code}</td>  --%>
+<%-- 											<td class='center'>${groupmem.clientname }</td> --%>
+<%-- 											<td class='center'>${groupmem.lamp_pole_num }</td> --%>
+<%-- 											<td class='center'>${groupmem.location }</td> --%>
+<%-- 											<td class='center'>${groupmem.ctyname }</td> --%>
+											<!-- 节点 -->
+											<td class="center">${groupmem.node}</td>
+											<!-- 网关编号 -->
+											<td class="center">${groupmem.gateway_code}</td>
+											<!-- 终端编号 -->
+											<td class="center">${groupmem.client_code}</td>
+											<!-- 终端描述 -->
+											<td>${fn:substring(groupmem.clientname,0,50)}</td>
+											<!-- 终端类型 -->
+											<td>${groupmem.ctyname}</td>
+											<!-- 路灯杆号-->
+											<td>${groupmem.lamp_pole_num}</td>
 											 
 										</tr>
 									

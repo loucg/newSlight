@@ -13,7 +13,7 @@ import com.fh.service.strategy.StrategyOperateManager;
 import com.fh.util.PageData;
 
 /**
- * 策略组中策略的下发/注销操作类
+ * 策略包应用/注销操作类
  * 
  * @author wap 修改日期：2017.7.29
  */

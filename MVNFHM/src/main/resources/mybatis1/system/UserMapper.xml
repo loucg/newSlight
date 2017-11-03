@@ -150,7 +150,8 @@
 	<select id="findcompanyByUsername" parameterType="pd" resultType="pd" >
 		select 
 			d.name as companyname,
-			logo_path
+			logo_path,
+			d.map_type
 		from 
 			sys_user a,b_user_company b,b_department c,b_company d
 		where 

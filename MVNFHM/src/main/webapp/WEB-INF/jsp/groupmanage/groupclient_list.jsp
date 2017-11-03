@@ -33,10 +33,11 @@
 						<div class="col-xs-12">
 
 						<!-- 检索  -->
-						<form action="group/listClients.do?" method="post" name="Form" id="Form">
+						<form action="group/${msg }.do?" method="post" name="Form" id="Form">
 						<input type="hidden" id="gateway_id" name="gateway_id" value="${pd.gateway_id }"/>
 						<input type="hidden" id="term_id" name="term_id" value="${pd.term_id }"/>
 						<input type="hidden" id="client_ids" name="client_ids" value="${pd.client_ids }"/>
+						<input type="hidden" id="op" name="op" value="${pd.op }"/>
 						<div id="zhongxin" style="padding-top: 13px;">
 						<table style="margin-top:5px;">
 							<tr>
@@ -66,10 +67,15 @@
 							<thead>
 								<tr>
 									<!-- 选择框 -->
+									<c:if test="${pd.op != 'v' }">
 									<th class="center" style="width:35px;">
 									<label class="pos-rel"><input type="checkbox" class="ace" id="zcheckbox" /><span class="lbl"></span></label>
 									</th>
-									<th class="center" ><%=number %></th>
+									</c:if>
+<%-- 									<th class="center" ><%=number %></th> --%>
+									<!-- 节点 -->
+									<th class="center" ><%=client_node_info %></th>
+									<th class="center" ><%=gateway_number %></th>
 									<th class="center" ><%=device_number %></th>
 									<th class="center" ><%=device_name %></th>
 									<th class="center" ><%=device_type %></th>
@@ -85,11 +91,17 @@
 									<c:forEach items="${clientList}" var="var" varStatus="vs">
 										<tr>
 											<!-- 选择框 -->	
+											<c:if test="${pd.op != 'v' }">
 											<td class='center'>
 												<label class="pos-rel"><input type='checkbox' name='ids' id="ids${vs.index}" value="${var.client_id}" class="ace" ${var.checked}/><span class="lbl"></span></label>
 											</td>
+											</c:if>
 											<!-- 序号 -->
-											<td class='center' style="width: 50px;">${vs.index+1}</td>
+<%-- 											<td class='center' style="width: 50px;">${vs.index+1}</td> --%>
+											<!-- 节点 -->
+											<td class="center">${var.node}</td>
+											<!-- 网关编号 -->
+											<td class="center">${var.gateway_code}</td>
 											<!-- 终端编号 -->
 											<td class="center">${var.client_code}</td>
 											<!-- 终端描述 -->
@@ -118,6 +130,7 @@
 						<div class="page-header position-relative">
 						<table style="width:100%;">
 							<tr>
+								<c:if test="${pd.op != 'v' }">
 								<td style="vertical-align:top;">
 									<c:if test="${QX.add == 1 }">
 									<!-- 添加终端 -->
@@ -125,6 +138,7 @@
 									<a class="btn btn-mini btn-danger" onclick="top.Dialog.close();"><%=cancel%></a>
 									</c:if>
 								</td>
+								</c:if>
 								<td style="vertical-align:top;"><div class="pagination" style="float: right;padding-top: 0px;margin-top: 0px;">${page.pageStr}</div></td>
 							</tr>
 						</table>

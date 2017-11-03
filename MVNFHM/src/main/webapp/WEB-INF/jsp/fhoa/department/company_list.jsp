@@ -59,6 +59,8 @@
 									<th class="center"><%=company_location %></th>
 									<th class="center"><%=company_contact %></th>
 									<th class="center"><%=phone %></th>
+									<th class="center"><%=map_type %></th>
+									<th class="center"><%=sms_platform %></th>
 									<th class="center"><%=LOGO %></th>
 									<th class="center"><%=if_display_LOGO %></th>
 									<th class="center"><%=status %></th>
@@ -78,6 +80,8 @@
 											<td class='center'>${var.ADDRESS}</td>
 											<td class='center'>${var.CONTACTS}</td>
 											<td class='center'>${var.TELEPHONE}</td>
+											<td class='center'>${var.MAP_NAME}</td>
+											<td class='center'>${var.SMSPLATFORM_NAME}</td>
 											<td class='center'>
 											<c:if test="${var.LOGO_PATH!=null&&var.LOGO_PATH!=''}">
 											<img src="<%=basePath%>uploadFiles/uploadImgs/${var.LOGO_PATH}" width="100">

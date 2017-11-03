@@ -85,7 +85,10 @@
 		SELECT
 		c_client_attr1.id, c_client.client_code, c_client_attr1.`name` cname,
 		c_client_attr1.location, c_client_attr1.lamp_pole_num, c_client_upload_status.temperature,
-		c_client_upload_status.voltage, c_client_upload_status.power_factor,  b_status.name as `status`,c_client_upload_status.brightness,
+		c_client_upload_status.voltage, c_client_upload_status.power_factor,  b_status.name as `status_name`,c_client_upload_status.brightness,
+		concat_ws(',',c_client_attr1.node,c_client_attr1.node2) as node,
+		c_client_upload_status.kwh,
+		c_client_upload_status.status,
 		<!--b_ctrl_strategy.`name` sname,-->
 		c_client_attr1.`comment`,  c_client_upload_status.tdate, c_client_upload_status.current
 		FROM
@@ -95,11 +98,12 @@
 		LEFT JOIN c_client_attr1 ON c_client.id = c_client_attr1.c_client_id
 		LEFT JOIN c_client_upload_status ON c_client_attr1.id = c_client_upload_status.c_client_id
 		LEFT JOIN b_status  ON b_status.value = c_client_upload_status.status and b_status.b_status_main_id='4'
-		WHERE 1=1 
+		WHERE 1=1 AND c_client_gateway.type = '1'
 		AND
 		c_client_attr1.sys_user_id in ${pd.userids}
 		AND
 		c_client_gateway.c_gateway_id = #{pd.id}
+		
 	</select>
 	
 	<!--终端列表  -->
@@ -120,4 +124,30 @@
 			b_status 
 		where b_status_main_id = #{main_id}
 	</select>
+	
+	<!--传感器列表 -->
+	<select id="sensorInfolistPage" parameterType="page" resultType="pd">
+		SELECT
+		c_sensor_attr1.id, c_sensor.sensor_code, c_sensor_attr1.`name` cname,
+		c_sensor_attr1.location, c_sensor_attr1.lamp_pole_num, c_sensor_upload_status.temperature,
+		c_sensor_upload_status.voltage, c_sensor_upload_status.power_factor,  b_status.name as `status_name`,
+		concat_ws(',',c_sensor_attr1.node,c_sensor_attr1.node2) as node,
+		c_sensor_upload_status.status,
+		c_sensor_attr1.`comment`,  c_sensor_upload_status.tdate
+		FROM
+		c_client_gateway 
+		LEFT JOIN 
+		c_sensor ON c_client_gateway.c_client_id = c_sensor.id
+		LEFT JOIN c_sensor_attr1 ON c_sensor.id = c_sensor_attr1.c_sensor_id
+		LEFT JOIN c_sensor_upload_status ON c_sensor_attr1.id = c_sensor_upload_status.c_sensor_id
+		LEFT JOIN b_status  ON b_status.value = c_sensor_upload_status.status and b_status.b_status_main_id='3'
+		WHERE 1=1 AND c_client_gateway.type = '2'
+		AND
+		c_sensor_attr1.sys_user_id in ${pd.userids}
+		AND
+		c_client_gateway.c_gateway_id = #{pd.id}
+		
+	</select>
+	
+	
 </mapper>

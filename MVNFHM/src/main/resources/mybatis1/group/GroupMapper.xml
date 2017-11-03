@@ -39,7 +39,7 @@
 			<!-- 成员数 -->
 			COUNT(c_client_id) number,
 			<!-- 策略数 -->
-			IFNULL(select_strategy.number,0) strategy_num
+			IFNULL(select_strategyset.number,0) strategy_num
 		FROM
 		c_term
 		LEFT JOIN 
@@ -54,24 +54,30 @@
 		c_term.id = c_client_term.c_term_id
 		LEFT JOIN
 		(
-			SELECT b_strategy_clientterm.c_term_id,COUNT(b_strategy_clientterm.b_ctrl_strategy_id) number
+			SELECT b_strategy_clientterm.c_term_id,COUNT(b_strategy_term_apply.id) number
 			FROM
 				b_strategy_clientterm
 			LEFT JOIN 
-				b_ctrl_strategy 
+				b_ctrl_strategy2_apply 
 			ON
-				b_strategy_clientterm.b_ctrl_strategy_id = b_ctrl_strategy.id
+				b_strategy_clientterm.b_ctrl_strategy_id = b_ctrl_strategy2_apply.id
+			LEFT JOIN 
+				b_strategy_term_apply
+			ON
+				b_ctrl_strategy2_apply.b_strategy_term_id = b_strategy_term_apply.id
 			WHERE
 				<!-- 只统计有效的策略 -->
-				b_ctrl_strategy.status = '1' 
+				b_ctrl_strategy2_apply.status = '1' 
 			AND
-				b_ctrl_strategy.b_user_id IN ${pd.userids}
+				b_ctrl_strategy2_apply.b_user_id IN ${pd.userids}
 			GROUP BY
 				b_strategy_clientterm.c_term_id
-		) select_strategy
+		) select_strategyset
 		ON
-			select_strategy.c_term_id = c_term.id		
+			select_strategyset.c_term_id = c_term.id		
 		WHERE 1=1 AND 
+		<!-- 只统计有效的分组 -->
+		c_term.status = '1' AND 
 		c_term.sys_user_id IN ${pd.userids}
 		 <if test="pd.name!=null and pd.name!=''">
 			and 
@@ -88,6 +94,32 @@
 		GROUP BY
 		c_term.id
 	</select>
+	
+	<!-- 取得指定分组所包含的策略包数据 -->
+	<select id="findStrategySetById" parameterType="page" resultType="pd" >
+		SELECT b_strategy_clientterm.c_term_id,b_strategy_term_apply.id,b_strategy_term_apply.`name` 
+			FROM
+				c_term
+			LEFT JOIN
+				b_strategy_clientterm
+			ON
+				b_strategy_clientterm.c_term_id = c_term.id		
+			LEFT JOIN 
+				b_ctrl_strategy2_apply 
+			ON
+				b_strategy_clientterm.b_ctrl_strategy_id = b_ctrl_strategy2_apply.id
+			LEFT JOIN 
+				b_strategy_term_apply
+			ON
+				b_ctrl_strategy2_apply.b_strategy_term_id = b_strategy_term_apply.id
+			WHERE
+				c_term.id = #{pd.c_term_id} AND
+				b_ctrl_strategy2_apply.status = '1' AND
+				c_term.status = '1' AND 
+				b_strategy_term_apply.b_user_id IN ${pd.userids} AND
+				c_term.sys_user_id IN ${pd.userids}
+			GROUP BY b_strategy_clientterm.c_term_id,b_strategy_term_apply.id
+	</select>
 
 	<!-- 通过c_term.id获取数据 -->
 	<select id="findById" parameterType="pd" resultType="pd" >
@@ -100,7 +132,6 @@
 		c_term
 		WHERE 
 		c_term.id = #{id}
-		
 	</select>	
 	
 	<!-- 新增分组 -->
@@ -132,9 +163,9 @@
 			set 
 				c_term.name 		        = #{name},
 				c_term.explain 			    = #{explain},
-				c_term.status				= #{status},
-				c_term.sys_user_id			= #{sys_user_id},
-				c_client_attr1.staus		= #{status}
+<!-- 				c_term.status				= #{status}, -->
+				c_term.sys_user_id			= #{sys_user_id}
+<!-- 				c_client_attr1.staus		= #{status} -->
 			where 
 				c_term.id = #{id}
 	</update>

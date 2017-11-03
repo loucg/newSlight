@@ -111,10 +111,21 @@
 		<div class="right_c">
 			<div class="nav-tip" onClick="javascript:void(0)">&nbsp;</div>
 		</div>
-		<div class="Conframe" id="inc">
-			<iframe name="Conframe" id="Conframe" frameborder=0 src="map.jsp">
-			</iframe>
-		</div>
+		<c:choose>
+			<c:when test="${pd.maptype==1}">
+				<div class="Conframe" id="inc">
+					<iframe name="Conframe" id="Conframe" frameborder=0 src="baidu_map.jsp">
+					</iframe>
+				</div>
+			</c:when>
+		<c:otherwise>
+			<div class="Conframe" id="inc">
+					<iframe name="Conframe" id="Conframe" frameborder=0 src="google_map.jsp">
+					</iframe>
+			</div>
+		</c:otherwise>
+		</c:choose >
+			
 		<!--右边框架结束-->
 		<!--底部开始-->
 		<!--  <div class="bottom_c">地图</div> -->
@@ -447,11 +458,6 @@ function getChosetermid(){
 	   });
 	
 	});
-	
-	function test(){
-		alert('test111')
-	}
-
 	//修改
 	function edit(Id, type){
 		 top.jzts();

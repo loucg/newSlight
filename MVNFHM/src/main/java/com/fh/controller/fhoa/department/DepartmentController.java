@@ -146,7 +146,9 @@ public class DepartmentController extends BaseController {
 			@RequestParam(value="CONTACTS",required=false) String CONTACTS,
 			@RequestParam(value="TELEPHONE",required=false) String TELEPHONE,
 			@RequestParam(value="ISDISPLAYLOGO",required=false) String ISDISPLAYLOGO,
-			@RequestParam(value="STATUS",required=false) String STATUS
+			@RequestParam(value="STATUS",required=false) String STATUS,
+			@RequestParam(value="MAP_TYPE",required=false) String MAP_TYPE,
+			@RequestParam(value="SMSPLATFORM",required=false) String SMSPLATFORM
 			) throws Exception{
 		if(!Jurisdiction.buttonJurisdiction(menuUrl, "add")){return null;} //校验权限
 		logBefore(logger, Jurisdiction.getUsername()+"新增公司");
@@ -159,6 +161,8 @@ public class DepartmentController extends BaseController {
 			pd.put("TELEPHONE", TELEPHONE);			//手机号码
 			pd.put("ISDISPLAYLOGO", ISDISPLAYLOGO);						//是否显示图片
 			pd.put("STATUS", STATUS);						//状态
+			pd.put("MAP_TYPE", MAP_TYPE);						//地图
+			pd.put("SMSPLATFORM", SMSPLATFORM);						//短信平台
 			int ID=0;
 			//String companyid = pd.getString("companyid");
 			//pd.put("DEPARTMENT_ID", this.get32UUID());	//主键
@@ -216,7 +220,9 @@ public class DepartmentController extends BaseController {
 			@RequestParam(value="CONTACTS",required=false) String CONTACTS,
 			@RequestParam(value="TELEPHONE",required=false) String TELEPHONE,
 			@RequestParam(value="ISDISPLAYLOGO",required=false) String ISDISPLAYLOGO,
-			@RequestParam(value="STATUS",required=false) String STATUS
+			@RequestParam(value="STATUS",required=false) String STATUS,
+			@RequestParam(value="MAP_TYPE",required=false) String MAP_TYPE,
+			@RequestParam(value="SMSPLATFORM",required=false) String SMSPLATFORM
 			) throws Exception{
 		if(!Jurisdiction.buttonJurisdiction(menuUrl, "edit")){return null;} //校验权限
 		logBefore(logger, Jurisdiction.getUsername()+"修改公司");
@@ -229,6 +235,8 @@ public class DepartmentController extends BaseController {
 			pd.put("TELEPHONE", TELEPHONE);			//手机号码
 			pd.put("ISDISPLAYLOGO", ISDISPLAYLOGO);						//是否显示图片
 			pd.put("STATUS", STATUS);						//状态
+			pd.put("MAP_TYPE", MAP_TYPE);						//地图
+			pd.put("SMSPLATFORM", SMSPLATFORM);						//短信平台
 			pd.put("ID", ID);						//ID
 			pd.put("NAME", NAME);						//名称
 			if(null == LOGO_PATH){LOGO_PATH = "";}
@@ -380,7 +388,11 @@ public class DepartmentController extends BaseController {
 		//List<PageData>	varList = departmentService.listselectdepartment(companyid);	//列出公司下的所有部门
 		//mv.addObject("pds",departmentService.findById(pd));				//传入上级所有信息
 		//mv.addObject("varList", varList);
+		List<PageData> mapList = departmentService.maplist();
+		List<PageData> smsList = departmentService.smslist();
 		mv.addObject("pd", pd);
+		mv.addObject("mapList", mapList);
+		mv.addObject("smsList", smsList);
 		mv.setViewName("fhoa/department/company_edit");
 		mv.addObject("msg", "savecompany");
 		return mv;
@@ -465,7 +477,11 @@ public class DepartmentController extends BaseController {
 		pd = this.getPageData();
 		pd.getString("companyid");
 		pd = departmentService.findcompanyById(pd);	//根据ID读取
+		List<PageData> mapList = departmentService.maplist();
+		List<PageData> smsList = departmentService.smslist();
 		mv.addObject("pd", pd);
+		mv.addObject("mapList", mapList);
+		mv.addObject("smsList", smsList);
 		mv.setViewName("fhoa/department/company_edit");
 		mv.addObject("msg", "companyedit");
 		return mv;

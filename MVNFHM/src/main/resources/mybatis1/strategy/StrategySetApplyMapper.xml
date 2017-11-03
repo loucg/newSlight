@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="StrategySetApplyMapper">
+
+	<!-- 表名 -->
+	<sql id="tableName">b_strategy_term_apply</sql>
+
+	<!-- 字段 -->
+	<sql id="Field">
+		id,
+		name,
+		`explain`,
+		user_id,
+		b_user_id,
+		<!-- 有效无效状态 有效('1'),无效('2') -->
+		status,
+		org_id
+	</sql>
+
+	<!-- 字段值 -->
+	<sql id="FieldValue">
+		#{name},
+		#{explain},
+		#{user_id},
+		#{b_user_id},
+		#{status},
+		#{org_id}
+	</sql>
+
+	<!-- 查询所有策略包 -->
+	<!-- <select id="strategySetlistPage" parameterType="page" resultType="pd"> -->
+	<!-- select -->
+	<!-- b_strategy_term.id, -->
+	<!-- b_strategy_term.`name`, -->
+	<!-- b_strategy_term.`explain`, -->
+	<!-- b_strategy_term.user_id, -->
+	<!-- b_strategy_term.b_user_id, -->
+	<!-- b_strategy_term.status, -->
+	<!-- count(b_ctrl_strategy2.b_strategy_term_id) strategycnt -->
+	<!-- from -->
+	<!-- b_strategy_term -->
+	<!-- left join -->
+	<!-- b_ctrl_strategy2 -->
+	<!-- on -->
+	<!-- b_ctrl_strategy2.b_strategy_term_id = b_strategy_term.id and b_ctrl_strategy2.status 
+		= '1' -->
+	<!-- where -->
+	<!-- 只检索有效数据 -->
+	<!-- b_strategy_term.status = '1' and -->
+	<!-- b_strategy_term.b_user_id in ${pd.userids} -->
+	<!-- <if test="pd.name!=null and pd.name!=''">策略名称检索 -->
+	<!-- and -->
+	<!-- ( -->
+	<!-- b_strategy_term.name LIKE CONCAT(CONCAT('%', #{pd.name}),'%') -->
+	<!-- ) -->
+	<!-- </if> -->
+	<!-- <if test="pd.explain!=null and pd.explain!=''">应用说明检索 -->
+	<!-- and -->
+	<!-- ( -->
+	<!-- b_strategy_term.explain LIKE CONCAT(CONCAT('%', #{pd.explain}),'%') -->
+	<!-- ) -->
+	<!-- </if> -->
+	<!-- group by -->
+	<!-- b_strategy_term.id -->
+	<!-- order by -->
+	<!-- b_strategy_term.id -->
+	<!-- </select> -->
+
+	<!-- 用ID查询指定策略包 -->
+	<!-- <select id="findStrategySetById" parameterType="String" resultType="pd"> -->
+	<!-- select -->
+	<!-- <include refid="Field"></include> -->
+	<!-- from -->
+	<!-- <include refid="tableName"></include> -->
+	<!-- where -->
+	<!-- id = #{id} -->
+	<!-- </select> -->
+
+	<!-- 新增策略包 -->
+	<insert id="insert" useGeneratedKeys="true" keyProperty="b_strategyset_apply_id" parameterType="pd">
+		insert into
+		<include refid="tableName"></include>
+		(
+			name,
+			`explain`,
+			user_id,
+			b_user_id,
+			<!-- 有效无效状态 有效('1'),无效('2') -->
+			status,
+			org_id
+		) select
+			name,
+			`explain`,
+			user_id,
+			b_user_id,
+			<!-- 有效无效状态 有效('1'),无效('2') -->
+			status,
+			id
+		from
+			b_strategy_term
+		where
+			b_strategy_term.id = #{strategyset_id}
+	</insert>
+
+	<!-- 更新策略包 -->
+	<!-- <update id="update" parameterType="pd" > update <include refid="tableName"></include> 
+		set name = #{NAME}, b_strategy_term.explain = #{EXPLAIN} where id = #{ID} 
+		</update> -->
+
+	<!-- 踢删策略包 -->
+	<update id="remove" parameterType="String">
+		update
+		<include refid="tableName"></include>
+		set status = '2'
+		where
+		id = #{id}
+	</update>
+
+
+</mapper>

@@ -26,8 +26,35 @@ public class c_client extends PageBean implements Serializable {
 	private String powerdown;
 	private Date tdate;
 	private String client_attri_id;
-
+	private String map_pictrue_path;
+	private String coordinate_google;
 	private int partMaplinetCnt;
+	private String partMap_Id;
+	private String mapFlag;
+
+	public String getMapFlag() {
+		return mapFlag;
+	}
+
+	public void setMapFlag(String mapFlag) {
+		this.mapFlag = mapFlag;
+	}
+
+	public String getCoordinate_google() {
+		return coordinate_google;
+	}
+
+	public void setCoordinate_google(String coordinate_google) {
+		this.coordinate_google = coordinate_google;
+	}
+
+	public String getMap_pictrue_path() {
+		return map_pictrue_path;
+	}
+
+	public void setMap_pictrue_path(String map_pictrue_path) {
+		this.map_pictrue_path = map_pictrue_path;
+	}
 
 	public String getPartMap_Id() {
 		return partMap_Id;
@@ -36,8 +63,6 @@ public class c_client extends PageBean implements Serializable {
 	public void setPartMap_Id(String partMap_Id) {
 		this.partMap_Id = partMap_Id;
 	}
-
-	private String partMap_Id;
 
 	public int getPartMaplinetCnt() {
 		return partMaplinetCnt;
@@ -140,13 +165,13 @@ public class c_client extends PageBean implements Serializable {
 	}
 
 	/*
-	 * public c_client(c_client c) { this.id=c.getId(); this.typeid=c.getTypeid();
-	 * this.termid=c.getTermid(); this.name=c.getName();
-	 * this.coordinate=c.getCoordinate(); this.location=c.getLocation();
-	 * this.lamppolenum=c.getLamppolenum(); this.termname=c.getTermname();
-	 * this.typename=c.getTypename(); this.status=c.getStatus();
-	 * this.brightness=c.getBrightness(); this.xcoordinate=c.getXcoordinate();
-	 * this.ycoordinate=c.getYcoordinate();
+	 * public c_client(c_client c) { this.id=c.getId();
+	 * this.typeid=c.getTypeid(); this.termid=c.getTermid();
+	 * this.name=c.getName(); this.coordinate=c.getCoordinate();
+	 * this.location=c.getLocation(); this.lamppolenum=c.getLamppolenum();
+	 * this.termname=c.getTermname(); this.typename=c.getTypename();
+	 * this.status=c.getStatus(); this.brightness=c.getBrightness();
+	 * this.xcoordinate=c.getXcoordinate(); this.ycoordinate=c.getYcoordinate();
 	 * 
 	 * }
 	 */

@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Strategy2ApplyMapper">
+	
+	<!-- 表名 -->
+	<sql id="tableName">b_ctrl_strategy2_apply</sql>
+	
+	<!-- 字段 -->
+	<sql id="Field">
+		b_ctrl_strategy2_apply.`id`,
+		b_strategy_type_id,
+		b_strategy_term_id,
+		b_ctrl_strategy2_apply.`name`,
+		b_ctrl_strategy2_apply.`explain`,
+		b_ctrl_strategy2_apply.`value`,
+		<!-- 有效无效状态 有效('1'),无效('2')-->
+		status,
+		tdate,
+		b_user_id,
+		datetime1,
+		datetime2,
+		month,
+		day,
+		period,
+		days,
+		time,
+		<!-- 下发状态 -->
+		status2,
+		bright,
+		org_id
+	</sql>
+	
+	<!-- 字段值 -->
+	<sql id="FieldValue">
+		#{B_STRATEGY_TYPE_ID},
+		#{B_STRATEGY_TERM_ID},
+		#{NAME},
+		#{EXPLAIN},
+		#{VALUE},
+		#{STATUS},
+		#{TDATE},
+		#{B_USER_ID},
+		#{DATETIME1},
+		#{DATETIME2},
+		#{MONTH},
+		#{DAY},
+		#{PERIOD},
+		#{DAYS},
+		#{MONTH},
+		#{TIME},
+		#{STATUS2},
+		#{BRIGHT},
+		#{ORG_ID}
+	</sql>
+	
+	
+	<!-- 用ID查询指定应用策略包中策略 -->
+	<select id="findById" parameterType="String" resultType="pd">
+	    select
+			<include refid="Field"></include>
+		from 
+			<include refid="tableName"></include>
+		where
+			id = #{id}
+	</select>
+
+	<!-- 新增 -->
+	<insert id="insert" parameterType="Page">
+		insert into 
+	<include refid="tableName"></include>
+	(
+		b_strategy_type_id,
+		b_strategy_term_id,
+		b_ctrl_strategy2_apply.`name`,
+		b_ctrl_strategy2_apply.`explain`,
+		b_ctrl_strategy2_apply.`value`,
+		<!-- 有效无效状态 有效('1'),无效('2')-->
+		status,
+		tdate,
+		b_user_id,
+		datetime1,
+		datetime2,
+		month,
+		day,
+		period,
+		days,
+		time,
+		<!-- 下发状态 -->
+		status2,
+		bright,
+		org_id
+	)
+	select
+		b_strategy_type_id,
+		#{b_strategyset_apply_id},
+		b_ctrl_strategy2.`name`,
+		b_ctrl_strategy2.`explain`,
+		b_ctrl_strategy2.`value`,
+		<!-- 有效无效状态 有效('1'),无效('2')-->
+		b_ctrl_strategy2.status,
+		tdate,
+		b_ctrl_strategy2.b_user_id,
+		datetime1,
+		datetime2,
+		month,
+		day,
+		period,
+		days,
+		time,
+		<!-- 下发状态 -->
+		status2,
+		bright,
+		b_ctrl_strategy2.`id`
+	from 
+		b_ctrl_strategy2 
+	inner join
+		b_strategy_term
+	on
+		b_ctrl_strategy2.b_strategy_term_id = b_strategy_term.id
+ 	where 
+		<!-- 只检索有效数据 -->
+		b_ctrl_strategy2.status = '1' AND
+		b_strategy_term.id = #{strategyset_id}
+	</insert>
+	
+	<!-- 踢删应用策略包中策略 -->
+	<update id="deleteStrategy2ByIds" parameterType="Page">
+		DELETE
+		FROM 
+			b_ctrl_strategy2_apply
+		WHERE 
+			id IN ${pd.strategy_ids}
+	</update>
+	
+	<!-- 更新应用策略包中策略 下发状态-->
+	<update id="updateStrategy2Status" parameterType="Page">
+		update 
+		<include refid="tableName"></include>
+		<!-- 设成已下发 -->
+		set status2 = ${pd.status2}
+		where 
+			id in ${pd.strategy_ids}
+	</update>
+	
+	<!-- 查询复数个指定应用策略包中所有有效策略 -->
+	<select id="findStrategy2BySetIds" parameterType="page" resultType="pd">
+	    select
+		   <include refid="Field"></include>,
+		   <!-- 策略类型 -->
+		   b_strategy_type.`name` strategy_type,
+		   <!-- 下发状态 -->
+		   b_status.name send_status
+		from 
+			<include refid="tableName"></include>
+		inner join
+			<!-- 策略类型 -->
+			b_strategy_type
+		on
+			b_strategy_type.id = b_ctrl_strategy2_apply.b_strategy_type_id
+		inner join
+			<!-- 取得下发状态 -->
+			b_status
+		on
+			b_status.value = b_ctrl_strategy2_apply.status2 and b_status.b_status_main_id = 6
+		where
+			b_ctrl_strategy2_apply.b_strategy_term_id in ${pd.strategyset_ids}
+			<!-- 只检索有效数据 -->
+			and b_ctrl_strategy2_apply.status='1'
+		<if test="pd.name!=null and pd.name!=''"><!-- 策略名称检索 -->
+			and 
+			(
+				b_ctrl_strategy2_apply.name LIKE CONCAT(CONCAT('%', #{pd.name}),'%')
+			)
+		</if>
+		<if test="pd.explain!=null and pd.explain!=''"><!-- 应用说明检索 -->
+			and 
+			(
+				b_ctrl_strategy2_apply.`explain` LIKE CONCAT(CONCAT('%', #{pd.explain}),'%')
+			)
+		</if>
+		group by
+			b_ctrl_strategy2_apply.id
+		order by
+			b_ctrl_strategy2_apply.id
+	</select>
+	
+	<!-- 查询指定应用策略包中所有有效策略 -->
+	<select id="strategy2ApplylistPage" parameterType="page" resultType="pd">
+	    select
+		   <include refid="Field"></include>,
+		   <!-- 策略类型 -->
+		   b_strategy_type.`name` strategy_type,
+		   <!-- 下发状态 -->
+		   b_status.name send_status
+		from 
+			<include refid="tableName"></include>
+		inner join
+			<!-- 策略类型 -->
+			b_strategy_type
+		on
+			b_strategy_type.id = b_ctrl_strategy2_apply.b_strategy_type_id
+		inner join
+			<!-- 取得下发状态 -->
+			b_status
+		on
+			b_status.value = b_ctrl_strategy2_apply.status2 and b_status.b_status_main_id = 6
+		where
+			b_ctrl_strategy2_apply.b_strategy_term_id = #{pd.strategyset_id}
+			<!-- 只检索有效数据 -->
+			and b_ctrl_strategy2_apply.status='1'
+		<if test="pd.name!=null and pd.name!=''"><!-- 策略名称检索 -->
+			and 
+			(
+				b_ctrl_strategy2_apply.name LIKE CONCAT(CONCAT('%', #{pd.name}),'%')
+			)
+		</if>
+		<if test="pd.explain!=null and pd.explain!=''"><!-- 应用说明检索 -->
+			and 
+			(
+				b_ctrl_strategy2_apply.`explain` LIKE CONCAT(CONCAT('%', #{pd.explain}),'%')
+			)
+		</if>
+		group by
+			b_ctrl_strategy2_apply.id
+		order by
+			b_ctrl_strategy2_apply.id
+	</select>
+	
+	
+</mapper>

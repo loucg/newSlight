@@ -47,6 +47,7 @@ public class GroupGatewayController extends BaseController{
     @Resource(name="groupMemService")
     private GroupMemService groupMemService;
 
+
 	
 	/**
 	 * 显示所有网关列表
@@ -72,6 +73,11 @@ public class GroupGatewayController extends BaseController{
 		if(null !=term_id && !"".equals(term_id)){
 			pd.put("term_id", term_id.trim());
 		}
+		
+		String op = pd.getString("op");					//选择=u;查看=v; 
+		
+		logBefore(logger, "操作类型:"+op);
+		
 		//获得登录的用户id
 		User user = (User)Jurisdiction.getSession().getAttribute(Const.SESSION_USER);
 		String sys_user_id = user.getUSER_ID();
@@ -134,8 +140,8 @@ public class GroupGatewayController extends BaseController{
 	 * @param page
 	 * @return
 	 */
-	@RequestMapping("/listClients")
-	public ModelAndView listClientsByGatewayId(Page page) throws Exception{
+	@RequestMapping("/listOtherClients")
+	public ModelAndView listOtherClientsByGatewayId(Page page) throws Exception{
 		logBefore(logger, Jurisdiction.getUsername()+"显示指定网关下所有终端列表");
 
 		ModelAndView mv = this.getModelAndView();
@@ -170,7 +176,7 @@ public class GroupGatewayController extends BaseController{
 		pd.put("userids", userids);
 		
 		page.setPd(pd);
-		List<PageData> clientList = groupGatewayService.listClientsByGatewayId(page);	//获取列表
+		List<PageData> clientList = groupGatewayService.listOtherClientsByGatewayId(page);	//获取列表
 		
 		//终端选择状态初始化
 		if(clientList != null && !Tools.isEmpty(client_ids)) {
@@ -188,6 +194,56 @@ public class GroupGatewayController extends BaseController{
 		mv.setViewName("groupmanage/groupclient_list");
 		mv.addObject("clientList", clientList);
 		mv.addObject("pd", pd);
+		mv.addObject("msg","listOtherClients");
+		mv.addObject("QX", Jurisdiction.getHC());
+		
+		return mv;
+	}
+	
+	/**
+	 * 显示指定网关下所有终端列表
+	 * @param page
+	 * @return
+	 */
+	@RequestMapping("/listClients")
+	public ModelAndView listClientsByGatewayId(Page page) throws Exception{
+		logBefore(logger, Jurisdiction.getUsername()+"显示指定网关下所有已选择终端列表");
+
+		ModelAndView mv = this.getModelAndView();
+		PageData pd = new PageData();
+		pd = this.getPageData();
+		String name = pd.getString("name");				//检索条件：名称
+		if(null !=name && !"".equals(name)){
+			pd.put("name", name.trim());
+		}
+		String code = pd.getString("code");				//检索条件：终端条码
+		if(null !=code && !"".equals(code)){
+			pd.put("code", code.trim());
+		}
+		String term_id = pd.getString("term_id");		//平台分组表ID
+		if(null !=term_id && !"".equals(term_id)){
+			pd.put("term_id", term_id.trim());
+		}
+		String gateway_id = pd.getString("gateway_id");	//网关ID
+		if(null !=gateway_id && !"".equals(gateway_id)){
+			pd.put("gateway_id", gateway_id.trim());
+		}
+
+		//获得登录的用户id
+		User user = (User)Jurisdiction.getSession().getAttribute(Const.SESSION_USER);
+		String sys_user_id = user.getUSER_ID();
+		pd.put("sys_user_id", sys_user_id);
+		
+		String userids = departmentService.getUseridsInDepartment(pd);
+		pd.put("userids", userids);
+		
+		page.setPd(pd);
+		List<PageData> clientList = groupGatewayService.listClientsByGatewayId(page);	//获取列表
+				
+		mv.setViewName("groupmanage/groupclient_list");
+		mv.addObject("clientList", clientList);
+		mv.addObject("pd", pd);
+		mv.addObject("msg","listClients");
 		mv.addObject("QX", Jurisdiction.getHC());
 		
 		return mv;

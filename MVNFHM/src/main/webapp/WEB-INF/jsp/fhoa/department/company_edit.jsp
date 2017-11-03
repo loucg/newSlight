@@ -46,6 +46,28 @@
 									<td><input type="text" name="TELEPHONE" id="TELEPHONE" value="${pd.TELEPHONE}" maxlength="32" style="width:99%;" placeholder="<%=enter_phone_number_here %>" title="<%=phone %>"/></td>
 								</tr>
 								<tr>
+									<td style="width:100px;text-align: right;padding-top: 13px;"><%=map_type %>:</td>
+									<td>
+									<select class="chosen-select form-control" name="MAP_TYPE" id="MAP_TYPE" style="vertical-align:top;width: 120px;">
+										<option value=""></option>
+										<c:forEach items="${mapList}" var="map">
+											<option value="${map.id}" <c:if test="${map.id == pd.MAP_TYPE}">selected</c:if>>${map.name }</option>
+										</c:forEach>
+								  	</select>
+									</td>
+								</tr>
+								<tr>
+									<td style="width:100px;text-align: right;padding-top: 13px;"><%=sms_platform %>:</td>
+									<td>
+									<select class="chosen-select form-control" name="SMSPLATFORM" id="SMSPLATFORM" style="vertical-align:top;width: 120px;">
+										<option value=""></option>
+										<c:forEach items="${smsList}" var="sms">
+											<option value="${sms.id }" <c:if test="${sms.id == pd.SMSPLATFORM }">selected</c:if>>${sms.name }</option>
+										</c:forEach>
+								  	</select>
+									</td>
+								</tr>
+								<tr>
 									<td style="width:100px;text-align: right;padding-top: 13px;"><%=LOGO %>:</td>
 									<td>
 										<c:if test="${pd == null || pd.LOGO_PATH == '' || pd.LOGO_PATH == null }">

@@ -28,7 +28,7 @@
 				<div class="page-content">
 					<div class="row">
 						<div class="col-xs-12">
-							<form action="config/readExcel" name="Form" id="Form" method="post" enctype="multipart/form-data">
+							<form action="sensor/readExcel" name="Form" id="Form" method="post" enctype="multipart/form-data">
 								<div id="zhongxin">
 								<table style="width:95%;" >
 									<tr>
@@ -38,7 +38,7 @@
 										<td style="text-align: center;padding-top: 10px;">
 											<a class="btn btn-mini btn-primary" onclick="save();"><%=importt%></a>
 											<a class="btn btn-mini btn-danger" onclick="top.Dialog.close();"><%=cancel%></a>
-											<a class="btn btn-mini btn-success" onclick="window.location.href='<%=basePath%>/config/downExcel'"><%=download_model%></a>
+											<a class="btn btn-mini btn-success" onclick="window.location.href='<%=basePath%>/sensor/downExcel'"><%=download_model%></a>
 										</td>
 									</tr>
 								</table>

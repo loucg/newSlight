@@ -26,6 +26,18 @@ public class GroupServiceImpl implements GroupService {
 	}
 
 	/**
+	 * 指定分组所包含的策略包列表
+	 * 
+	 * @param page
+	 * @return
+	 * @throws Exception
+	 */
+	@SuppressWarnings("unchecked")
+	public List<PageData> listStrategySetById(Page page) throws Exception {
+		return (List<PageData>) dao.findForList("GroupMapper.findStrategySetById", page);
+	}
+
+	/**
 	 * 组信息
 	 */
 	public PageData findById(PageData pd) throws Exception {

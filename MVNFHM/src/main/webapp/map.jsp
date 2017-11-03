@@ -1045,7 +1045,6 @@ body {
 			termname=marker.partLightData[0].termname;
 			brightness = marker.partLightData[0].brightness;
 		}
-
 	   var sContent_light =   
 		   "<html>"+
 		   "<head>"+
@@ -1064,7 +1063,7 @@ body {
 		   "<tr>"+
 		   "<td width=400px rowspan=9>"+
 		   "<div id='partMapImg' class='image'>"+
- 		   		"<img onclick=addLightToMap() src=uploadFiles/uploadImgs/partmap/"+ xyCoordinate  +".jpg?"+ Math.random() +" />"+
+ 		   		"<img onclick=addLightToMap() src=uploadFiles/uploadImgs/partmap/"+ xyCoordinate  +".jpg />"+
 			"</div>"+
 			"</td>"+
 			"<td class='center' width='120px'>路灯选择"+

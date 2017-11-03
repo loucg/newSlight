@@ -19,6 +19,7 @@ import com.fh.entity.system.User;
 import com.fh.hzy.util.CMDType;
 import com.fh.hzy.util.UserUtils;
 import com.fh.service.fhoa.department.DepartmentManager;
+import com.fh.service.street.state.GatewayStateService;
 import com.fh.service.street.state.LampStateService;
 import com.fh.service.system.fhlog.FHlogManager;
 import com.fh.util.AppUtil;
@@ -38,13 +39,15 @@ import com.google.gson.JsonParser;
 @RequestMapping(value="/state/lamp")
 public class LampStateController extends BaseController{
 
-	String menuUrl = "state/lamp/listLamps.do";		//页面配置的菜单地址
+	String menuUrl = "state/lamp/listGateways.do";		//页面配置的菜单地址
     @Resource(name="lampStateService")
     private LampStateService lampStateService;
     @Resource(name="departmentService")
     private DepartmentManager departmentService;
     @Resource(name="fhlogService")
 	private FHlogManager fhlogService;
+	@Resource(name = "gatewayStateService")
+	private GatewayStateService gatewayStateService;
     
 	
 	/**
@@ -513,5 +516,84 @@ public class LampStateController extends BaseController{
 		mv.setViewName("save_result");
 		return mv;
 	}*/
+	
+	/**
+	 * 显示 网关状态列表
+	 * 
+	 * @param page
+	 * @return
+	 */
+	@RequestMapping("/listGateways")
+	public ModelAndView listGateways(Page page) throws Exception {
+		ModelAndView mv = this.getModelAndView();
+		PageData pd = new PageData();
+		pd = this.getPageData();
+		String name = pd.getString("name"); // 检索条件：名称
+		if (null != name && !"".equals(name)) {
+			pd.put("name", name.trim());
+		}
+		String gateway_code = pd.getString("gateway_code"); // 检索条件：编号
+		if (null != gateway_code && !"".equals(gateway_code)) {
+			pd.put("gateway_code", gateway_code.trim());
+		}
+		String location = pd.getString("location"); // 检索条件：位置
+		if (null != location && !"".equals(location)) {
+			pd.put("location", location.trim());
+		}
+		String status = pd.getString("status"); // 检索条件：状态
+		if (null != status && !"".equals(status)) {
+			pd.put("status", status.trim());
+		}
+		// 获得登录的用户id
+		User user = (User) Jurisdiction.getSession().getAttribute(Const.SESSION_USER);
+		String sys_user_id = user.getUSER_ID();
+		pd.put("sys_user_id", sys_user_id);
+
+		String userids = departmentService.getUseridsInDepartment(pd);
+		pd.put("userids", userids);
+
+		page.setPd(pd);
+		List<PageData> gatewayStateList = gatewayStateService.listGatewayState(page); // 获取列表
+		pd.put("main_id", "3");
+		List<PageData> workStatusList = gatewayStateService.getWorkStatus(pd);
+		// mv.setViewName("street/state/gatewaystate_list");
+		mv.setViewName("street/state/gatewaystate_debug_list");// 调试画面
+		mv.addObject("gatewayStateList", gatewayStateList);
+		mv.addObject("workStatusList", workStatusList);
+
+		mv.addObject("pd", pd);
+		mv.addObject("QX", Jurisdiction.getHC());
+
+		return mv;
+	}
+	
+	/**
+	 * 1显示同一网关下的所有终端信息
+	 */
+
+	@RequestMapping("/goViewClientDetail")
+	public ModelAndView goViewClientDetail(Page page) throws Exception {
+		logBefore(logger, "goViewClientDetail");
+		ModelAndView mv = this.getModelAndView();
+		PageData pd = new PageData();
+		pd = this.getPageData();
+		// 获得登录的用户id
+		User user = (User) Jurisdiction.getSession().getAttribute(Const.SESSION_USER);
+		String sys_user_id = user.getUSER_ID();
+		pd.put("sys_user_id", sys_user_id);
+
+		String userids = departmentService.getUseridsInDepartment(pd);
+		pd.put("userids", userids);
+		page.setPd(pd);
+		// System.out.println(userids);
+		List<PageData> clientDetailsList = gatewayStateService.viewClientDetail(page);
+		List<PageData> gatewaynamelist = gatewayStateService.viewgateWayName(page);
+		mv.setViewName("street/state/client_debug_list");
+		mv.addObject("clientDetailsList", clientDetailsList);
+		mv.addObject("gatewaynamelist", gatewaynamelist);
+		mv.addObject("pd", pd);
+		mv.addObject("QX", Jurisdiction.getHC());
+		return mv;
+	}
 	
 }

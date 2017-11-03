@@ -35,6 +35,7 @@
 						<!-- 检索  -->
 						<form action="group/listGateways.do?" method="post" name="Form" id="Form">
 						<input type="hidden" id="term_id" name="term_id" value="${pd.term_id }"/>
+						<input type="hidden" id="op" name="op" value="${pd.op }"/>
 						<div id="zhongxin" style="padding-top: 13px;">
 						<table style="margin-top:5px;">
 							<tr>
@@ -76,6 +77,7 @@
 								<c:when test="${not empty gatewayList}">
 									<c:if test="${QX.cha == 1 }">
 									<c:forEach items="${gatewayList}" var="var" varStatus="vs">
+										<c:if test="${var.number> 0 || pd.op !='v'}">
 										<tr>
 											<td class="center" style="width: 50px;">${vs.index+1}</td>
 											<td class="center"><a onclick="selectClient('${var.gateway_id}', '${var.client_ids}')" style="cursor:pointer;">${var.gateway_code }</a></td>
@@ -85,6 +87,7 @@
 												<input type="hidden" id="clientids" name="clientids" value="${var.client_ids}"/>
 											</td>
 										</tr>
+										</c:if>
 									</c:forEach>
 									</c:if>
 									<c:if test="${QX.cha == 0 }">
@@ -104,6 +107,7 @@
 						<div class="page-header position-relative">
 						<table style="width:100%;">
 							<tr>
+								<c:if test="${pd.op != 'v' }">
 								<td>
 									<c:if test="${QX.add == 1 }">
 									<!-- 确定 -->
@@ -111,6 +115,7 @@
 									<a class="btn btn-mini btn-danger" onclick="top.Dialog.close();"><%=cancel%></a>
 									</c:if>
 								</td>
+								</c:if>
 								<td style="vertical-align:top;"><div class="pagination" style="float: right;padding-top: 0px;margin-top: 0px;">${page.pageStr}</div></td>
 							</tr>
 						</table>
@@ -171,7 +176,11 @@
 			 var diag = new top.Dialog();
 			 diag.Drag=true;
 			 diag.Title ="<%=add_device %>";
-			 diag.URL = '<%=basePath%>group/listClients.do?term_id=${pd.term_id }&gateway_id='+gateway_id+'&client_ids='+client_ids;
+			 if('${pd.op }'=='v'){
+				diag.URL = '<%=basePath%>group/listClients.do?term_id=${pd.term_id }&gateway_id='+gateway_id+'&op=v';
+			 }else{
+				 diag.URL = '<%=basePath%>group/listOtherClients.do?term_id=${pd.term_id }&gateway_id='+gateway_id+'&client_ids='+client_ids;
+			 }				 
 			 diag.Width = 1200;
 			 diag.Height = 600;
 			 diag.Modal = true;				//有无遮罩窗口

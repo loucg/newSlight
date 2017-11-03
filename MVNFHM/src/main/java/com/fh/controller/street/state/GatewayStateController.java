@@ -110,5 +110,21 @@ public class GatewayStateController extends BaseController {
 		mv.addObject("QX", Jurisdiction.getHC());
 		return mv;
 	}
+	
+	/**
+	 * 打开选择页面
+	 * 
+	 * @return
+	 * @throws Exception
+	 */
+	@RequestMapping(value = "/goSenlampStatePage")
+	public ModelAndView goSenlampStatePage() throws Exception {
+		ModelAndView mv = this.getModelAndView();
+		PageData pd = new PageData();
+		pd = this.getPageData();
+		mv.setViewName("street/state/selectBranch");
+		mv.addObject("pd", pd);
+		return mv;
+	}
 
 }

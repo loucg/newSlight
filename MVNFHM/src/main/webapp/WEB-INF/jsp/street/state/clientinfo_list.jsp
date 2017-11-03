@@ -33,65 +33,7 @@
 					<div class="row">
 						<div class="col-xs-12">
 							
-						<!-- 检索  -->
 						<form action="state/street/goViewDetail.do?id=${pd.id}" method="post" name="Form" id="Form">
-						<%-- <table style="margin-top:5px;">
-							<tr>
-								<!-- 
-								<td><%=group_name %>：</td>
-								<td>
-									<div class="nav-search">
-										<span class="input-icon">
-											<input type="text" class="nav-search-input" id="nav-search-input" autocomplete="off" name="tname" value="${pd.tname }"/>
-										</span>
-									</div>
-								</td>
-								 -->
-								<td><%=name %>：</td>
-								<td>
-									<div class="nav-search">
-										<span class="input-icon">
-											<input type="text" class="nav-search-input" id="nav-search-input" autocomplete="off" name="cname" value="${pd.cname }"/>
-										</span>
-									</div>
-								</td>
-								<td>&nbsp;&nbsp;<%=serial_number %>：</td>
-								<td>
-									<div class="nav-search">
-										<span class="input-icon">
-											<input type="text" class="nav-search-input" id="nav-search-input" autocomplete="off" name="ccode" value="${pd.ccode }"/>
-										</span>
-									</div>
-								</td>
-								<td>&nbsp;&nbsp;<%=location %>：</td>
-								<td>
-									<div class="nav-search">
-										<span class="input-icon">
-											<input type="text" class="nav-search-input" id="nav-search-input" autocomplete="off" name="location" value="${pd.location }"/>
-										</span>
-									</div>
-								</td>
-								<td>&nbsp;&nbsp;<%=status %>：</td>
-								<td style="vertical-align:top;padding-left:2px;"> 
-								 	<select class="chosen-select form-control" name="lstatus" id="lstatus" data-placeholder=" " style="vertical-align:top;width: 130px;height:30px">
-										<option value=""></option>
-										<option value=""><%=total %></option>
-										<option value="<%=normal %>" <c:if test="${pd.lstatus == '<%=normal %>' }">selected</c:if> ><%=normal %></option>
-										<option value="<%=over_voltage %>" <c:if test="${pd.lstatus == '<%=over_voltage %>' }">selected</c:if> ><%=over_voltage %></option>
-										<option value="<%=over_temperature %>" <c:if test="${pd.lstatus == '<%=over_temperature %>' }">selected</c:if> ><%=over_temperature %></option>
-										<option value="<%=open_road %>" <c:if test="${pd.lstatus == '<%=open_road %>' }">selected</c:if> ><%=open_road %></option>
-										<option value="<%=short_circuit %>" <c:if test="${pd.lstatus == '<%=short_circuit %>' }">selected</c:if> ><%=short_circuit %></option>
-										<option value="<%=exception %>" <c:if test="${pd.lstatus == '<%=exception %>' }">selected</c:if> ><%=exception %></option>
-										<option value="<%=blockout %>" <c:if test="${pd.lstatus == '<%=blockout %>' }">selected</c:if> ><%=blockout %></option>
-										<option value="<%=undervoltage %>" <c:if test="${pd.lstatus == '<%=undervoltage %>' }">selected</c:if> ><%=undervoltage %></option>
-									</select>
-								</td>
-								<c:if test="${QX.cha == 1 }">
-								<td style="vertical-align:top;padding-left:2px"><a class="btn btn-light btn-xs" onclick="tosearch();"  title="<%=search2 %>" style="padding: 4px 4px;"><i id="nav-search-icon" class="ace-icon fa fa-search bigger-110 nav-search-icon blue"></i></a></td>
-								</c:if>
-							</tr>
-						</table> --%>
-						<!-- 检索  -->
 						<table style="margin-top:5px;" class="table table-striped table-bordered table-hover">
 							<tr>
 							<td class="center">
@@ -104,36 +46,22 @@
 								</c:choose>
 							</td>
 							</tr>
-							</table>
+						</table>
 						<table id="simple-table" class="table table-striped table-bordered table-hover" style="margin-top:5px;">	
 							<thead>
 								<tr>
-									<!-- <th class="center" style="width:35px;">
-									<label class="pos-rel"><input type="checkbox" class="ace" id="zcheckbox" /><span class="lbl"></span></label>
-									</th> -->
-									<th class="center" style="width:50px;"><%=number %></th>
-									<!-- 
-									<th class="center"><%=group_name %></th>
-									 -->
+									<%-- <th class="center" style="width:50px;"><%=number %></th> --%>
 									<th class="center"><%=equipment_code %></th>
 									<th class="center"><%=equipment_name %></th>
-<%-- 									<th class="center"><%=device_name %></th> --%>
-									<th class="center"><%=equipment_comment %></th>
+									<%-- <th class="center"><%=equipment_comment %></th> --%>
 									<th class="center"><%=work_status %></th>
 									<th class="center"><%=brightness_value %></th>
-<%-- 									<th class="center"><%=location %></th> --%>
-<%-- 									<th class="center"><%=pole_number2 %></th> --%>
-									<%--<th class="center"><%=temperature %></th> --%>
-<%-- 									<th class="center"><%=brightness_value %></th> --%>
-									<!-- 
-									<th class="center"><%=print_voltagec %></th>
-									<th class="center"><%=print_current %></th>
+									<th class="center"><%=voltage %></th>
+									<th class="center"><%=current %></th>
 									<th class="center"><%=power_rate_factor %></th>
-									 -->
-<%-- 									<th class="center"><%=work_status %></th> --%>
-<%-- 									<th class="center"><%=comment %></th> --%>
-									<%-- <th class="center"><%=time %></th> --%>
+									<th class="center"><%=energy_consumption %></th>
 									<th class="center"><%=device_temperature %></th>
+									<th class="center"><%=client_node_info %></th>
 								</tr>
 							</thead>
 													
@@ -145,29 +73,30 @@
 									<c:if test="${QX.cha == 1 }">
 									<c:forEach items="${clientDetailsList}" var="lampState" varStatus="vs">
 										<tr>
-											<td class='center' style="width: 30px;">${vs.index+1}</td>
-											<!-- 
-											<td class='center'>${lampState.tname}</td>
-											 -->
+											<%-- <td class='center' style="width: 30px;">${vs.index+1}</td> --%>
 											<td class='center'>${lampState.client_code }</td>
 											<td class='center'>${lampState.cname }</td>
-											<%-- <td class='center'>${lampState.client_code}</td> --%>
-<%-- 											<td class='center'>${lampState.cname}</td> --%>
-  											<td class='center'>${lampState.comment}</td>
-  											 <td class='center'>${lampState.status}</td>
-  											   <td class='center'>${lampState.brightness}</td>
-<%-- 											<td class='center'>${lampState.location}</td> --%>
-<%-- 											<td class='center'>${lampState.lamp_pole_num}</td> --%>
-<%-- 									        <td class='center'>${lampState.brightness}</td> --%>
-									       <!-- 
+  											<%-- <td class='center'>${lampState.comment}</td> --%>
+  											<td class='center'>
+  												<c:choose>
+  													<c:when test="${lampState.status == '1'}">
+  														<img src="<%=basePath%>static/map/img/light_green.png" alt="开灯"/>
+  													</c:when>
+  													<c:when test="${lampState.status == '7'}">
+  														<img src="<%=basePath%>static/map/img/light_grey.png" alt="关灯"/>
+  													</c:when>
+  													<c:otherwise>
+  														<img src="<%=basePath%>static/map/img/light_red.png" alt="异常"/>
+  													</c:otherwise>
+  												</c:choose>
+  											</td>
+  											<td class='center'>${lampState.brightness}</td>
 									        <td class='center'>${lampState.voltage}</td>
 									        <td class='center'>${lampState.current}</td>
 									        <td class='center'>${lampState.power_factor}</td>
-									        -->
-<%-- 									        <td class='center'>${lampState.status}</td> --%>
-<%-- 									        <td class='center'>${lampState.comment}</td> --%>
-									        <%-- <td class='center'>${lampState.tdate}</td> --%>
-									         <td class='center'>${lampState.temperature}</td>
+									        <td class='center'>${lampState.kwh}</td>
+									        <td class='center'>${lampState.temperature}</td>
+									        <td class='center'>${lampState.node}</td>
 										</tr>
 									</c:forEach>
 									</c:if>

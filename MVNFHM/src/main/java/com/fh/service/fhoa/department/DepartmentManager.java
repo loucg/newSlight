@@ -170,5 +170,17 @@ public interface DepartmentManager{
 	 */
 	public String getUseridsInDepartment(PageData pd) throws Exception;
 	
+	/**地图列表
+	 * @param page
+	 * @throws Exception
+	 */
+	public List<PageData> maplist()throws Exception;
+	
+	/**平台列表
+	 * @param page
+	 * @throws Exception
+	 */
+	public List<PageData> smslist()throws Exception;
+	
 }
 

@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="StrategySetMapper">
+	
+	<!-- 表名 -->
+	<sql id="tableName">b_strategy_term</sql>
+	
+	<!-- 字段 -->
+	<sql id="Field">
+		id,
+		name,
+		b_strategy_term.explain,
+		user_id,
+		b_user_id,
+		<!-- 有效无效状态 有效('1'),无效('2')-->
+		status
+	</sql>
+	
+	<!-- 字段值 -->
+	<sql id="FieldValue">
+		#{name},
+		#{explain},
+		#{user_id},
+		#{b_user_id},
+		#{status}
+	</sql>
+	
+	<!-- 查询所有策略包  -->
+	<select id="strategySetlistPage" parameterType="page" resultType="pd">
+	    select
+			b_strategy_term.`id`,
+			b_strategy_term.`name`,
+			b_strategy_term.`explain`,
+			b_strategy_term.user_id,
+			b_strategy_term.b_user_id,
+			b_strategy_term.status,
+			count(b_ctrl_strategy2.b_strategy_term_id) strategycnt
+		from 
+			b_strategy_term
+		left join
+			b_ctrl_strategy2
+		on
+			b_ctrl_strategy2.b_strategy_term_id = b_strategy_term.id and b_ctrl_strategy2.status = '1'
+		where
+			<!-- 只检索有效数据 -->
+			b_strategy_term.status = '1' and
+			b_strategy_term.b_user_id in ${pd.userids}
+			<if test="pd.name!=null and pd.name!=''"><!-- 策略名称检索 -->
+				and 
+				(
+					b_strategy_term.name LIKE CONCAT(CONCAT('%', #{pd.name}),'%')
+				)
+			</if>
+			<if test="pd.explain!=null and pd.explain!=''"><!-- 应用说明检索 -->
+				and 
+				(
+					b_strategy_term.explain LIKE CONCAT(CONCAT('%', #{pd.explain}),'%')
+				)
+			</if>
+		group by
+			b_strategy_term.id
+		order by
+			b_strategy_term.id
+	</select>
+
+	<!-- 用ID查询指定策略包  -->
+	<select id="findStrategySetById" parameterType="String" resultType="pd">
+	    select
+			<include refid="Field"></include>
+		from 
+			<include refid="tableName"></include>
+		where
+			id = #{id}
+	</select>
+
+	<!-- 新增策略包  -->
+	<insert id="insert" parameterType="pd">
+		insert into 
+	<include refid="tableName"></include>
+		(
+			NAME,
+			B_STRATEGY_TERM.EXPLAIN,
+			USER_ID,
+			B_USER_ID,
+			<!-- 有效无效状态 -->
+			STATUS
+		) values (
+			#{NAME},
+			<if test="EXPLAIN == ''">
+			null,
+			</if>
+			<if test="EXPLAIN != ''">
+			#{EXPLAIN},
+			</if>
+			<if test="USER_ID == ''">
+			null,
+			</if>
+			<if test="USER_ID != ''">
+			#{USER_ID},
+			</if>
+			#{B_USER_ID},
+			#{STATUS}
+		)
+	</insert>
+	
+	<!-- 更新策略包  -->
+	<update id="update" parameterType="pd" >
+		update 
+		<include refid="tableName"></include>
+		set 
+			name = #{NAME},
+			b_strategy_term.explain = #{EXPLAIN}
+		where
+			id = #{ID}
+	</update>
+	
+	<!-- 踢删策略包  -->
+	<update id="remove" parameterType="String">
+		update 
+		<include refid="tableName"></include>
+		set status = '2'
+		where 
+			id = #{id}
+	</update>	
+	
+		<!--删除策略包 -->
+	<update id="delete" parameterType="page" >
+		delete from b_device_fault_statistic 
+		where (sys_user_id in ${pd.userids} OR sys_user_id is null) 
+		and DATE_FORMAT(tdate,'%Y-%m-%d')=DATE_FORMAT(CURRENT_DATE,'%Y-%m-%d')
+	</update>
+	
+	<!-- 查询用户可选择的所有策略包(指定分组中已经使用的为检索对象外)  -->
+	<select id="otherStrategySetlistPage" parameterType="page" resultType="pd">
+		SELECT
+			b_strategy_term.`id`,
+			b_strategy_term.`name`,
+			b_strategy_term.`explain`,
+			b_strategy_term.user_id,
+			b_strategy_term.b_user_id,
+			b_strategy_term.status,
+			count(b_ctrl_strategy2.b_strategy_term_id) strategycnt
+		FROM 
+			b_strategy_term
+		LEFT JOIN
+			b_ctrl_strategy2
+		ON
+			b_ctrl_strategy2.b_strategy_term_id = b_strategy_term.id AND b_ctrl_strategy2.status = '1'
+		WHERE
+			b_strategy_term.id
+			NOT IN
+			(SELECT
+					DISTINCT b_strategy_term_apply.org_id
+				FROM
+					b_ctrl_strategy2_apply
+				INNER JOIN
+					b_strategy_term_apply
+				ON
+					b_strategy_term_apply.id = b_ctrl_strategy2_apply.b_strategy_term_id
+				INNER JOIN
+					b_strategy_clientterm
+				ON
+					b_strategy_clientterm.b_ctrl_strategy_id = b_ctrl_strategy2_apply.id
+				WHERE
+					b_strategy_clientterm.c_term_id = #{pd.c_term_id} AND
+					b_strategy_term_apply.b_user_id IN ${pd.userids}
+			) AND 
+			<!-- 只检索有效数据 -->
+			b_strategy_term.status = '1' AND 
+			b_strategy_term.b_user_id in ${pd.userids} AND 
+			b_ctrl_strategy2.b_strategy_term_id IS NOT NULL
+			<if test="pd.name!=null and pd.name!=''"><!-- 策略名称检索 -->
+				AND 
+				(
+					b_strategy_term.name LIKE CONCAT(CONCAT('%', #{pd.name}),'%')
+				)
+			</if>
+			<if test="pd.explain!=null and pd.explain!=''"><!-- 应用说明检索 -->
+				AND 
+				(
+					b_strategy_term.explain LIKE CONCAT(CONCAT('%', #{pd.explain}),'%')
+				)
+			</if>
+		group by
+			b_strategy_term.id
+		order by
+			b_strategy_term.id
+	</select>
+
+	
+</mapper>

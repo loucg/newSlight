@@ -8,13 +8,13 @@
   	<select id="queryCountterm_client" parameterType="cclient" resultType="Integer">
   		select count(*)
 		from c_client_attr1 cca ,c_client_term cct,c_term ct
-		where cct.c_term_id=#{termid} and ct.id=#{termid} and cct.c_client_id=cca.c_client_id and cca.coordinate like  '%.%_,__.%'
+		where cct.c_term_id=#{termid} and ct.id=#{termid} and cct.c_client_id=cca.c_client_id 
 
   	</select>
   	<select id="queryAllterm_client" parameterType="cclient" resultType="cclient">
-  		select cct.c_client_id as id , cca.name as name, ct.name as termname, cct.c_term_id as termid , cca.coordinate as coordinate
+  		select cct.c_client_id as id , cca.name as name, ct.name as termname, cct.c_term_id as termid , cca.coordinate as coordinate,cca.coordinate_google 
   		from c_client_attr1 cca ,c_client_term cct,c_term ct
-		where cct.c_term_id=#{termid} and ct.id=#{termid} and cct.c_client_id=cca.c_client_id and cca.coordinate like  '%.%_,__.%'
+		where cct.c_term_id=#{termid} and ct.id=#{termid} and cct.c_client_id=cca.c_client_id
 		GROUP BY
 		cct.c_client_id
 		ORDER BY cct.c_client_id ASC
@@ -22,9 +22,9 @@
 		#{begin},#{rows}
   	</select>
   	 <select id="queryAllterm_gateway" parameterType="cclient" resultType="cclient">
-  		select cga.c_gateway_id as client_attri_id,cg.id as id ,cga.name as name ,cga.coordinate as  coordinate, cga.location as location ,cga.lamp_pole_num as lamppolenum ,cgt.NAME_CH as typename ,-999 as termid ,bs.`name` as status ,"网关/断路器组"  as termname ,-999 as termid, cgt.NAME_CH as aliastypename
+  		select cga.c_gateway_id as client_attri_id,cg.id as id ,cga.name as name ,cga.coordinate as  coordinate, cga.location as location ,cga.lamp_pole_num as lamppolenum ,cgt.NAME_CH as typename ,-999 as termid ,bs.`name` as status ,"网关/断路器组"  as termname ,-999 as termid, cgt.NAME_CH as aliastypename,cga.coordinate_google
 		from c_gateway cg ,c_gateway_attr1 cga ,c_gateway_type cgt ,b_status bs
-		where cg.id=cga.c_gateway_id and cga.c_gateway_type_id=cgt.id and bs.b_status_main_id=3 and bs.`value`=cga.staus and cga.coordinate like  '%.%_,__.%'
+		where cg.id=cga.c_gateway_id and cga.c_gateway_type_id=cgt.id and bs.b_status_main_id=3 and bs.`value`=cga.staus 
 		ORDER BY cg.id ASC
 		limit
 		#{begin},#{rows}
@@ -42,7 +42,7 @@
   	<select id="queryCountgateway" parameterType="cclient" resultType="Integer">
   		select count(*)
 		from c_gateway cg ,c_gateway_attr1 cga ,c_gateway_type cgt ,b_status bs
-		where cg.id=cga.c_gateway_id and cga.c_gateway_type_id=cgt.id and bs.b_status_main_id=3 and bs.`value`=cga.staus and cga.coordinate like  '%.%_,__.%'
+		where cg.id=cga.c_gateway_id and cga.c_gateway_type_id=cgt.id and bs.b_status_main_id=3 and bs.`value`=cga.staus 
   	</select>
 
   	<select id="queryAllclient_status" parameterType="cclient" resultType="cclient">
@@ -50,6 +50,8 @@
   		cca.location,
   		CASE WHEN partMap.c_client_id IS NOT NULL then partMap.external_coordinate 
 					ELSE cca.coordinate end coordinate ,
+		CASE WHEN partMap.c_client_id IS NOT NULL then partMap.external_coordinate 
+					ELSE cca.coordinate_google end coordinate_google,
   		ct.name as termname, 
   		ccus.brightness ,
   		ccty.name as typename , 
@@ -68,7 +70,7 @@
 						LEFT  JOIN (select cdl.c_client_id,external_coordinate from c_partmap cpp inner join 
 						c_partmap_detail cdl where cdl.id=cpp.id and cpp.c_termid=#{termid} and c_client_type_id='1'
 						GROUP BY cdl.c_client_id)  partMap ON partMap.c_client_id= cca.c_client_id
-				WHERE ct.id=#{termid} and cca.coordinate like  '%.%_,__.%'		ORDER BY cct.c_client_id ASC
+				WHERE ct.id=#{termid} 		ORDER BY ct.id,cct.c_client_id ASC
 		limit
 		#{begin},#{rows}
   	</select>
@@ -77,14 +79,14 @@
   	<select id="getTypenameByGroup" parameterType="Integer" resultType="cclient">
   		select ccty.id as typeid ,ccty.name as typename 
 		from c_client_term cct,c_client_attr1 cca , c_client_type ccty
-		where  cct.c_term_id=#{groupname} and cca.c_client_id=cct.c_client_id and cca.c_client_type_id=ccty.id and cca.coordinate like  '%.%_,__.%'
+		where  cct.c_term_id=#{groupname} and cca.c_client_id=cct.c_client_id and cca.c_client_type_id=ccty.id 
 		GROUP BY
 		ccty.id
   	</select>
   	<select id="getTypenameByGroupGateway" parameterType="Integer" resultType="cclient">
   		select cgt.id as typeid ,cgt.NAME_CH as typename 
 		from  c_gateway_attr1 cga ,c_gateway_type cgt
-		where  cga.c_gateway_type_id =cgt.id  and cga.coordinate like  '%.%_,__.%'
+		where  cga.c_gateway_type_id =cgt.id  
 		GROUP BY
 		cgt.id
   	</select>
@@ -93,14 +95,14 @@
   	<select id="getAddressByType" parameterType="cclient" resultType="cclient">
   		select cca.location, ccty.name as typename ,ccty.id as typeid 
 		from c_client_term cct,c_client_attr1 cca , c_client_type ccty
-		where  ccty.id=#{typeid} AND cct.c_term_id=#{termid} and cca.c_client_id=cct.c_client_id and cca.c_client_type_id=ccty.id and cca.coordinate like  '%.%_,__.%'
+		where  ccty.id=#{typeid} AND cct.c_term_id=#{termid} and cca.c_client_id=cct.c_client_id and cca.c_client_type_id=ccty.id 
 		GROUP BY
 		cca.location
   	</select>	
   	<select id="getAddressByTypeGataway" parameterType="cclient" resultType="cclient">
   		select cgt.id as typeid ,cgt.NAME_CH as typename ,cga.location
 		from  c_gateway_attr1 cga ,c_gateway_type cgt
-		where  cga.c_gateway_type_id =#{typeid}   and cga.coordinate like  '%.%_,__.%'
+		where  cga.c_gateway_type_id =#{typeid}   
 		GROUP BY
 		cga.location
   	</select>
@@ -109,14 +111,14 @@
   	<select id="getClientnameByaddress" parameterType="cclient" resultType="cclient">
   		select cca.name, cca.location,ccty.name as typename ,ccty.id as typeid 
 		from c_client_term cct,c_client_attr1 cca , c_client_type ccty
-		where  cca.location= #{location} and ccty.id=#{typeid} AND cct.c_term_id=#{termid} and cca.c_client_id=cct.c_client_id and cca.c_client_type_id=ccty.id and cca.coordinate like  '%.%_,__.%'
+		where  cca.location= #{location} and ccty.id=#{typeid} AND cct.c_term_id=#{termid} and cca.c_client_id=cct.c_client_id and cca.c_client_type_id=ccty.id 
 		GROUP BY
 		cca.name
 	</select>
 	<select id="getClientnameByaddressGateway" parameterType="cclient" resultType="cclient">
   		select cgt.id as typeid ,cgt.NAME_CH as typename ,cga.location ,cga.name
 		from  c_gateway_attr1 cga ,c_gateway_type cgt
-		where  cga.c_gateway_type_id =#{typeid} and cga.location=#{location}  and cga.coordinate like  '%.%_,__.%'
+		where  cga.c_gateway_type_id =#{typeid} and cga.location=#{location}  
 		GROUP BY
 		cga.name
 	</select>
@@ -124,14 +126,14 @@
   	<select id="getClientigByname" parameterType="cclient" resultType="cclient">
   		select cca.c_client_id as id,cca.name, cca.location,ccty.name as typename ,ccty.id as typeid 
 		from c_client_term cct,c_client_attr1 cca , c_client_type ccty
-		where  cca.name= #{name} and cca.location= #{location} and ccty.id=#{typeid} AND cct.c_term_id=#{termid} and cca.c_client_id=cct.c_client_id and cca.c_client_type_id=ccty.id and cca.coordinate like  '%.%_,__.%'
+		where  cca.name= #{name} and cca.location= #{location} and ccty.id=#{typeid} AND cct.c_term_id=#{termid} and cca.c_client_id=cct.c_client_id and cca.c_client_type_id=ccty.id
 		GROUP BY
 		cca.c_client_id
 	</select>
 	<select id="getClientigBynameGateway" parameterType="cclient" resultType="cclient">
   		select cgt.id as typeid ,cgt.NAME_CH as typename ,cga.location ,cga.name ,cga.c_gateway_id as id
 		from  c_gateway_attr1 cga ,c_gateway_type cgt
-		where  cga.c_gateway_type_id =#{typeid} and cga.location=#{location} and cga.name=#{name}   and cga.coordinate like  '%.%_,__.%'
+		where  cga.c_gateway_type_id =#{typeid} and cga.location=#{location} and cga.name=#{name}  
 		GROUP BY
 		cga.c_gateway_id
 	</select>
@@ -140,21 +142,24 @@
   				cca.location,
   				CASE WHEN partMap.c_client_id IS NOT NULL then partMap.external_coordinate 
 					ELSE cca.coordinate end coordinate ,
+				CASE WHEN partMap.c_client_id IS NOT NULL then partMap.external_coordinate 
+					ELSE cca.coordinate_google end coordinate_google ,
   				ct.name as termname,ccus.brightness ,
   				ccty.name as typename ,bs.name as status ,
   				ct.id as termid ,"灯" as aliastypename ,
   				CASE WHEN partMap.c_client_id IS NOT NULL THEN 1 ELSE 0 END as partMaplinetCnt,
-  				partMap.id as partMap_Id
+  				partMap.id as partMap_Id,
+  				(select map_pictrue_path from c_partmap where id=#{partMap_Id}) as map_pictrue_path 
 		from c_client cc INNER join c_client_attr1 cca ON cc.id = cca.c_client_id
 						INNER JOIN c_client_term cct ON cc.id = cct.c_client_id
 						INNER JOIN c_term ct ON cct.c_term_id = ct.id
 						INNER JOIN c_client_upload_status ccus ON ccus.c_client_id = cca.id
 						INNER JOIN b_status bs ON cca.staus=bs.`value`  and bs.b_status_main_id=3 
 						INNER JOIN c_client_type ccty ON ccty.id=cca.c_client_type_id
-						LEFT  JOIN (select cdl.c_client_id,external_coordinate,cpp.id from c_partmap cpp inner join 
+						LEFT  JOIN (select cdl.c_client_id,external_coordinate,cpp.id,cpp.map_pictrue_path from c_partmap cpp inner join 
 									c_partmap_detail cdl where cdl.id=cpp.id and cpp.c_termid=#{termid} and c_client_type_id='1'
 						)  partMap ON partMap.c_client_id= cca.c_client_id
-		where  cca.coordinate like  '%.%_,__.%' 
+		where  1=1 
 		<if test="typeid!=null and typeid!=''">
 			and ( ccty.id=#{typeid})
 			</if>
@@ -182,9 +187,9 @@
   	</select>
 
 	<select id="getSearchGateway"  resultType="cclient" parameterType="cclient">
-  	select cgt.id as typeid ,cgt.NAME_CH as typename ,cga.location ,cga.name ,cga.c_gateway_id as id ,cga.lamp_pole_num as lamppolenum ,cga.coordinate  ,bs.name  as status,cgt.NAME_CH as aliastypename  ,-999 as termid
+  	select cgt.id as typeid ,cgt.NAME_CH as typename ,cga.location ,cga.name ,cga.c_gateway_id as id ,cga.lamp_pole_num as lamppolenum ,cga.coordinate  ,cga.coordinate_google,bs.name  as status,cgt.NAME_CH as aliastypename  ,-999 as termid
 	from  c_gateway_attr1 cga ,c_gateway_type cgt ,b_status bs 
-	where  cga.c_gateway_type_id=cgt.id and bs.b_status_main_id=3 and bs.`value`=cga.staus and cga.coordinate like  '%.%_,__.%' 
+	where  cga.c_gateway_type_id=cgt.id and bs.b_status_main_id=3 and bs.`value`=cga.staus 
 			<if test="typeid!=null and typeid!=''">
 			and ( cga.c_gateway_type_id=#{typeid})
 			</if>
@@ -218,6 +223,18 @@
   		</if>
   		<if test="clientType==3">
   		update c_breaker_attr1 cba set cba.coordinate=#{coordinate}  where cba.id=#{client_attri_id}
+  		</if>
+    </update>
+    
+     <update id="updateClientAttr_Coordinate_google"  parameterType = "cclient">
+     	<if test="clientType==1">
+  		update c_client_attr1 cca set cca.coordinate_google=#{coordinate}  where cca.id=#{client_attri_id}
+  		</if>
+  		<if test="clientType==2">
+  		update c_gateway_attr1 cga set cga.coordinate_google=#{coordinate}  where cga.c_gateway_id=#{client_attri_id}
+  		</if>
+  		<if test="clientType==3">
+  		update c_breaker_attr1 cba set cba.coordinate_google=#{coordinate}  where cba.id=#{client_attri_id}
   		</if>
     </update>
     
@@ -277,7 +294,7 @@
   	
   	<select id="getPartMapInfo"  resultType="cpartmap" parameterType="cpartmap">
   	select a.id,partmap_name ,a.external_coordinate 
-  			,a.map_pictrue_path,a.c_client_type_id ,a.c_termid,b.inner_coordinate, b.c_client_id
+  			,a.map_pictrue_path,a.c_client_type_id ,a.c_termid,b.inner_coordinate, b.c_client_id,a.map_pictrue_path 
   	from c_partmap A LEFT JOIN c_partmap_detail B on a.id=b.id
 	where  1=1  
 			<if test="partmap_name!=null and partmap_name!=''">
@@ -311,6 +328,8 @@
 		select cc.id,cca.name,cca.lamp_pole_num as lamppolenum ,cca.location,
 		CASE WHEN partMap.c_client_id IS NOT NULL then partMap.external_coordinate 
 					ELSE cca.coordinate end coordinate ,
+		CASE WHEN partMap.c_client_id IS NOT NULL then partMap.external_coordinate 
+					ELSE cca.coordinate_google end coordinate ,
 		ct.name as termname,ccus.brightness ,ccty.name as typename , ct.id as termid ,ccty.id as typeid ,bs.`name` as status,"灯" as aliastypename,
 					CASE WHEN partMap.c_client_id IS NOT NULL THEN 1 ELSE 0 END as partMaplinetCnt,
   					partMap.id as partMap_Id
@@ -323,7 +342,7 @@
 						LEFT  JOIN (select cdl.c_client_id,external_coordinate,cpp.id,cpp.c_termid from c_partmap cpp inner join 
 									c_partmap_detail cdl where cdl.id=cpp.id  and c_client_type_id='1'
 						)  partMap ON partMap.c_client_id= cca.c_client_id and partmap.c_termid=cct.c_term_id
-		where cca.coordinate like  '%.%_,__.%'
+		where 1=1 
 		and cct.c_client_id in
 		<foreach item="item" index="index" collection="list" open="("
             separator="," close=")">
@@ -333,9 +352,9 @@
 	</select>
 	
 		<select id = "getGatewayByDraw" resultType="cclient"  parameterType = "java.util.List">
-		select cg.id as id ,cga.name as name ,cga.coordinate as  coordinate, cga.location as location ,cga.lamp_pole_num as lamppolenum ,cgt.NAME_CH as typename ,-999 as termid ,bs.`name` as status ,"网关/断路器组"  as termname , cgt.NAME_CH as aliastypename,-999 as termid
+		select cg.id as id ,cga.name as name ,cga.coordinate as  coordinate, cga.coordinate_google as  coordinate_google,cga.location as location ,cga.lamp_pole_num as lamppolenum ,cgt.NAME_CH as typename ,-999 as termid ,bs.`name` as status ,"网关/断路器组"  as termname , cgt.NAME_CH as aliastypename,-999 as termid
 		from c_gateway cg ,c_gateway_attr1 cga ,c_gateway_type cgt ,b_status bs
-		where cg.id=cga.c_gateway_id and cga.c_gateway_type_id=cgt.id and bs.b_status_main_id=3 and bs.`value`=cga.staus and cga.coordinate like  '%.%_,__.%'
+		where cg.id=cga.c_gateway_id and cga.c_gateway_type_id=cgt.id and bs.b_status_main_id=3 and bs.`value`=cga.staus 
 		and cga.c_gateway_id in
 		<foreach item="item" index="index" collection="list" open="("
             separator="," close=")">

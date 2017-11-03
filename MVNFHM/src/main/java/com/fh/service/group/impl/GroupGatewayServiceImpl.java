@@ -18,15 +18,26 @@ public class GroupGatewayServiceImpl implements GroupGatewayService {
 	private DaoSupport dao;
 
 	/**
-	 * 获取所在分组的网关列表
+	 *  获取所在分组的网关列表
 	 * @param page
 	 * @return
 	 * @throws Exception
 	 */
 	@SuppressWarnings("unchecked")
 	public List<PageData> listGateways(Page page) throws Exception {
-		return (List<PageData>)dao.findForList("GroupGatewayMapper.getGatewaylistPage", page);
-	}	
+		return (List<PageData>)dao.findForList("GroupGatewayMapper.gatewaylistPage", page);
+	}		
+	
+	/**
+	 * 获取所在网关的终端列表
+	 * @param page
+	 * @return
+	 * @throws Exception
+	 */
+	@SuppressWarnings("unchecked")
+	public List<PageData> listOtherClientsByGatewayId(Page page) throws Exception {
+		return (List<PageData>)dao.findForList("GroupGatewayMapper.otherClientslistPage", page);
+	}
 	
 	/**
 	 * 获取所在网关的终端列表

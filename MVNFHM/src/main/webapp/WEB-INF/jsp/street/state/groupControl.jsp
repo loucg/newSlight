@@ -167,7 +167,7 @@
 			 var diag = new top.Dialog();
 			 diag.Drag=true;
 			 diag.Title ="<%=group_member %>";
-			 diag.URL = '<%=basePath%>strategy/listStrategys.do?termid='+id;
+			 diag.URL = '<%=basePath%>strategy/listStrategys.do?c_term_id='+id;
 			 diag.Width = 1200;
 			 diag.Height = 600;
 			 diag.Modal = true;				//有无遮罩窗口

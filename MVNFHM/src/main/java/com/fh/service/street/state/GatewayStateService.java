@@ -48,4 +48,12 @@ public interface GatewayStateService {
 	 * @throws Exception
 	 */
 	public List<PageData> getWorkStatus(PageData pd) throws Exception;
+	/**
+	 * 获取指定网关 下的所有传感器信息
+	 * 
+	 * @param PageData
+	 * @return
+	 * @throws Exception
+	 */
+	public List<PageData> viewSensorDetail(Page page) throws Exception;
 }

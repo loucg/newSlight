@@ -350,6 +350,16 @@ public class DepartmentService implements DepartmentManager{
 		sb.append(")");
 		return sb.toString();
 	}
+
+	@Override
+	public List<PageData> maplist() throws Exception {
+		return (List<PageData>)dao.findForList("DepartmentMapper.getMapList", null);
+	}
+
+	@Override
+	public List<PageData> smslist() throws Exception {
+		return (List<PageData>)dao.findForList("DepartmentMapper.getSmsplatform", null);
+	}
 	
 }
 
