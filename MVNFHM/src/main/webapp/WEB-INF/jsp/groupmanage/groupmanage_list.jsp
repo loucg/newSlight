@@ -106,7 +106,12 @@
 <%-- 											<td class='center'>${group.STATUS}</td> --%>
 <%-- 											<td class='center'>${group.strategy_num}</td> --%>
 											<!-- 成员数量 -->
-											<td class='center' style="background-color: #E1FFFF;"><a onclick="viewGroupMems('${group.id}')" style="cursor:pointer;">${group.number }</a></td>
+											<c:if test="${group.number>0 }">
+												<td class='center' style="background-color: #E1FFFF;"><a onclick="viewGroupMems('${group.id}')" style="cursor:pointer;">${group.number }</a></td>
+											</c:if>
+											<c:if test="${group.number<=0 }">
+												<td class='center' style="background-color: #E1FFFF;">${group.number }</td>
+											</c:if>
 											<!-- 策略包 -->
 									   		<td class='center'>
 										   		<table style="width:100%;">

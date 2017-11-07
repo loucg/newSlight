@@ -41,8 +41,13 @@
 				c_client_term2 
 			ON
 				c_gateway_term.id = c_client_term2.c_gateway_term_id 
+			LEFT JOIN
+				c_client_attr1
+			ON
+				c_client_attr1.c_client_id = c_client_term2.c_client_id
 			WHERE
-				c_term.id = #{pd.term_id}
+				c_client_attr1.staus=1 
+				AND c_term.id = #{pd.term_id}
 			GROUP BY c_gateway_term.c_gateway_id
 		) exist_client
 		ON
@@ -51,7 +56,80 @@
 			<!-- 认领状态 '2'已认领 -->
 			c_gateway_attr1.RLstatus = '2' 
 			and c_gateway_attr1.sys_user_id IN ${pd.userids}
+			and c_gateway_attr1.staus = 1
 			and c_client_attr1.sys_user_id IN ${pd.userids}
+			and c_client_attr1.staus = 1
+		<if test="pd.name!=null and pd.name!=''">
+			and 
+			(
+				c_gateway_attr1.name LIKE CONCAT(CONCAT('%', #{pd.name}),'%')
+			)
+		</if>
+		<if test="pd.code!=null and pd.code!=''">
+			and 
+			(
+				c_gateway.gateway_code LIKE CONCAT(CONCAT('%', #{pd.code}),'%')
+			)
+		</if> 
+		GROUP BY
+		c_gateway.id
+	</select>
+	
+	<select id="hasClientGatewaylistPage" parameterType="page" resultType="pd">
+	    SELECT
+	    	c_gateway.id gateway_id,
+			c_gateway.gateway_code,
+			c_gateway_attr1.`name`,
+			IFNULL(exist_client.number,0) number,
+			COUNT(c_client_gateway.c_client_id) total
+		FROM
+			c_gateway
+		LEFT JOIN
+			c_client_gateway
+		ON
+			c_gateway.id = c_client_gateway.c_gateway_id
+		LEFT JOIN
+			c_gateway_attr1
+		ON
+			c_gateway.id = c_gateway_attr1.c_gateway_id
+		LEFT JOIN
+			c_client_attr1
+		ON
+			c_client_gateway.c_client_id = c_client_attr1.c_client_id
+		LEFT JOIN 
+		(
+			SELECT 
+				c_gateway_term.c_gateway_id,count(c_client_term2.c_client_id) number
+			FROM
+				c_term 
+			LEFT JOIN
+				c_gateway_term 
+			ON
+				c_term.id = c_gateway_term.c_term_id 
+			LEFT JOIN
+				c_client_term2 
+			ON
+				c_gateway_term.id = c_client_term2.c_gateway_term_id 
+			LEFT JOIN
+				c_client_attr1
+			ON
+				c_client_attr1.c_client_id = c_client_term2.c_client_id
+			WHERE
+				c_client_attr1.staus=1 
+				AND c_term.id = #{pd.term_id}
+			GROUP BY c_gateway_term.c_gateway_id
+		) exist_client
+		ON
+			c_gateway.id = exist_client.c_gateway_id
+		WHERE
+			<!-- 认领状态 '2'已认领 -->
+			c_gateway_attr1.RLstatus = '2' 
+			and c_gateway_attr1.sys_user_id IN ${pd.userids}
+			and c_gateway_attr1.staus = 1
+			and c_client_attr1.sys_user_id IN ${pd.userids}
+			and c_client_attr1.staus = 1
+			<!-- 只显示有终端的数据 -->
+			and IFNULL(exist_client.number,0)>0
 		<if test="pd.name!=null and pd.name!=''">
 			and 
 			(
@@ -102,6 +180,7 @@
 		WHERE
 			c_client_gateway.c_gateway_id = #{pd.gateway_id}
 			and c_client_attr1.sys_user_id IN ${pd.userids}
+			and c_client_attr1.staus = 1
 			and c_client_term.c_term_id = #{pd.term_id}
 		 <if test="pd.name!=null and pd.name!=''">
 			and 
@@ -115,6 +194,7 @@
 				c_client.client_code LIKE CONCAT(CONCAT('%', #{pd.code}),'%')
 			)
 		</if> 
+		group by c_client.id
 	</select>
 		
 	<select id="otherClientslistPage" parameterType="page" resultType="pd">
@@ -147,6 +227,7 @@
 		WHERE
 			c_client_gateway.c_gateway_id = #{pd.gateway_id}
 			and c_client_attr1.sys_user_id IN ${pd.userids}
+			and c_client_attr1.staus = 1
 			and NOT EXISTS(
 				SELECT 
 					c_gateway_term.c_gateway_id,c_client_term2.c_client_id
@@ -177,5 +258,6 @@
 				c_client.client_code LIKE CONCAT(CONCAT('%', #{pd.code}),'%')
 			)
 		</if> 
+		group by c_client.id
 	</select>
 </mapper>

@@ -37,7 +37,7 @@
 			c_term.`explain`,
 			b_status.`name` STATUS,
 			<!-- 成员数 -->
-			COUNT(c_client_id) number,
+			COUNT(c_client_attr1.c_client_id) number,
 			<!-- 策略数 -->
 			IFNULL(select_strategyset.number,0) strategy_num
 		FROM
@@ -52,6 +52,10 @@
 		c_client_term
 		ON
 		c_term.id = c_client_term.c_term_id
+		LEFT JOIN
+		c_client_attr1
+		ON
+		c_client_attr1.c_client_id = c_client_term.c_client_id and c_client_attr1.staus = 1
 		LEFT JOIN
 		(
 			SELECT b_strategy_clientterm.c_term_id,COUNT(b_strategy_term_apply.id) number

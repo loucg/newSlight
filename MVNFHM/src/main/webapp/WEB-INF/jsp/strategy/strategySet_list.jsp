@@ -375,7 +375,7 @@ function applyStrategySet(msg,c_term_id){
 				return;
 			}else{
 				if(msg == "<%=make_sure_apply_strategyset %>"){
-// 					top.jzts();
+					top.jzts();
 					$.ajax({
 						type: "POST",
 						url: '<%=basePath%>strategy/insertApplySet.do?',
@@ -390,10 +390,8 @@ function applyStrategySet(msg,c_term_id){
 								$("#zhongxin2").show();
 				    		    top.Dialog.close();
 							}else{
-								alert(data.msg);	
-// 								$("#zhongxin").hide();
-// 								$("#zhongxin2").show();
-// 				    		    top.Dialog.close();
+								setTimeout("self.location=self.location",0);			
+								alert(data.msg);
 							}
 						}
 					});

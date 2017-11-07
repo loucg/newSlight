@@ -1059,7 +1059,7 @@ body {
 		   "</style>"+
 		   "</head>"+
 		   "<body>"+
-		   "<table class='table-striped  table-hover' style='margin-top:5px;height=180px' border='1' width=720px>"+
+		   "<table class='table-striped  table-hover' style='margin-top:5px;height=180px' border='1' width='720px'>"+
 		   "<tr>"+
 		   "<td width=400px rowspan=9>"+
 		   "<div id='partMapImg' class='image'>"+
@@ -1730,7 +1730,7 @@ function searchConerr() {
             	 dialogItself.close();
             	///////////////////////////////////////////////////////////////////////////////////////////////////
             	///////////////////////////////////////////////////////////////////////////////////////////////////
-            	top.mainFrame.tabAddHandler(196,'策略管理','strategy/listStrategys.do');	 
+            	top.mainFrame.tabAddHandler('z387','<%=strategy_set%>','strategy/listStrategys.do');	 
             	///////////////////////////////////////////////////////////////////////////////////////////////////
             	///////////////////////////////////////////////////////////////////////////////////////////////////
             	///////////////////////////////////////////////////////////////////////////////////////////////////

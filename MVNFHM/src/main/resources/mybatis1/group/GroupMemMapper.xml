@@ -61,6 +61,7 @@
 		)-->
 		AND 
 		c_client_attr1.sys_user_id IN ${pd.userids}
+		and c_client_attr1.staus = 1
 		 <if test="pd.location!=null and pd.location!=''">
 			and 
 			(
@@ -267,6 +268,7 @@
 		)
 		AND  
 		b.sys_user_id IN ${pd.userids}
+		and b.staus = 1
 		AND  
 		d.type = 1
 		 <if test="pd.location!=null and pd.location!=''">

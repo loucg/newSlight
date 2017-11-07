@@ -21,6 +21,14 @@ public interface GroupGatewayService {
 	public List<PageData> listGateways(Page page) throws Exception;
 	
 	/**
+	 *  获取所在分组的网关列表
+	 * @param page
+	 * @return
+	 * @throws Exception
+	 */
+	public List<PageData> listHasClientGateways(Page page) throws Exception;
+	
+	/**
 	 * 获取所在网关的终端列表
 	 * @param page
 	 * @return

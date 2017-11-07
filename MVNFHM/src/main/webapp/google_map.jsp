@@ -1522,7 +1522,7 @@ function searchConerr() {
             	 dialogItself.close();
             	///////////////////////////////////////////////////////////////////////////////////////////////////
             	///////////////////////////////////////////////////////////////////////////////////////////////////
-            	top.mainFrame.tabAddHandler(196,'策略管理','strategy/listStrategys.do');	 
+             	top.mainFrame.tabAddHandler('z387','<%=strategy_set%>','strategy/listStrategySet.do');	 
             	///////////////////////////////////////////////////////////////////////////////////////////////////
             	///////////////////////////////////////////////////////////////////////////////////////////////////
             	///////////////////////////////////////////////////////////////////////////////////////////////////
@@ -1598,7 +1598,7 @@ function getInfoContent(data) {
    "<link rel='styleSheet' type='text/css' href='static/map/css/content_light.css' />"+
    "</head>"+
    "<body>"+
-   	"<div id= 'main' style='width:330px'>"+
+  	"<div id= 'main' style='width:330px;overflow:hidden;'>"+
    		"<div class = 'head'>"+
    			"<p>"+data.name+"</p>"+
    		"</div>"+
@@ -1629,8 +1629,8 @@ function getInfoContent(data) {
 //    				"<img src='static/map/img/light1.png' />"+
 //    			"</div>"+
    		"</div>"+
-   		"<div class='bottom' style='width:500px'>"+
-       		"<div class='b1' onclick ='TurnOnLight()'>"+
+   		"<div class='bottom' style='width:320px;'>"+
+       		"<div class='b1' onclick ='TurnOnLight()' style='width:50px;'>"+
 					"<div class='bimg1'>"+
 						"<img src='static/map/img/bulb_on.png'>"+
 					"</div>"+
@@ -1638,7 +1638,7 @@ function getInfoContent(data) {
 						"<a href='javascript:void(0)' >"+"<%=open_light%>"+"</a>"+
 					"</div>"+
 				"</div>"+
-				"<div class='b2' onclick ='TurnOffLight()'>"+
+				"<div class='b2' onclick ='TurnOffLight()' style='width:50px;'>"+
 					"<div class='bimg2'>"+
 							"<img src='static/map/img/bulb_off.png'>"+
 					"</div>"+
@@ -1646,15 +1646,15 @@ function getInfoContent(data) {
 						"<a href='javascript:void(0)' >"+"<%=shut_down_light%>"+"</a>"+
 					"</div>"+
 				"</div>"+
-				"<div class='b3' onclick ='PolicyControl()'>"+
+				"<div class='b3' onclick ='PolicyControl()' style='width:80px;'>"+
 					"<div class='bimg3'>"+
 							"<img src='static/map/img/policy_control.png'>"+
 					"</div>"+
-					"<div class='btx3'>"+
+					"<div class='btx3' style='margin-top:5px;'>"+
 						"<a href='javascript:void(0)' >"+"<%=control_strategy%>"+"</a>"+
 					"</div>"+
 				"</div>"+
-				"<div class='btx4' style='width:300px'>"+
+				"<div class='btx4' style='width:110px;'>"+
 					"<h2 class='sh'>"+"<%=brightness_value%>"+":</h2>"+
 					"<select class='s1'  onchange='change_bright(this.options[this.options.selectedIndex].value)'>"
 					

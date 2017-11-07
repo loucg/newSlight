@@ -87,44 +87,49 @@ public class GroupGatewayController extends BaseController{
 		pd.put("userids", userids);
 
 		page.setPd(pd);
-		List<PageData> gatewayList = groupGatewayService.listGateways(page);	//获取列表
-
-		Session session = Jurisdiction.getSession();
 		
-		boolean selected = false;
-		if(session.getAttribute(session.getId())!=null) {
-			selected = (boolean)session.getAttribute(session.getId());
-		}
-		// 统计所有网关所选终端
-		if(gatewayList != null) {
-			for(int i=0; i<gatewayList.size(); i++) {			
-				PageData gateway = gatewayList.get(i);
-				String gatewayId = gateway.get("gateway_id").toString();
-				// 指定平台ID,网关ID所对应的被选择终端
-				String client_ids="";
-				if(selected) {
-					client_ids = (String)session.getAttribute(session.getId()+"	"+term_id+"	"+gatewayId);
-				}else {
-					session.setAttribute(session.getId()+"	"+term_id+"	"+gatewayId, null);
-				}
-						
-				// 被选择终端数整合网关的被选择终端数显示数据 选择数/总数
-//				if(!Tools.isEmpty(gateway_id) && gateway_id.equals(gatewayId)) {
-					String[] clientsArray = new String[0];
-					if(!Tools.isEmpty(client_ids)) {
-						clientsArray = client_ids.split(",");
-					}			
-
-					int number = Integer.parseInt(gateway.get("number").toString());
-					for(int j=0;j<clientsArray.length;j++) {
-						int selectednum = clientsArray.length;
-						gateway.put("number", number + selectednum );
-						gateway.put("client_ids", client_ids);
-					}
-//				}
+		List<PageData> gatewayList = null;
+		if(op!=null && op.equals("v")) {
+			gatewayList = groupGatewayService.listHasClientGateways(page);	//获取列表
+		}else {
+			gatewayList = groupGatewayService.listGateways(page);	//获取列表
+			Session session = Jurisdiction.getSession();
+			
+			boolean selected = false;
+			if(session.getAttribute(session.getId())!=null) {
+				selected = (boolean)session.getAttribute(session.getId());
 			}
+			// 统计所有网关所选终端
+			if(gatewayList != null) {
+				for(int i=0; i<gatewayList.size(); i++) {			
+					PageData gateway = gatewayList.get(i);
+					String gatewayId = gateway.get("gateway_id").toString();
+					// 指定平台ID,网关ID所对应的被选择终端
+					String client_ids="";
+					if(selected) {
+						client_ids = (String)session.getAttribute(session.getId()+"	"+term_id+"	"+gatewayId);
+					}else {
+						session.setAttribute(session.getId()+"	"+term_id+"	"+gatewayId, null);
+					}
+							
+					// 被选择终端数整合网关的被选择终端数显示数据 选择数/总数
+	//				if(!Tools.isEmpty(gateway_id) && gateway_id.equals(gatewayId)) {
+						String[] clientsArray = new String[0];
+						if(!Tools.isEmpty(client_ids)) {
+							clientsArray = client_ids.split(",");
+						}			
+	
+						int number = Integer.parseInt(gateway.get("number").toString());
+						for(int j=0;j<clientsArray.length;j++) {
+							int selectednum = clientsArray.length;
+							gateway.put("number", number + selectednum );
+							gateway.put("client_ids", client_ids);
+						}
+	//				}
+				}
+			}
+			session.setAttribute(session.getId(), null);
 		}
-		session.setAttribute(session.getId(), null);
 					
 		mv.setViewName("groupmanage/groupgateway_list");
 		mv.addObject("gatewayList", gatewayList);
