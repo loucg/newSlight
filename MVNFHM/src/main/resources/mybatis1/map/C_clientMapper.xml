@@ -23,16 +23,14 @@
 		GROUP BY
 		cct.c_client_id
 		ORDER BY cct.c_client_id ASC
-		limit
-		#{begin},#{rows}
+		
   	</select>
   	 <select id="queryAllterm_gateway" parameterType="cclient" resultType="cclient">
   		select cga.c_gateway_id as client_attri_id,cg.id as id ,cga.name as name ,cga.coordinate as  coordinate, cga.location as location ,cga.lamp_pole_num as lamppolenum ,cgt.NAME_CH as typename ,-999 as termid ,bs.`name` as status ,"网关/断路器组"  as termname ,-999 as termid, cgt.NAME_CH as aliastypename,cga.coordinate_google
 		from c_gateway cg ,c_gateway_attr1 cga ,c_gateway_type cgt ,b_status bs
 		where cg.id=cga.c_gateway_id and cga.c_gateway_type_id=cgt.id and bs.b_status_main_id=3 and bs.`value`=cga.staus and cga.staus=1
 		ORDER BY cg.id ASC
-		limit
-		#{begin},#{rows}
+		
   	</select>
   	 <select id="querGatewayPower" parameterType="cclient" resultType="cclient">
   		select bp.c_breaker_id as id ,powerup ,powerdown, tdate
@@ -101,8 +99,7 @@
 				and ( cca.c_client_id=#{client_attri_id})
 			</if>	
 			ORDER BY ct.id,cct.c_client_id ASC
-		limit
-		#{begin},#{rows}
+		
   	</select>
   	<select id="queryAllclient_statusByGateway" parameterType="cclient" resultType="cclient">
  		select cca.id as client_attri_id,cc.id,cca.name,cca.lamp_pole_num as lamppolenum ,
@@ -130,8 +127,7 @@
 						GROUP BY cdl.c_client_id)  partMap ON partMap.c_client_id= cca.c_client_id
 				WHERE ct.c_gateway_id=#{gatewayid} and cca.staus=1
 		 		ORDER BY cc.id ASC
-		limit
-		#{begin},#{rows}
+		
   	</select>
   	
   	<!-- 上方搜索框 -->
