@@ -19,7 +19,7 @@
 	href="static/map/css/jquery-ui-1.10.4.custom.min.css" />
 <link rel="stylesheet" type="text/css" href="static/map/css/ui.jqgrid.css" />
 <link rel="stylesheet" type="text/css" href="static/map/css/ui.jqgrid.css" />
-<link rel="stylesheet" type="text/css" href="static/map/css/admin-all1.css" />
+<link rel="stylesheet" type="text/css" href="static/map/css/admin-all2.css" />
 <link rel="stylesheet" type="text/css" href="static/map/css/base.css" />
 <link rel="stylesheet" type="text/css" href="static/map/css/formui.css" />
 <link rel="stylesheet" type="text/css" href="static/map/css/chur.css" />
@@ -147,7 +147,7 @@
 	$(top.hangge());
 </script>
 <script type="text/javascript">
-var pagedata={page:1,rows:20,begin:0,end:0,havenest:true,termid:null};//分页的全局变量，很重要 
+var pagedata={page:1,rows:120,begin:0,end:0,havenest:true,termid:null};//分页的全局变量，很重要 
 var mapTermpage= new Object();//分页的全局变量，很重要 
 var mapTermpagein= new Object();//分页的全局变量，很重要 
 function getmapTermpage()
@@ -200,22 +200,21 @@ function gpsTObbdLfet_cf(clientdata)
 		star="<div class=\"panel-default\"><div class=\"panel-heading\"> <a style=\" float:left;width:10px;height:10px;border:1px solid #000}\" ><span class=\"glyphicon glyphicon-star\"></span>";
 	}
 	var accdivpre = star+"</a><a style=\"\" class=\"one\" id="+clientdata[0].id+"><span style=\"font-size:12px;font-weight:normal; color:black;font-family:宋体\">"+clientdata[0].gatewayname+"</span></a></div><ul class=\"kid\">";
+	//alert(clientdata.length)
 	for(var i=0;i<clientdata.length;i++){
-			//if(clientdata[i].id==null || clientdata[i].name==undefined|| clientdata[i].name=='') continue;
 		if(clientdata[i].c_client_id!=null){
-		//	alert(JSON.stringify(clientdata[i]));
 			var accdivli ="<li><b class=\"tip\"></b><a style=\" outline: none; margin-left:25px;\" class=\"onekid\"  id="+clientdata[i].c_client_id+"><span style=\"font-size:11px;color:black; font-family:宋体\">"+clientdata[i].name+"</span></a></li>";
 			accdivpre=accdivpre+accdivli;
 		}else if(clientdata[i].havenest==true){
-				mapTermpage[clientdata[0].id].havenest=true;
-				var accdivli ="<li id=\"moreli\"><b class=\"tip\"></b><a  style=\" outline: none; margin-left:25px;\" class=\"onekid\" color:black;  id="+"more"+"><span style=\"color:black;\">"+"....."+"</span></a></li>";
-				accdivpre=accdivpre+accdivli;
-				;
-		} else {
-				 mapTermpage[clientdata[0].id].havenest=false;
-		}
+ 				mapTermpage[clientdata[0].id].havenest=true;
+ 				var accdivli ="<li id=\"moreli\"><b class=\"tip\"></b><a  style=\" outline: none; margin-left:25px;\" class=\"onekid\" color:black;  id="+"more"+"><span style=\"color:black;\">"+"....."+"</span></a></li>";
+ 				accdivpre=accdivpre+accdivli;
+ 		} else {
+ 				 mapTermpage[clientdata[0].id].havenest=false;
+ 		}
 	}
 	var accdivaft= "</ul></div>"; 
+
 	accdivpre=accdivpre+accdivaft;
 	$('.accf').append(accdivpre);
 }
@@ -299,8 +298,8 @@ function getChosetermid(){
 			if (data != null) {
 				//console.log(data);
 				 for(var key in data)   {
-					 var pagedata1={page:1,rows:20,begin:0,end:0,havenest:false,termid:data[key][0].termid,lou:false};///////////
-					 var pagedata2={page:1,rows:20,begin:0,end:0,havenest:false,termid:data[key][0].termid,lou:false};///////////
+					 var pagedata1={page:1,rows:12000,begin:0,end:0,havenest:false,termid:data[key][0].termid,lou:false};///////////
+					 var pagedata2={page:1,rows:12000,begin:0,end:0,havenest:false,termid:data[key][0].termid,lou:false};///////////
 					 mapTermpage[data[key][0].termid]=pagedata2;
 					 mapTermpagein[data[key][0].termid]=pagedata1;
 					 gpsTObbdLfet_c(data[key]);
@@ -329,8 +328,8 @@ function getChosetermid(){
 		success : function(data) {
 			if (data != null) {
 				for(var key in data)   {
-					 var pagedata1={page:1,rows:20,begin:0,end:0,havenest:false,gatewayid:data[key][0].id,lou:false};///////////
-					 var pagedata2={page:1,rows:20,begin:0,end:0,havenest:false,gatewayid:data[key][0].id,lou:false};///////////
+					 var pagedata1={page:1,rows:12000,begin:0,end:0,havenest:false,gatewayid:data[key][0].id,lou:false};///////////
+					 var pagedata2={page:1,rows:12000,begin:0,end:0,havenest:false,gatewayid:data[key][0].id,lou:false};///////////
 					 mapTermpage[data[key][0].id]=pagedata2;
 					 mapTermpagein[data[key][0].id]=pagedata1;
 					 gpsTObbdLfet_cf(data[key]);
