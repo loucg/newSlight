@@ -23,6 +23,7 @@ function init() {
 
 						var postSearchData = {
 							"termid" : termid,
+							"gatewayid" : termid,
 							"typeid" : typeid,
 							"location" : location,
 							"name" : name,
