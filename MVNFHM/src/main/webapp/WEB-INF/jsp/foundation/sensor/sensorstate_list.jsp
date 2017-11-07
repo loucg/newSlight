@@ -50,13 +50,13 @@
 						<table id="simple-table" class="table table-striped table-bordered table-hover" style="margin-top:5px;">	
 							<thead>
 								<tr>
-									<th class="center"><%=equipment_code %></th>
-									<th class="center"><%=equipment_name %></th>
+									<th class="center"><%=node_address %></th>
+									<th class="center"><%=node_number %></th>
+									<th class="center"><%=node_name %></th>
 									<th class="center"><%=work_status %></th>
 									<th class="center"><%=voltage %></th>
 									<th class="center"><%=power_rate_factor %></th>
 									<th class="center"><%=temperature %></th>
-									<th class="center"><%=client_node_info %></th>
 								</tr>
 							</thead>
 													
@@ -68,13 +68,13 @@
 									<c:if test="${QX.cha == 1 }">
 									<c:forEach items="${sensorDetailList}" var="sensorState" varStatus="vs">
 										<tr>
+											<td class='center'>${sensorState.node}</td>
 											<td class='center'>${sensorState.sensor_code }</td>
 											<td class='center'>${sensorState.cname }</td>
   											<td class='center'>${sensorState.status_name}</td>
 									        <td class='center'>${sensorState.voltage}</td>
 									        <td class='center'>${sensorState.power_factor}</td>
 									        <td class='center'>${sensorState.temperature}</td>
-									        <td class='center'>${sensorState.node}</td>
 										</tr>
 									</c:forEach>
 									</c:if>

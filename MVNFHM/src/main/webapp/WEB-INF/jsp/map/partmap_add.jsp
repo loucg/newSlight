@@ -38,6 +38,7 @@
 							</tr>
 							<input type =hidden id='partMapURL'name="partMapURL" value="${pd.mapFilePath}"></input>
 							<input type =hidden id='termID' name="termID"  value="${pd.termID}"></input>
+							<input type =hidden id='gatewayID' name="gatewayID"  value="${pd.gatewayid}"></input>
 							<input type =hidden id='partMapID' name="partMapID"  value="${pd.partMapid}"></input>
 						</tbody>
 					</table>
@@ -87,6 +88,21 @@
 			});
 		});
 		
+		function getParentFrameObj(){
+			var pagename = "page_z347";
+			if(window.parent.window.frames["mainFrame"].frames[pagename]==null){
+				pagename = "page_347";
+			}
+			var ConframeObj; 
+			var parentObj  =  window.parent.window.frames["mainFrame"].frames[pagename].contentDocument;
+			if(parentObj!=null){
+				ConframeObj= window.parent.window.frames["mainFrame"].frames[pagename].contentDocument.getElementById('Conframe').contentDocument;
+			}else{
+				ConframeObj =window.parent.window.frames["mainFrame"].frames[pagename].frames["Conframe"].document;
+			}
+			return ConframeObj;
+		}
+		
 		//保存
 		function save(){
 			if($("#mappic").val()=="" || document.getElementById("mappic").files[0] =='<%=please_choose_jpg%>'){
@@ -109,13 +125,10 @@
 			$("#Form").submit();
 			$("#zhongxin").hide();
 			$("#zhongxin2").show();
-			var pagename = "page_z347";
-			if(window.parent.window.frames["mainFrame"].frames[pagename]==null){
-				pagename = "page_347";
-			}
-			window.parent.window.frames["mainFrame"].frames[pagename].frames["Conframe"].document.getElementById('MarkerXYCoordinate').value=document.getElementById('xycoordinat').value;
-			window.parent.window.frames["mainFrame"].frames[pagename].frames["Conframe"].document.getElementById('addMarker').click();
-			window.parent.window.frames["mainFrame"].frames[pagename].frames["Conframe"].document.getElementById('partMapName').value= document.getElementById('mapPicName').value;
+			var parentObj =getParentFrameObj();
+			parentObj.getElementById('MarkerXYCoordinate').value=document.getElementById('xycoordinat').value;
+			parentObj.getElementById('addMarker').click();
+			parentObj.getElementById('partMapName').value= document.getElementById('mapPicName').value;
 		}
 		function fileType(obj){
 			var fileType=obj.value.substr(obj.value.lastIndexOf(".")).toLowerCase();//获得文件后缀名
@@ -129,6 +142,7 @@
 		    	$("#mappic").val('');
 		    	document.getElementById("mappic").files[0] = '<%=please_choose_jpg%>';
 		    }
+			
 		    window.parent.window.frames["mainFrame"].frames["page_347"].frames["Conframe"].document.getElementById('partMapURL').value=document.getElementById("mappic").files[0].name;
 		}
 		</script>

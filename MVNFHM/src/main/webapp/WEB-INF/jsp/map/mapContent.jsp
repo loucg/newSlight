@@ -61,14 +61,16 @@
 			</div>  -->
 			<!-- <h1>路灯列表</h1> -->
 		 <div style="width: 235px;height:40px; border-bottom: 1px solid ;">
-			<nav class="navbar navbar-default" style="height:40px;border:0px;" role="navigation">
-				<ul class="nav navbar-nav" style="height:40px;width:235px;">
-					<li class="active"  style="border-width: 0px 0px 1px 0px;height:40px;width:117px;text-align:center;"><a id="g"   style="height:40px;font-size:13px;font-weight:normal; font-family:宋体 ;text-align:center;"><%=road_light_list_1%></a></li>
-					<li style="border-width: 0px 0px 1px 0px; height:40px;width:117px;text-align:center;"><a id="s" style="height:40px;font-size:13px;font-weight:normal;font-family:宋体 ;text-align:center;" ><%=road_light_list_2%></a></li>
+			<nav class="navbar navbar-default" style="height:40px;border:0px;width: 235px" role="navigation">
+				<ul class="nav navbar-nav" style="height:40px;width:335px;">
+					<li class="active"  style="border-width: 0px 0px 1px 0px;height:40px;width:57px;text-align:center;"><a id="g"   style="height:40px;font-size:13px;font-weight:normal; font-family:宋体 ;text-align:center;"><%=group%></a></li>
+					<li style="border-width: 0px 0px 1px 0px;height:40px;width:57px;text-align:center;"><a id="f"   style="height:40px;font-size:13px;font-weight:normal; font-family:宋体 ;text-align:center;"><%=gateway %></a></li>
+					<li style="border-width: 0px 0px 1px 0px; height:40px;width:117px;text-align:center;"><a id="s" style="height:40px;font-size:13px;font-weight:normal;font-family:宋体 ;text-align:center;" ><%=part_map_serchresult%></a></li>
 				</ul>
 			</nav>
 		</div>
 			<div class="acc"></div>
+			<div class="accf"></div>
 			<div class="searchacc"></div>
 		</div>
 		<!--左边菜单结束-->
@@ -77,7 +79,12 @@
 			<table class="tbform">
 				<tbody>
 					<tr>
-						<td class="tdl"><span><%=group_name %>:</span> <select class="ipt"
+					<td class="tdl"><span><%=part_map_select%></span> <select class="ipt"
+							id="selectgroup"name=selectgroup onchange="changeselect()">
+								<option value="1" selected><%=group %></option>
+								<option value="2"><%=gateway%></option>
+						</select></td>
+						<td class="tdl"><span id='groupnamesel'><%=group_name %>:</span> <select class="ipt"
 							id="groupname" onchange="changegroupname()">
 								<option value=""></option>
 						</select></td>
@@ -182,6 +189,37 @@ function gpsTObbdLfet_c(clientdata)
 	accdivpre=accdivpre+accdivaft;
 	$('.acc').append(accdivpre);
 }
+
+
+function gpsTObbdLfet_cf(clientdata)
+{	
+	var star;
+	if(clientdata.length<=1){
+		star="<div class=\"panel-default\"><div class=\"panel-heading\"> <a style=\" float:left;width:10px;height:10px;border:1px solid #000}\" ><span class=\"glyphicon glyphicon-star-empty\"></span>";
+	}else{
+		star="<div class=\"panel-default\"><div class=\"panel-heading\"> <a style=\" float:left;width:10px;height:10px;border:1px solid #000}\" ><span class=\"glyphicon glyphicon-star\"></span>";
+	}
+	var accdivpre = star+"</a><a style=\"\" class=\"one\" id="+clientdata[0].id+"><span style=\"font-size:12px;font-weight:normal; color:black;font-family:宋体\">"+clientdata[0].gatewayname+"</span></a></div><ul class=\"kid\">";
+	for(var i=0;i<clientdata.length;i++){
+			//if(clientdata[i].id==null || clientdata[i].name==undefined|| clientdata[i].name=='') continue;
+		if(clientdata[i].c_client_id!=null){
+		//	alert(JSON.stringify(clientdata[i]));
+			var accdivli ="<li><b class=\"tip\"></b><a style=\" outline: none; margin-left:25px;\" class=\"onekid\"  id="+clientdata[i].c_client_id+"><span style=\"font-size:11px;color:black; font-family:宋体\">"+clientdata[i].name+"</span></a></li>";
+			accdivpre=accdivpre+accdivli;
+		}else if(clientdata[i].havenest==true){
+				mapTermpage[clientdata[0].id].havenest=true;
+				var accdivli ="<li id=\"moreli\"><b class=\"tip\"></b><a  style=\" outline: none; margin-left:25px;\" class=\"onekid\" color:black;  id="+"more"+"><span style=\"color:black;\">"+"....."+"</span></a></li>";
+				accdivpre=accdivpre+accdivli;
+				;
+		} else {
+				 mapTermpage[clientdata[0].id].havenest=false;
+		}
+	}
+	var accdivaft= "</ul></div>"; 
+	accdivpre=accdivpre+accdivaft;
+	$('.accf').append(accdivpre);
+}
+
 function gpsTObbdMore(clientdata,termid,choseterm)
 {
     for(var i=0;i<clientdata.length;i++){
@@ -261,12 +299,43 @@ function getChosetermid(){
 			if (data != null) {
 				//console.log(data);
 				 for(var key in data)   {
-					 var pagedata1={page:1,rows:20,begin:0,end:0,havenest:false,termid:data[key][0].termid};///////////
-					 var pagedata2={page:1,rows:20,begin:0,end:0,havenest:false,termid:data[key][0].termid};///////////
+					 var pagedata1={page:1,rows:20,begin:0,end:0,havenest:false,termid:data[key][0].termid,lou:false};///////////
+					 var pagedata2={page:1,rows:20,begin:0,end:0,havenest:false,termid:data[key][0].termid,lou:false};///////////
 					 mapTermpage[data[key][0].termid]=pagedata2;
 					 mapTermpagein[data[key][0].termid]=pagedata1;
 					 gpsTObbdLfet_c(data[key]);
 					 }
+				
+				 for(var c in mapTermpage)   {
+					 mapTermpage[c].begin= mapTermpage[c].begin+ mapTermpage[c].rows;
+				 }
+				 //console.log(mapTermpage);
+				 
+			} else {
+			}
+		},
+		error : function() {
+		}
+	});
+	
+	
+	//加载左边的列表
+	$.ajax({
+		url : "gomap/lefe_cf",
+		type : "POST",
+		contentType : "application/json; charset=UTF-8",
+		data : JSON.stringify(pagedata),
+		dataType : "json",
+		success : function(data) {
+			if (data != null) {
+				for(var key in data)   {
+					 var pagedata1={page:1,rows:20,begin:0,end:0,havenest:false,gatewayid:data[key][0].id,lou:false};///////////
+					 var pagedata2={page:1,rows:20,begin:0,end:0,havenest:false,gatewayid:data[key][0].id,lou:false};///////////
+					 mapTermpage[data[key][0].id]=pagedata2;
+					 mapTermpagein[data[key][0].id]=pagedata1;
+					 gpsTObbdLfet_cf(data[key]);
+					
+				 }
 				
 				 for(var c in mapTermpage)   {
 					 mapTermpage[c].begin= mapTermpage[c].begin+ mapTermpage[c].rows;
@@ -294,12 +363,12 @@ function getChosetermid(){
 	});
 	//加载终端类型
 	function changegroupname() {
-
+		
 		$("#terminaltype").empty();
 		$("#address").empty();
 		$("#terminalname").empty();
 		$("#terminalid").empty();
-
+		if(document.getElementById("selectgroup").selectedIndex==0){
 		jQuery.getJSON("gomap/getTypenameByGroup/" + $("#groupname").val(),
 						function(data) {
 							$("#terminaltype").append(
@@ -311,6 +380,52 @@ function getChosetermid(){
 												+ "</option>");
 							}
 						});
+		}else{
+			jQuery.getJSON("gomap/getGateByGateway1/" + $("#groupname").val(),
+					function(data) {
+						$("#terminaltype").append(
+								"<option  value=\"\"> </option>");
+						for (var i = 0; i < data.length; i++) {
+							$("#terminaltype").append(
+									"<option  value=" + data[i].typeid + ">"
+											+ data[i].typename
+											+ "</option>");
+						}
+					});
+		}
+	}
+	
+	//分组和网关选择
+	function changeselect() {
+		$("#groupname").empty();
+		$("#terminaltype").empty();
+		$("#address").empty();
+		$("#terminalname").empty();
+		$("#terminalid").empty();
+		 $("#groupnamesel").html(document.getElementById("selectgroup").options[document.getElementById("selectgroup").selectedIndex].text);
+		if(document.getElementById("selectgroup").selectedIndex==0){
+			jQuery.getJSON("gomap/getgroupname", function(data) {
+				//console.log(data);
+				$("#groupname").append("<option value=" + '' + ">" + ''+ "</option>");
+				for (var i = 0; i < data.length; i++) {
+					$("#groupname").append(
+							"<option value=" + data[i].id + ">" + data[i].name
+									+ "</option>");
+				}
+			});
+		}else{
+			
+			jQuery.getJSON("gomap/getgatewaynamesel", function(data) {
+				//console.log(data);
+				$("#groupname").append("<option value=" + '' + ">" + ''+ "</option>");
+				for (var i = 0; i < data.length; i++) {
+					$("#groupname").append(
+							"<option value=" + data[i].id + ">" + data[i].name
+									+ "</option>");
+				}
+			});
+			
+		}
 	}
 
 	//加载终端地址
@@ -322,27 +437,51 @@ function getChosetermid(){
 			termid : $("#groupname").val(),
 			typeid : $("#terminaltype").val()
 		};
-		$.ajax({
-			url : "gomap/getAddressByType",
-			type : "POST",
-			contentType : "application/json; charset=UTF-8",
-			data : JSON.stringify(condinate),
-			dataType : "json",
-			success : function(data) {
-				if (data != null) {
-					$("#address").append("<option  value=\"\"> </option>");
-					for (var i = 0; i < data.length; i++) {
-						$("#address").append(
-								"<option  value=" + data[i].location + ">"
-										+ data[i].location + "</option>");
+		if(document.getElementById("selectgroup").selectedIndex==0){
+			$.ajax({
+				url : "gomap/getAddressByType",
+				type : "POST",
+				contentType : "application/json; charset=UTF-8",
+				data : JSON.stringify(condinate),
+				dataType : "json",
+				success : function(data) {
+					if (data != null) {
+						$("#address").append("<option  value=\"\"> </option>");
+						for (var i = 0; i < data.length; i++) {
+							$("#address").append(
+									"<option  value=" + data[i].location + ">"
+											+ data[i].location + "</option>");
+						}
+					} else {
 					}
-				} else {
+				},
+				error : function() {
+					Conframe.window. searchConerr();
 				}
-			},
-			error : function() {
-				Conframe.window. searchConerr();
-			}
-		});
+			});
+		}else{
+			$.ajax({
+				url : "gomap/getAddressByTypeGateway",
+				type : "POST",
+				contentType : "application/json; charset=UTF-8",
+				data : JSON.stringify(condinate),
+				dataType : "json",
+				success : function(data) {
+					if (data != null) {
+						$("#address").append("<option  value=\"\"> </option>");
+						for (var i = 0; i < data.length; i++) {
+							$("#address").append(
+									"<option  value=" + data[i].location + ">"
+											+ data[i].location + "</option>");
+						}
+					} else {
+					}
+				},
+				error : function() {
+					Conframe.window. searchConerr();
+				}
+			});
+		}
 	}
 	//加载终端名稱	
 	function changeAddress() {
@@ -353,8 +492,9 @@ function getChosetermid(){
 			typeid : $("#terminaltype").val(),
 			location : $("#address").val()
 		};
-		$
-				.ajax({
+		if(document.getElementById("selectgroup").selectedIndex==0){
+
+		$.ajax({
 					url : "gomap/getClientnameByaddress",
 					type : "POST",
 					contentType : "application/json; charset=UTF-8",
@@ -376,6 +516,30 @@ function getChosetermid(){
 						Conframe.window. searchConerr();
 					}
 				});
+		}else{
+			$.ajax({
+				url : "gomap/getClientnameByaddressGateway",
+				type : "POST",
+				contentType : "application/json; charset=UTF-8",
+				data : JSON.stringify(condinate),
+				dataType : "json",
+				success : function(data) {
+					if (data != null) {
+						$("#terminalname").append(
+								"<option  value=\"\"> </option>");
+						for (var i = 0; i < data.length; i++) {
+							$("#terminalname").append(
+									"<option  value=" + data[i].name + ">"
+											+ data[i].name + "</option>");
+						}
+					} else {
+					}
+				},
+				error : function() {
+					Conframe.window. searchConerr();
+				}
+			});
+		}
 	}
 	function changeterminalname() {
 		$("#terminalid").empty();
@@ -385,28 +549,54 @@ function getChosetermid(){
 			location : $("#address").val(),
 			name : $("#terminalname").val()
 		};
-		$.ajax({
-			url : "gomap/getClientigByname",
-			type : "POST",
-			contentType : "application/json; charset=UTF-8",
-			data : JSON.stringify(condinate),
-			dataType : "json",
-			success : function(data) {
-				if (data != null) {
-					$("#terminalid").append("<option  value=\"\"> </option>");
-					for (var i = 0; i < data.length; i++) {
-						$("#terminalid").append(
-								"<option  value=" + data[i].id + ">"
-										+ data[i].id + "</option>");
+		if(document.getElementById("selectgroup").selectedIndex==0){
+
+			$.ajax({
+				url : "gomap/getClientigByname",
+				type : "POST",
+				contentType : "application/json; charset=UTF-8",
+				data : JSON.stringify(condinate),
+				dataType : "json",
+				success : function(data) {
+					if (data != null) {
+						$("#terminalid").append("<option  value=\"\"> </option>");
+						for (var i = 0; i < data.length; i++) {
+							$("#terminalid").append(
+									"<option  value=" + data[i].id + ">"
+											+ data[i].id + "</option>");
+						}
+					} else {
 					}
-				} else {
+				},
+				error : function() {
+					Conframe.window. searchConerr();
+					
 				}
-			},
-			error : function() {
-				Conframe.window. searchConerr();
-				
-			}
-		});
+			});
+		}else{
+			$.ajax({
+				url : "gomap/getClientigBynameGateway",
+				type : "POST",
+				contentType : "application/json; charset=UTF-8",
+				data : JSON.stringify(condinate),
+				dataType : "json",
+				success : function(data) {
+					if (data != null) {
+						$("#terminalid").append("<option  value=\"\"> </option>");
+						for (var i = 0; i < data.length; i++) {
+							$("#terminalid").append(
+									"<option  value=" + data[i].id + ">"
+											+ data[i].id + "</option>");
+						}
+					} else {
+					}
+				},
+				error : function() {
+					Conframe.window. searchConerr();
+					
+				}
+			});
+		}
 	}
 	/*
 	 jQuery.getJSON("map/getterminalname/"+ $("#address").val(), function(data) {
@@ -442,19 +632,32 @@ function getChosetermid(){
 
 	<script type="text/javascript">
 	$('.searchacc').hide();
+	$('.accf').hide();
 	$(function () {
 	   $('#s').click(function () {
+		   $('#f').parent().removeClass("active");
 		   $('#g').parent().removeClass("active");
 		   $('.acc').hide();
+		   $('.accf').hide();
 		   $('.searchacc').show();
 	  		$(this).parent().addClass("active");
 	   });
 				
-   $('#g').click(function () {
+      $('#g').click(function () {
+    	  $('#f').parent().removeClass("active");
 		   $('#s').parent().removeClass("active");
 		   $('.searchacc').hide();
+		   $('.accf').hide();
 		   $('.acc').show();
-	  		 $(this).parent().addClass("active");
+	  		$(this).parent().addClass("active");
+	   });
+      $('#f').click(function () {
+    	 $('#s').parent().removeClass("active");
+    	 $('#g').parent().removeClass("active");
+    	   $('.acc').hide();
+		   $('.searchacc').hide();
+		   $('.accf').show();
+	  	   $(this).parent().addClass("active");
 	   });
 	
 	});

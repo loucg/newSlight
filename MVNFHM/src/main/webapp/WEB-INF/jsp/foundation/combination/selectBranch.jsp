@@ -28,18 +28,18 @@
 				<div class="page-content">
 					<div class="row">
 						<div class="col-xs-12">
-							<form action="sensor/readExcel?gateway_id=${pd.gateway_id}" name="Form" id="Form" method="post" enctype="multipart/form-data">
-							<input type="hidden" id="gateway_id" name="gateway_id" value="${pd.gateway_id}"/>
+							<form action="" name="Form" id="Form" method="post">
+								<input type="hidden" id="id" name="id" value="${pd.id }"/>
 								<div id="zhongxin">
 								<table style="width:95%;" >
 									<tr>
-										<td style="padding-top: 20px;"><input type="file" id="excel" name="excel" style="width:50px;" onchange="fileType(this)" /></td>
+										<td style="text-align: center;padding-top: 10px;width:80px">
+											<a onclick="viewLampDetail('${pd.id }')" style="cursor:pointer;"><%=lamp_config_page%></a>
+										</td>
 									</tr>
 									<tr>
-										<td style="text-align: center;padding-top: 10px;">
-											<a class="btn btn-mini btn-primary" onclick="save();"><%=importt%></a>
-											<a class="btn btn-mini btn-danger" onclick="top.Dialog.close();"><%=cancel%></a>
-											<a class="btn btn-mini btn-success" onclick="window.location.href='<%=basePath%>/sensor/downExcel'"><%=download_model%></a>
+										<td style="text-align: center;padding-top: 10px;width:80px">
+											<a onclick="viewSensorDetail('${pd.id }')" style="cursor:pointer;"><%=sensor_config_page%></a>
 										</td>
 									</tr>
 								</table>
@@ -69,52 +69,37 @@
 	<script type="text/javascript" src="static/js/jquery.tips.js"></script>
 	<script type="text/javascript">
 		$(top.hangge());
-		$(function() {
-			//上传
-			$('#excel').ace_file_input({
-				no_file:'<%=please_choose_excel %>...',
-				btn_choose:'<%=choose%>',
-				btn_change:'<%=change%>',
-				droppable:false,
-				onchange:null,
-				thumbnail:false, //| true | large
-				whitelist:'xls|xls',
-				blacklist:'gif|png|jpg|jpeg'
-				//onchange:''
-			});
-		});
-		
-		//保存
-		function save(){
-			if($("#excel").val()=="" || document.getElementById("excel").files[0] =='<%=please_upload_xls_file%>'){
-				
-				$("#excel").tips({
-					side:3,
-		            msg:'<%=please_choose_file%>',
-		            bg:'#AE81FF',
-		            time:3
-		        });
-				return false;
-			}
-			$("#Form").submit();
-			$("#zhongxin").hide();
-			$("#zhongxin2").show();
+		/* 灯状态画面 */
+		function viewLampDetail(id){
+			 top.jzts();
+			 var diag = new top.Dialog();
+			 diag.Drag=true;
+			 diag.Title ="<%=lamp_config_page %>";
+			 diag.URL = '<%=basePath%>config/getLightConfigList.do?gateway_id='+id+'&itype=4'; 
+			 diag.Width = 1760;
+			 diag.Height = 620;
+			 diag.CancelEvent = function(){ //关闭事件
+				diag.close();
+				top.Dialog.close();
+			 };
+			 diag.show();
 		}
-		function fileType(obj){
-			var fileType=obj.value.substr(obj.value.lastIndexOf(".")).toLowerCase();//获得文件后缀名
-		    if(fileType != '.xls'){
-		    	$("#excel").tips({
-					side:3,
-		            msg:'<%=please_upload_xls_file%>',
-		            bg:'#AE81FF',
-		            time:3
-		        });
-		    	$("#excel").val('');
-		    	document.getElementById("excel").files[0] = '<%=please_upload_xls_file%>';
-		    }
+		/* 传感器状态画面 */
+		function viewSensorDetail(id){
+			 top.jzts();
+			 var diag = new top.Dialog();
+			 diag.Drag=true;
+			 diag.Title ="<%=sensor_config_page %>";
+			 diag.URL = '<%=basePath%>sensor/getSensorList.do?gateway_id='+id; 
+			 diag.Width = 1260;
+			 diag.Height = 620;
+			 diag.CancelEvent = function(){ //关闭事件
+				diag.close();
+				top.Dialog.close();
+			 };
+			 diag.show();
 		}
 	</script>
-
 
 </body>
 </html>

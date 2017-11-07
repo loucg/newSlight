@@ -70,6 +70,8 @@ public class ConfigureSerivceImpl implements ConfigureService {
 		dao.save("ConfigureMapper.insertSensor", pd);
 		int lastid = (Integer) dao.findForObject("ConfigureMapper.lastInsertId", pd);
 		pd.put("id", lastid);
+		pd.put("client_type", 2);
+		dao.save("ConfigureMapper.insertClientGateway", pd);
 		dao.save("ConfigureMapper.insertSensorAttr1", pd);
 		dao.save("ConfigureMapper.insertSensorAttr2", pd);
 	}
@@ -138,6 +140,8 @@ public class ConfigureSerivceImpl implements ConfigureService {
 		dao.save("ConfigureMapper.insertClient", pd);
 		int lastid = (Integer) dao.findForObject("ConfigureMapper.lastInsertId", pd);
 		pd.put("id", lastid);
+		pd.put("client_type", 2);
+		dao.save("ConfigureMapper.insertClientGateway", pd);
 		dao.save("ConfigureMapper.insertClientAttr1", pd);
 		dao.save("ConfigureMapper.insertClientAttr2", pd);
 	}

@@ -634,5 +634,20 @@
 	String please_input_set_vol = properties.getProperty("please_input_set_vol");//请输入设置电压
 	String please_input_set_curr = properties.getProperty("please_input_set_curr");//请输入设置电流
 	String strategyset_member = properties.getProperty("strategyset_member");//策略成员
+	String group = properties.getProperty("group");//分组
+	String forbitModifyPartMap = properties.getProperty("forbitModifyPartMap");//当前地图局部图不存在，不能修改。请选择另外分组或网关。
+	String part_map_del_confirm =properties.getProperty("part_map_del_confirm");//确定要删除局部地图吗？
+	String part_map_serchresult =properties.getProperty("part_map_serchresult");//确定要删除局部地图吗？
+	String part_map_select = properties.getProperty("part_map_select");//确定要删除局部地图吗？
+	String refresh_date = properties.getProperty("refresh_date");//刷新时间
+	String node_address = properties.getProperty("node_address");//节点地址
+	String node_name = properties.getProperty("node_name");//节点名称
+	String node_number = properties.getProperty("node_number");//节点编号
+	String node_type = properties.getProperty("node_type");//节点类型
+	String lamp_config_page = properties.getProperty("lamp_config_page");//路灯配置页面
+	String sensor_config_page = properties.getProperty("sensor_config_page");//传感器配置页面
+	String sensor_config_gatewayname = properties.getProperty("sensor_config_gatewayname");//传感器配置列表 网关
+	String lamp_config_gatewayname = properties.getProperty("lamp_config_gatewayname");//路灯配置列表 网关
+	String pls_select_strategyset = properties.getProperty("pls_select_strategyset");//请选择需要删除的策略包
 
 %>

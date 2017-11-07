@@ -51,8 +51,9 @@
 							<thead>
 								<tr>
 									<%-- <th class="center" style="width:50px;"><%=number %></th> --%>
-									<th class="center"><%=equipment_code %></th>
-									<th class="center"><%=equipment_name %></th>
+									<th class="center"><%=node_address %></th>
+									<th class="center"><%=node_number %></th>
+									<th class="center"><%=node_name%></th>
 									<%-- <th class="center"><%=equipment_comment %></th> --%>
 									<th class="center"><%=work_status %></th>
 									<th class="center"><%=brightness_value %></th>
@@ -61,7 +62,6 @@
 									<th class="center"><%=power_rate_factor %></th>
 									<th class="center"><%=energy_consumption %></th>
 									<th class="center"><%=device_temperature %></th>
-									<th class="center"><%=client_node_info %></th>
 								</tr>
 							</thead>
 													
@@ -74,6 +74,7 @@
 									<c:forEach items="${clientDetailsList}" var="lampState" varStatus="vs">
 										<tr>
 											<%-- <td class='center' style="width: 30px;">${vs.index+1}</td> --%>
+											<td class='center'>${lampState.node}</td>
 											<td class='center'>${lampState.client_code }</td>
 											<td class='center'>${lampState.cname }</td>
   											<%-- <td class='center'>${lampState.comment}</td> --%>
@@ -96,7 +97,6 @@
 									        <td class='center'>${lampState.power_factor}</td>
 									        <td class='center'>${lampState.kwh}</td>
 									        <td class='center'>${lampState.temperature}</td>
-									        <td class='center'>${lampState.node}</td>
 										</tr>
 									</c:forEach>
 									</c:if>

@@ -32,27 +32,41 @@
 						<div class="col-xs-12">
 
 						<!-- 检索  -->
-						<form action="sensor/getSensorList" method="post" name="Form" id="Form">
+						<form action="sensor/getSensorList.do?gateway_id=${pd.gateway_id}" method="post" name="Form" id="Form">
 						<input type="hidden" id="excel" name="excel" value="0"/>
+						<input type="hidden" id="gateway_id" name="gateway_id" value="${pd.gateway_id}"/>
+						<table style="margin-top:5px;" class="table table-striped table-bordered table-hover">
+							<tr>
+							<td class="center">
+								<c:choose>
+								<c:when test="${not empty sensorList}">
+									<c:forEach items="${gatewaynamelist}" var="gateway" varStatus="vs">
+										<%=sensor_config_gatewayname %>${gateway.gateway_code }
+									</c:forEach>
+								</c:when>
+								</c:choose>
+							</td>
+							</tr>
+						</table>
 						<table style="margin-top:5px;">
 							<tr>
 								
 								<td>
 									<div class="nav-search">
-									    <label><%=device_number%>：</label>
+									    <label><%=node_number%>：</label>
 										<input class="nav-search-input" autocomplete="off" id="nav-search-input" type="text" name="number" value="${pd.number}" />
 									</div>
 								</td>
 								<td >
 								 	<div class="nav-search">
-									    <label style="margin-left:12px;"><%=device_name%>：</label>
+									    <label style="margin-left:12px;"><%=node_name%>：</label>
 										<input class="nav-search-input" autocomplete="off" id="nav-search-input" type="text" name="name" value="${pd.name }"  />
 									</div>
 								</td>
-								<td>&nbsp;&nbsp;<%=device_type%>：</td>
+								<td>&nbsp;&nbsp;<%=node_type%>：</td>
 									<td >
 									 	<select class="chosen-select form-control" name="type" id="type" data-placeholder="<%=please_choose_device_type%>" style="height:30px;width: 160px;border-width:1px;border-color:'#fff';border-radius:4px">
-											<option value="0" <c:if test="${pd.type!=0}"> style="display:none"</c:if>>请选择类型</option>
+											<option value="-1" <c:if test="${pd.type!=-1}"> style="display:none"</c:if>>请选择类型</option>
 											<c:forEach items="${typeList}" var="type">
 												<option value="${type.id}" <c:if test="${type.id==pd.type}">selected="selected"</c:if>>${type.name}</option>
 											</c:forEach>
@@ -61,7 +75,7 @@
 									</td>
 								<c:if test="${QX.cha == 1 }"><td style="vertical-align:top;padding-left:2px;"><button class="btn btn-light btn-xs" onclick="search();"  title="<%=search2%>"><i id="nav-search-icon" class="ace-icon fa fa-search bigger-110 nav-search-icon blue"></i></button></td></c:if>
 								<c:if test="${QX.toExcel == 1 }"><td style="vertical-align:top;padding-left:2px;"><a class="btn btn-light btn-xs" onclick="toExcel();" title="<%=export_to_excel%>"><i id="nav-search-icon" class="ace-icon fa fa-download bigger-110 nav-search-icon blue"></i></a></td></c:if>
-								<c:if test="${QX.FromExcel == 1 }"><td style="vertical-align:top;padding-left:2px;"><a class="btn btn-light btn-xs" onclick="fromExcel();" title="<%=import_from_excel%>"><i id="nav-search-icon" class="ace-icon fa fa-cloud-upload bigger-110 nav-search-icon blue"></i></a></td></c:if>
+								<c:if test="${QX.FromExcel == 1 }"><td style="vertical-align:top;padding-left:2px;"><a class="btn btn-light btn-xs" onclick="fromExcel('${pd.gateway_id}');" title="<%=import_from_excel%>"><i id="nav-search-icon" class="ace-icon fa fa-cloud-upload bigger-110 nav-search-icon blue"></i></a></td></c:if>
 							</tr>
 						</table>
 						<!-- 检索  -->
@@ -69,17 +83,10 @@
 						<table id="simple-table" class="table table-striped table-bordered table-hover"  style="margin-top:5px;">
 							<thead>
 								<tr>
-								<!-- 
-									<th class="center" style="width: 50px;"><%=number%></th>
-									<th class="center"><%=standard%>/<%=name%></th>
-									<th class="center"><%=vendor%></th>
-								    <th class="center"><%=type%></th>
-								    <th class="center"><%=comment%></th>
-									<th class="center"><%=operate%></th>
-								-->
-									<th class="center"><%=device_number%></th>
-									<th class="center"><%=device_name%></th>
-									<th class="center"><%=device_type%></th>
+									<th class="center"><%=node_address%></th>
+									<th class="center"><%=node_number%></th>
+									<th class="center"><%=node_name%></th>
+									<th class="center"><%=node_type%></th>
 									<th class="center"><%=location%></th>
 									<th class="center"><%=coordinate%></th>
 									<th class="center"><%=pole%></th>
@@ -97,6 +104,7 @@
 									<c:if test="${QX.cha == 1 }">
 									<c:forEach items="${sensorList}" var="var" varStatus="vs">
 										<tr>
+											<td class="center">${var.node}</td>
 											<td class="center">${var.number}</td>
 											<td class="center">${var.name}</td>
 											<td class="center">${var.type}</td>
@@ -255,12 +263,12 @@
 		}
 		
 		//打开上传excel页面
-		function fromExcel(){
+		function fromExcel(Id){
 			 top.jzts();
 			 var diag = new top.Dialog();
 			 diag.Drag=true;
 			 diag.Title ="<%=importt%>";
-			 diag.URL = '<%=basePath%>sensor/goUploadExcel';
+			 diag.URL = '<%=basePath%>sensor/goUploadExcel?gateway_id='+Id;
 			 diag.Width = 300;
 			 diag.Height = 150;
 			 diag.CancelEvent = function(){ //关闭事件

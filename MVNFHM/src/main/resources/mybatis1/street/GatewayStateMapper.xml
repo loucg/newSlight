@@ -15,13 +15,19 @@
 		c_gateway_upload_status.status,
 		b_status.`name` status_name,
 		c_gateway_upload_status.interstatus,
-		c_gateway_upload_status.tdate
+		c_gateway_upload_status.tdate,
+		c_gateway_attr3.number,
+		c_gateway_attr3.number2 
 		FROM
 		c_gateway
 		LEFT JOIN
 		c_gateway_attr1
 		ON
 		c_gateway.id = c_gateway_attr1.c_gateway_id
+		LEFT JOIN
+		c_gateway_attr3
+		ON
+		c_gateway.id = c_gateway_attr3.c_gateway_id
 		LEFT JOIN
 		c_gateway_upload_status
 		ON
@@ -86,7 +92,8 @@
 		c_client_attr1.id, c_client.client_code, c_client_attr1.`name` cname,
 		c_client_attr1.location, c_client_attr1.lamp_pole_num, c_client_upload_status.temperature,
 		c_client_upload_status.voltage, c_client_upload_status.power_factor,  b_status.name as `status_name`,c_client_upload_status.brightness,
-		concat_ws(',',c_client_attr1.node,c_client_attr1.node2) as node,
+		CASE WHEN c_client_attr1.node2 = '0' or c_client_attr1.node2 = '00' THEN c_client_attr1.node
+			     ELSE concat_ws('.',c_client_attr1.node,c_client_attr1.node2) END as node,
 		c_client_upload_status.kwh,
 		c_client_upload_status.status,
 		<!--b_ctrl_strategy.`name` sname,-->
@@ -131,7 +138,8 @@
 		c_sensor_attr1.id, c_sensor.sensor_code, c_sensor_attr1.`name` cname,
 		c_sensor_attr1.location, c_sensor_attr1.lamp_pole_num, c_sensor_upload_status.temperature,
 		c_sensor_upload_status.voltage, c_sensor_upload_status.power_factor,  b_status.name as `status_name`,
-		concat_ws(',',c_sensor_attr1.node,c_sensor_attr1.node2) as node,
+		CASE WHEN c_sensor_attr1.node2 = '0' or c_sensor_attr1.node2 = '00' THEN c_sensor_attr1.node
+			     ELSE concat_ws('.',c_sensor_attr1.node,c_sensor_attr1.node2) END as node,
 		c_sensor_upload_status.status,
 		c_sensor_attr1.`comment`,  c_sensor_upload_status.tdate
 		FROM

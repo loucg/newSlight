@@ -32,6 +32,7 @@ import com.fh.entity.system.User;
 import com.fh.hzy.util.UserUtils;
 import com.fh.service.fhoa.department.DepartmentManager;
 import com.fh.service.slight.configure.ConfigureService;
+import com.fh.service.street.state.GatewayStateService;
 import com.fh.service.system.fhlog.FHlogManager;
 import com.fh.util.AppUtil;
 import com.fh.util.Const;
@@ -49,6 +50,9 @@ public class ConfigureController extends BaseController {
 
 	//网关界面
 	private String deviceJsp = "foundation/combination/combination_list";
+	
+	//选择界面
+	private String branchJsp = "foundation/combination/selectBranch";
 		
 	//断路器界面
 	private String circuitBreakerJsp = "foundation/combination/circuit_breaker_list";
@@ -79,6 +83,8 @@ public class ConfigureController extends BaseController {
 	private FHlogManager FHLOG;
 	@Resource(name = "departmentService")
 	private DepartmentManager departmentService;
+	@Resource(name = "gatewayStateService")
+	private GatewayStateService gatewayStateService;
 
 	/**
 	 * 下载普通电源模版
@@ -101,6 +107,9 @@ public class ConfigureController extends BaseController {
 	@RequestMapping(value = "/goUploadExcel")
 	public ModelAndView goUploadExcel() throws Exception {
 		ModelAndView mv = this.getModelAndView();
+		PageData pd = new PageData();
+		pd = this.getPageData();
+		mv.addObject("pd", pd);
 		mv.setViewName(uploadJsp);
 		return mv;
 	}
@@ -291,10 +300,18 @@ public class ConfigureController extends BaseController {
  		pd.put("userids", departmentService.getUseridsInDepartment(pd));
 		page.setPd(pd);
 		List<PageData> deviceList = null;
-		int type = Integer.valueOf((String)pd.get("type"));
+		Object strType = pd.get("type");
+		int type = 0;
+		if (strType != null) {
+			type = Integer.valueOf((String)pd.get("type"));
+		}
 		int itype = Integer.valueOf((String)pd.get("itype"));
+		int gatewayId = Integer.valueOf((String)pd.get("gateway_id"));
+		List<PageData> gatewaynamelist = null;
 		if(itype==4){
 			deviceList = configureService.getDeviceList(page);
+			pd.put("id", gatewayId);
+			gatewaynamelist = gatewayStateService.viewgateWayName(page);
 //			pd.put("itype", type==6?4:type);
 			pd.put("itype", 4);
 			pd.put("type", type);
@@ -320,6 +337,7 @@ public class ConfigureController extends BaseController {
 			mv.addObject("pd", pd);
 			mv.addObject("QX",Jurisdiction.getHC());	//按钮权限
 			mv.addObject("deviceList", deviceList);
+			mv.addObject("gatewaynamelist", gatewaynamelist);
 			mv.setViewName(lightConfigJsp);
 			return mv;
 		}
@@ -970,6 +988,19 @@ public class ConfigureController extends BaseController {
 		pd = configureService.viewGatewayNet(pd);
 		mv.addObject("pd", pd);
 		mv.setViewName(GatewayViewJsp);
+		return mv;
+	}
+	
+	/**
+	 * 画面选择配置
+	 */
+	@RequestMapping("/goDeviceConfigPage")
+	public ModelAndView goDeviceConfigPage() throws Exception{
+		ModelAndView mv = this.getModelAndView();
+		PageData pd = new PageData();
+		pd = this.getPageData();
+		mv.setViewName(branchJsp);
+		mv.addObject("pd", pd);
 		return mv;
 	}
 	

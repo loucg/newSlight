@@ -113,8 +113,8 @@
 									<label class="pos-rel"><input type="checkbox" class="ace" id="zcheckbox" /><span class="lbl"></span></label>
 									</th>
 									<th class="center" style="width:50px;"><%=number %></th>
-									<th class="center"><%=device_number %></th>
-									<th class="center"><%=device_name %></th>
+									<th class="center"><%=node_number%></th>
+									<th class="center"><%=node_name %></th>
 									<th class="center"><%=location %></th>
 									<th class="center"><%=pole_number2 %></th>
 									<th class="center"><%=brightness_value %></th>
@@ -123,7 +123,7 @@
 									<th class="center"><%=power_rate_factor %></th>
 									<th class="center"><%=current %></th>
 									<th class="center"><%=energy_consumption %></th>
-									<th class="center"><%=client_node_info %></th>
+									<th class="center"><%=node_address %></th>
 									<th class="center"><%=work_status %></th>
 									<th class="center"><%=comment %></th>
 									<th class="center"><%=time %></th>

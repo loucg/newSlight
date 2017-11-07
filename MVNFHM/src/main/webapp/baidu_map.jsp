@@ -95,17 +95,19 @@ body {
 	<input type =hidden id='partMapName'></input>
 	<input type =hidden id='partMapURL'></input>
 	<input type =hidden id='partMapID'></input>
-	
+	<input type =hidden id='PartMapExist'></input>
 </body>
 <script type="text/javascript">
 
 	var choseMaker;//全局变量很重要////////////////////////////////////////////////////////////////
 	var choseMakerdata;//全局变量很重要////////////////////////////////////////////////////////////
-	var preMakerdata;//全局变量很重要////////////////////////////////////////////////////////////
+	var desMakerdata;//全局变量很重要////////////////////////////////////////////////////////////
+	var srcMakerdata;
 	var moveo='false';   //捕获到的事件
     var moveX;  //box水平宽度
     var moveY;  //box垂直高度
     var gtermid;
+    var gGatewayID;
     var gPartMapCoordinate='';
     var gMarker;
     var baiduMapFlag=2;
@@ -119,7 +121,7 @@ body {
 		//minZoom : 15,
 		enableMapClick : false
 	});// 创建地图实例   构造底图时，关闭底图可点功能
-	//map.centerAndZoom("杭州", 15);// 初始化地图，设置中心点坐标和地图级别
+	map.centerAndZoom("杭州", 5);// 初始化地图，设置中心点坐标和地图级别
 	var top_left_navigation = new BMap.NavigationControl(); //左上角，添加默认缩放平移控件
 	map.addControl(top_left_navigation);
 	map.enableScrollWheelZoom(true);//启用滚轮放大缩小
@@ -220,11 +222,18 @@ body {
 	//map.addEventListener("click", showInfo);
 	function getClientsData(mapTermpage2,mapcenter,mapzoom) {
 		//地图初始化时候，局部地图也同时初始化
-	//	alert(mapcenter);
 		if(mapcenter==null){
 			map.clearOverlays();
+			clearAllOverlays();
 		}
 		gtermid = mapTermpage2.termid;
+		gGatewayID = mapTermpage2.gatewayid;
+		var tempobj =mapTermpage2;
+		mapTermpage2.typeid=null;
+		mapTermpage2.location=null;
+		mapTermpage2.name=null;
+		mapTermpage2.id=null;
+		mapTermpage2.client_attri_id='';
 		var partMaplightExists =false;
 		$.ajax({
 			url : "gomap/addClientMaker",
@@ -235,12 +244,19 @@ body {
 			success : function(clientdata) {
 				if (clientdata.length!=0) {
 					var arrpoints=[];
-					preMakerdata = clientdata;//记录当前展示的数据
+					desMakerdata = clientdata;//记录当前展示的数据
+					srcMakerdata= clientdata;
+					for(var i=0;i<desMakerdata.length;i++){
+						if(desMakerdata[i].coordinate!=null){
+							desMakerdata[i].xcoordinate = desMakerdata[i].coordinate.split(",")[0];
+							desMakerdata[i].ycoordinate = desMakerdata[i].coordinate.split(",")[1];
+						}
+					}
 					gpsTObbd(arrpoints,clientdata,mapcenter,mapzoom);//////坐标转换
 					//addClientMaker(clientdata,mapcenter,mapzoom); 
 				} else {
 					if(!partMaplightExists){
-					//preMakerdata = [];
+					//desMakerdata = [];
 					//map.centerAndZoom("杭州", 14);
 					BootstrapDialog.show({
 		                type:  BootstrapDialog.TYPE_INFO,
@@ -276,18 +292,21 @@ body {
 			$.ajax({
 				url : "gomap/getPartMapInfo",
 				type : "POST",
-				data : {termid:mapTermpage2.termid,partMapID:$('#partMapID').val()},
+				data : {termid:mapTermpage2.termid,partMapID:$('#partMapID').val(),
+					gatewayID:gGatewayID},
 				dataType : "json",
 				success : function(aPartmap) {
 						var tempPartMapID ='';
 					if (aPartmap.length!=0) {
-						
+						var j=0;
 						//alert(gtermid)
 						for(var i=0;i<aPartmap.length;i++){
 							document.getElementById('partMapID').value=aPartmap[i].id;
 							document.getElementById('MarkerXYCoordinate').value=aPartmap[i].external_coordinate;
 							if(aPartmap[i].id!=tempPartMapID){
 								addClickMarker();
+								gPartmaps[j]=aPartmap[i].id;
+								j++;
 							}
 							partMaplightExists=true;
 							tempPartMapID= aPartmap[i].id;
@@ -298,6 +317,21 @@ body {
 				}	
 				});
 		}
+	}
+	
+	//灯到数据装载
+	function gpsTObbd(arrpoints,clientdata,mapcenter,mapzoom) {
+        var marker=null ;
+        for (var j=0; j <  clientdata.length; j++) { 
+			if(clientdata[j].coordinate!=null){
+           		clientdata[j].xcoordinate = clientdata[j].coordinate.split(",")[0];
+           		clientdata[j].ycoordinate = clientdata[j].coordinate.split(",")[1];
+			}
+         		marker = attachlightToMap(clientdata[j])
+		}
+        if(marker!=null){
+        	changeCenter(marker);
+        }
 	}
 	//终端的坐标更新
 	//newCoordinate:新坐标
@@ -310,11 +344,12 @@ body {
 			dataType : "json",
 			cache: false,
 			success : function(data) {
-				for(var i=0;i<preMakerdata.length;i++){
-					if(preMakerdata[i].client_attri_id==client_attri_id){
-						preMakerdata[i].xcoordinate=newCoordinate.split(",")[0];
-						preMakerdata[i].ycoordinate=newCoordinate.split(",")[1];
-					
+				for(var i=0;i<desMakerdata.length;i++){
+					if(desMakerdata[i].client_attri_id==client_attri_id){
+						desMakerdata[i].xcoordinate=newCoordinate.split(",")[0];
+						desMakerdata[i].ycoordinate=newCoordinate.split(",")[1];
+						srcMakerdata[i].coordinate_baidu_source =newCoordinate.split(",")[0]
+						 + ','+newCoordinate.split(",")[1];
 						break;
 					}
 				}	
@@ -346,15 +381,17 @@ body {
 			url : "gomap/getClientInfo",
 			type : "POST",
 			data : {termid:termid,clientid:clientid,
-				partMapID:partMapid},
+				partMapID:partMapid,gatewayid:gGatewayID},
 			dataType : "json",
 			success : function(data) {
 				if (data.length!=0) {
 					if(clientid==''){
-						marker.partLightData = data;
-						marker.selLight ='';
-						for(var i=0;i<data.length;i++){
-							marker.selLight +="<option value="+data[i].client_attri_id+">"+data[i].name+"</option>";
+						if(marker!=null){
+							marker.partLightData = data;
+							marker.selLight ='';
+							for(var i=0;i<data.length;i++){
+								marker.selLight +="<option value="+data[i].id+">"+data[i].name+"</option>";
+							}
 						}
 					}else{
  						//路灯跳动设置
@@ -372,9 +409,15 @@ body {
 					choseMakerdata.partmapflag =true;
 				} 
 				if(clientid==''){
+					var strX;
+					var strY;
 					//只有路灯初次装载的时候才执行，局部地图才开启
-					var strX = marker.coordinate.split(",")[0];
-					var strY = marker.coordinate.split(",")[1];
+					if(marker!=null && marker.coordinate!=null){
+						strX = marker.coordinate.split(",")[0];
+						strY = marker.coordinate.split(",")[1];
+					}else{
+						return ;
+					}
 					document.getElementById('MarkerXYCoordinate').value=marker.coordinate;
 					document.getElementById('partMapID').value=marker.partMapID;
 					var sContent = getmarkedContent(marker);
@@ -391,17 +434,20 @@ body {
 					$.ajax({
 						url : "gomap/getPartMapInfo",
 						type : "POST",
-						data : {partMapID:document.getElementById('partMapID').value},
+						data : {partMapID:document.getElementById('partMapID').value,gatewayID:gGatewayID,termid:gtermid},
 						dataType : "json",
 						success : function(aPartmap) {
 								var tempMarkerPoint ='';
 								if (aPartmap.length!=0) {
+									
 									for(var i=0;i<aPartmap.length;i++){
-										addLightToMapsub(
-											aPartmap[i].inner_coordinate.split(",")[0],
-											aPartmap[i].inner_coordinate.split(",")[1],	
-											aPartmap[i].c_client_id
-										)
+										if(aPartmap[i].inner_coordinate!=null){
+											addLightToMapsub(
+												aPartmap[i].inner_coordinate.split(",")[0],
+												aPartmap[i].inner_coordinate.split(",")[1],	
+												aPartmap[i].c_client_id
+											)
+										}
 									}
 									lightFlashSet();
 								}
@@ -410,7 +456,7 @@ body {
 						});
 				}
 				if (marker!= null) {
-					changeCenter(marker);
+				//	changeCenter(marker);
 				}
 			},
 			error : function() {
@@ -445,69 +491,67 @@ body {
  				="url('uploadFiles/uploadImgs/partmap/light_green_active.gif')";
 		}
 	}
-		    
-		function gpsTObbd(arrpoints,clientdata,mapcenter,mapzoom) {
-	        var i = 0 ;  
-	        for (var j=0; j <  clientdata.length; j++) { 
-	        	var maker;   
-                 //灯的状态定义
-               	if ("正常" == clientdata[j].status) {
-              			statuscolor = "green";
-              		} else if ("异常" == clientdata[j].status) {
-              			statuscolor = "red";
-              		} else if ("断电" == clientdata[j].status) {
-              			statuscolor = "grey";
-              		} else {
-              			statuscolor = "green";
-              		}
-                	//灯的类型定义
-               		if ( clientdata[j].aliastypename.indexOf("灯" ) >=0) {
-               			clienttype = "light_";
-               		} else if (clientdata[j].aliastypename.indexOf("断路器" ) >=0) {
-               			clienttype = "breaker_";
-               		} else if (clientdata[j].aliastypename.indexOf("网关") >= 0) {
-               			clienttype = "gateway_";
-               		} else {
-               			clienttype = "light_";
-               		}
-               		
-               		//灯的各种终端类型显示。（路灯，网关等）
-              		var imageURL = "static/map/img/" + clienttype + statuscolor+ ".png"; 
-      				var myIcon = new BMap.Icon(imageURL, new BMap.Size(23, 25));
-      				var point = new BMap.Point(clientdata[j].xcoordinate, clientdata[j].ycoordinate);
-      				//灯的场合，如果局部地图上有就不加
-      				if ( clientdata[j].aliastypename.indexOf("灯" ) >=0) {
-      					if(clientdata[j].partMaplinetCnt==0){
-      						var marker = new BMap.Marker(point,{icon:myIcon}); //创建marker对象
-      	      				marker.enableDragging(); //marker可拖拽
-      	      				marker.clientdata =clientdata[j];
-      	      			
-      						map.addOverlay(marker);
-      					}
-        			}else{
-        				var marker = new BMap.Marker(point,{icon:myIcon}); //创建marker对象
-  	      				marker.enableDragging(); //marker可拖拽
-  	      				marker.clientdata =clientdata[j];
-        				map.addOverlay(marker);
-        			}
-      				if(marker!=null){
-	   					marker.content =  getInfoContent(clientdata[j]);
-	   					marker.clientdata = clientdata[j];
-	   					marker.aliastypename =clientdata[j].aliastypename;
-	   					marker.client_attri_id = clientdata[j].client_attri_id;
-	   					marker.xcoordinate =clientdata[j].xcoordinate;
-	   					marker.ycoordinate =clientdata[j].ycoordinate;
-	  					markers[i++]= marker;
-	   					attachInformation(map,marker);
-	   					dragMarker(map,marker);
-      				}
- 		}
-        if(clientdata!=null){
-           	 addClientMaker(clientdata,mapcenter,map.getZoom) 
-		}else{
-			map.centerAndZoom("杭州", 15)
+	
+	
+		
+		//增加灯到地图
+		function attachlightToMap(clientdata){
+			var statuscolor;
+			var clienttype;
+			if ("正常" == clientdata.status) {
+       			statuscolor = "green";
+       		} else if ("异常" == clientdata.status) {
+       			statuscolor = "red";
+       		} else if ("断电" == clientdata.status) {
+       			statuscolor = "grey";
+       		} else {
+       			statuscolor = "green";
+       		}
+             	//灯的类型定义
+      		if ( clientdata.aliastypename.indexOf("灯" ) >=0) {
+      			clienttype = "light_";
+      		} else if (clientdata.aliastypename.indexOf("断路器" ) >=0) {
+      			clienttype = "breaker_";
+      		} else if (clientdata.aliastypename.indexOf("网关") >= 0) {
+      			clienttype = "gateway_";
+      		} else {
+      			clienttype = "light_";
+      		}
+      		var lat =clientdata.xcoordinate;
+      		var lng =clientdata.ycoordinate;
+      		var marker;
+//            	//灯的各种终端类型显示。（路灯，网关等）
+          //灯的各种终端类型显示。（路灯，网关等）
+      		var imageURL = "static/map/img/" + clienttype + statuscolor+ ".png"; 
+			var myIcon = new BMap.Icon(imageURL, new BMap.Size(23, 25));
+			var point = new BMap.Point(clientdata.xcoordinate, clientdata.ycoordinate);
+			//灯的场合，如果局部地图上有就不加
+			if ( clientdata.aliastypename.indexOf("灯" ) >=0) {
+				if(clientdata.partMaplinetCnt==0){
+					var marker = new BMap.Marker(point,{icon:myIcon}); //创建marker对象
+      				marker.enableDragging(); //marker可拖拽
+      				marker.clientdata =clientdata;
+					map.addOverlay(marker);
+				}
+			}else{
+				var marker = new BMap.Marker(point,{icon:myIcon}); //创建marker对象
+    				marker.enableDragging(); //marker可拖拽
+    				marker.clientdata =clientdata[j];
+				map.addOverlay(marker);
+			}
+			if(marker!=null){
+				marker.clientdata = clientdata;
+				marker.aliastypename =clientdata.aliastypename;
+				marker.client_attri_id = clientdata.client_attri_id;
+				marker.id= clientdata.id;
+				marker.xcoordinate =clientdata.xcoordinate;
+				marker.ycoordinate =clientdata.ycoordinate;
+				markers[i++]= marker;
+				attachInformation(map,marker);
+				dragMarker(map,marker);
+			}
+			return marker;
 		}
-	}
 		
 		//追加窗口信息事件
 		function attachInformation(map,marker) {
@@ -517,12 +561,34 @@ body {
 						height : 204, // 信息窗口高度
 					};
 					var point = new BMap.Point(marker.clientdata.xcoordinate, marker.clientdata.ycoordinate);
-					var infoWindow = new BMap.InfoWindow(marker.content, opts); // 创建信息窗口对象
-					infoWindow.enableCloseOnClick();
-					map.openInfoWindow(infoWindow, point); //开启信息窗口  
-    				choseMakerdata= marker.clientdata;
-					choseMakerdata.partmapflag =false
-               });
+					var clientData={} ;
+					var tempCondition ={};
+					tempCondition.termid=gtermid;
+					tempCondition.gatewayid=gGatewayID;
+					tempCondition.id = marker.id;
+					this.partMapID =null;
+					$.ajax({
+						url : "gomap/addClientMaker",
+						type : "POST",
+						contentType : "application/json; charset=UTF-8",
+						data : JSON.stringify(tempCondition),
+						dataType : "json",
+						success : function(clientdata) {
+							if(clientdata.length>0){
+								marker.clientdata=clientdata[0];
+								marker.content =  getInfoContent(clientdata[0]);
+								choseMakerdata= marker.clientdata;
+			    				choseMakerdata.partmapflag =false;
+								var infoWindow = new BMap.InfoWindow(marker.content, opts); // 创建信息窗口对象
+								infoWindow.enableCloseOnClick();
+								map.openInfoWindow(infoWindow, point); //开启信息窗口  
+							}else{
+								alert('There are no  light data');
+							}
+		    				
+						}});
+					
+		        });
 			;
 			}
 		
@@ -545,7 +611,7 @@ body {
 	//var infoWindow;//全局变量，相当重要/////////////////////////////////////////////////////
 	function addClientMaker(data,mapcenter,mapzoom) {
 	
-		preMakerdata =data;//记录当前展示的数据
+		desMakerdata =data;//记录当前展示的数据
 		var Xcoordinate = 0;
 		var Ycoordinate = 0;
 		var minXcoordinate = data[0].xcoordinate;
@@ -581,7 +647,6 @@ body {
 ///////////////////////////////////////////////////////////////////////////////////////////
 //局部图的上传的窗口打开
 	map.addEventListener("click",function(e){
-		
 		if($('#addPartMapFlag').val()=='1'){
 			$("#addPartMapFlag").attr("value",'');//
 			map.setDefaultCursor("default");
@@ -589,7 +654,7 @@ body {
 			var diag = new top.Dialog();
 			diag.Drag=true;
 			diag.Title ='<%=part_map_add%>';   
-			diag.URL = '<%=basePath%>/gomap/addpartmap.do?XPoint='+e.point.lng+'&YPoint='+e.point.lat+'&termID='+gtermid
+			diag.URL = '<%=basePath%>/gomap/addpartmap.do?XPoint='+e.point.lng+'&YPoint='+e.point.lat+'&termID='+gtermid+'&gatewayid='+gGatewayID
 			diag.Width = 400;
 			diag.Height = 300;
 			diag.Modal = true;				//有无遮罩窗口
@@ -612,47 +677,29 @@ body {
 			};
 			diag.show();
 		}else{
-			getLightData(gtermid,'',null);
+			
+			//getLightData(gtermid,'',null);
 		}
 	
 	});
-// 	//清除指定的覆盖层
-// 	function clearOverlays(clinetid){
-// 		if(clinetid==''){
-// 			//局部地图的覆盖层清楚
-// 			if(gMarker!=null){
-// 				if(gMarker.partMapID==document.getElementById('partMapID').value){
-// 					map.removeOverlay(gMarker);
-// 					return;
-// 				}
-// 			}
-// 			for(var i=0;i<map.getOverlays().length;i++){
-// 				var marker =map.getOverlays()[i];
-// 				if(marker.partMapID==document.getElementById('partMapID').value){
-// 					map.removeOverlay(marker);
-// 					return;
-// 				}
-// 			}
-// 		}else{
-// 			//灯删除
-// 			for(var i=0;i<map.getOverlays().length;i++){
-// 				var marker =map.getOverlays()[i];
-// 				if(marker.clientID==clinetid){
-// 					map.removeOverlay(marker);
-// 					return;
-// 				}
-// 			}
-// 		}
-// 	}
 
 	function clearOverlaysByClientID(clinetid){
 		//所有的Marks删除
 		for(var i=0;i<markers.length;i++){
 			var marker =markers[i];
 			if(marker!=null){
-				if(marker.client_attri_id==clinetid){
+				if(marker.id==clinetid){
 					map.removeOverlay(marker);
-					return;
+					//坐标重置
+					if(desMakerdata[i]!=null && gMarker!=null){
+						for(var j=0;j<desMakerdata.length;j++){
+							if(desMakerdata[j].id==clinetid){
+								desMakerdata[j].xcoordinate = gMarker.coordinate.split(",")[0];
+								desMakerdata[j].ycoordinate = gMarker.coordinate.split(",")[1];
+								return;
+							}
+						}
+					}
 				}
 			}
 			
@@ -663,10 +710,14 @@ body {
 	function clearAllOverlays(){
 		//局部图ID也初始化
 		document.getElementById('partMapID').value ='';
+		document.getElementById('PartMapExist').value ='';
+		gPartmaps =[];
 		//所有的Marks删除
 		for(var i=0;i<markers.length;i++){
 			var marker =markers[i];
-			map.removeOverlay(marker);
+			if(marker!=null){
+				map.removeOverlay(marker);
+			}
 		}
 	}
 	
@@ -686,24 +737,33 @@ body {
 	
 	//打开局部子画面
 	function openPartMapSub(marker,addLight){
-		//当List画面修改的时候才追加路灯。
+// 		//当List画面修改的时候才追加路灯。
 		getLightData(gtermid,'',marker);
+
 	}
 	
 	//打开指定的覆盖层
 	function openPartMap(){
+		document.getElementById('PartMapExist').value ='1';
+		var partmapExistFlag=false;
+		
 		if(gMarker!=null){
 			if(gMarker.partMapID==document.getElementById('partMapID').value){
 				openPartMapSub(gMarker,true);
-				return;
+				partmapExistFlag=true;
 			}
 		}
+		
 		for(var i=0;i<map.getOverlays().length;i++){
 			var marker =map.getOverlays()[i];
 			if(marker.partMapID==document.getElementById('partMapID').value){
 				openPartMapSub(marker,true);
-				return;
+				partmapExistFlag=true;
 			}
+		}
+		if(!partmapExistFlag){
+			document.getElementById('PartMapExist').value ='0';
+			alert('<%=forbitModifyPartMap%>')
 		}
 	}
 	
@@ -725,11 +785,14 @@ body {
 			if(marker!=null){
 				marker.addEventListener('click', function(e) {//这里是自定义覆盖物的事件
 					if($('#addPartMapFlag').val()!='1'){
-						getLightData(gtermid,'',marker);
+					//	if(this.partMapID!=null){
+							getLightData(gtermid,'',marker);
+					//	}
 						
 					}
 				});
 				map.addOverlay(marker);
+				
 			}
 			
 		}
@@ -829,7 +892,18 @@ body {
 					},
 					dataType : "json",
 					success : function(clientdata) {
-						//alert('该路灯已经删除成功');
+					for(var i=0;i<srcMakerdata.length;i++){
+						if(srcMakerdata[i]!=null &&
+								srcMakerdata[i].client_attri_id==$('#selLight').val()){
+							if(srcMakerdata[i].coordinate_baidu_source!=null){
+								srcMakerdata[i].xcoordinate = srcMakerdata[i].coordinate_baidu_source.split(",")[0];
+								srcMakerdata[i].ycoordinate = srcMakerdata[i].coordinate_baidu_source.split(",")[1];
+								
+							}
+							attachlightToMap(srcMakerdata[i]);
+							break;
+						}
+					}
 						alert('<%=part_map_light_del_success%>');
 					},
 					error : function() {
@@ -907,7 +981,6 @@ body {
 	}
 	
 	function change_light(clientid){
-
 		getLightData(gtermid,clientid,null);
 		
 	}
@@ -929,9 +1002,9 @@ body {
 		//infoWindow.redraw()	;
 
 	}
-	//改变PreMakerdata，用于searchdata
-	function changePreMakerdata(data) {
-		preMakerdata=data;
+	//改变desMakerdata，用于searchdata
+	function changedesMakerdata(data) {
+		desMakerdata=data;
 	}
 	
 	//增加路标（marker）到地图
@@ -1069,8 +1142,8 @@ body {
 		   "</tr>"+
 		   "<tr height=95px>"+
 		   "<td colspan=4 class='center'>"+
-		   "<a class='btn btn-xs btn-success' onclick='addLightToPartMap();'  onmouseover='this.style.cursor=hand'><%=part_map_confirm_light %></a>&nbsp;&nbsp;"+
-		   "<a class='btn btn-xs btn-danger' onclick='delLightFromPartMap();'  onmouseover='this.style.cursor=hand'><%=part_map_delete_light %></a>"+
+		   "<a class='btn btn-xs btn-success' onclick='addLightToPartMap();' ><%=part_map_confirm_light %></a>&nbsp;&nbsp;"+
+		   "<a class='btn btn-xs btn-danger' onclick='delLightFromPartMap();'><%=part_map_delete_light %></a>"+
 			"</td>"+
 		   "</tr>"+
 			 "</table>"+
@@ -1092,20 +1165,20 @@ body {
 	//0.5秒后根据id改变地图的展示中心       
 	function changeCenterByid(id) {
 		var data;
-		for(var i=0;i<preMakerdata.length;i++){
-			if(id==preMakerdata[i].id)
+		if(desMakerdata==null)return ;
+		for(var i=0;i<desMakerdata.length;i++){
+			if(id==desMakerdata[i].id)
 				{
-
-				data=preMakerdata[i];
-				var x=preMakerdata[i].xcoordinate;
-				var y=preMakerdata[i].ycoordinate;
+				data=desMakerdata[i];
+				var x=desMakerdata[i].xcoordinate;
+				var y=desMakerdata[i].ycoordinate;
 
 				setTimeout(function() {
 					map.panTo(new BMap.Point(x,y)); 
 					//map.setZoom(19);
 				}, 300);
 				setTimeout(function() {
-					map.setZoom(19);
+					map.setZoom(20);
 				}, 1000);
 				
  				}
@@ -1114,20 +1187,21 @@ body {
 		CenterMarker(data);
 	}
 	function CenterMarker(data) {
-		var point = new BMap.Point(data.xcoordinate, data.ycoordinate);
-		var marker = new BMap.Marker(point);  // 创建标注
-		map.addOverlay(marker);               // 将标注添加到地图中
-		marker.setAnimation(BMAP_ANIMATION_BOUNCE); //跳动的动画
-		setTimeout(function() {map.removeOverlay(marker);
-		}, 2000);
+		if(data!=null && data.xcoordinate!=null&& data.ycoordinate!=null){
+			var point = new BMap.Point(data.xcoordinate, data.ycoordinate);
+			var marker = new BMap.Marker(point);  // 创建标注
+			map.addOverlay(marker);               // 将标注添加到地图中
+			marker.setAnimation(BMAP_ANIMATION_BOUNCE); //跳动的动画
+			setTimeout(function() {map.removeOverlay(marker);
+			}, 2000);
+		}
 	}
 	//0.3秒后根据Point改变地图的展示中心       
 	function changeCenter(data) {
-	
 		setTimeout(function() {
 			map.panTo(new BMap.Point(data.xcoordinate, data.ycoordinate)); //两秒后移动到第一个点
 		}, 300);
-		//map.centerAndZoom(new BMap.Point(data.xcoordinate, data.ycoordinate),5);
+		map.centerAndZoom(new BMap.Point(data.xcoordinate, data.ycoordinate),10);
 	}
 	//改变地图的zoom大小    
 	function changeZoom(center, minx, miny, maxx, maxy,mapcenter,mapzoom) {
@@ -1154,13 +1228,13 @@ body {
 	function judgeSelection(bound) {
 		var drawtata=[];
 		var drawid=[];
-		for(var i=0;i<preMakerdata.length;i++){
-			var judgepoint = new BMap.Point(preMakerdata[i].xcoordinate,preMakerdata[i].ycoordinate);
+		for(var i=0;i<desMakerdata.length;i++){
+			var judgepoint = new BMap.Point(desMakerdata[i].xcoordinate,desMakerdata[i].ycoordinate);
 			if(bound.containsPoint(judgepoint))
 				{
-				 drawid.push(preMakerdata[i].id);
-				 preMakerdata[i].searchconditions=null;
-				 drawtata.push(preMakerdata[i]);
+				 drawid.push(desMakerdata[i].id);
+				 desMakerdata[i].searchconditions=null;
+				 drawtata.push(desMakerdata[i]);
 				}
 		}
 		for(var i=0;i<drawtata.length;i++){
@@ -1218,14 +1292,6 @@ body {
 								var a;
 								var mapcenter=map.getCenter();
 								var mapzoom=map.getZoom();
-								if(choseMakerdata.searchconditions!=null)
-									{a=choseMakerdata.searchconditions;getClientsData(a,mapcenter,mapzoom);}
-								else if(choseMakerdata.drawid.length!=0)
-									{ a=choseMakerdata;getClientsData(a,mapcenter,mapzoom);}
-								else
-									{a = parent.getmapTermpagein()[choseMakerdata.termid];getClientsData(a,mapcenter,mapzoom);}
-								//alert(gMarker)
-								changeCenter(gMarker);
 								 BootstrapDialog.show({
 						                type:  BootstrapDialog.TYPE_PRIMARY,
 						                title: "<%=remind_infomation%>",
@@ -1237,10 +1303,9 @@ body {
 						                    }
 						                }]
 						            }); 
-								//infoWindow.setContent("11111");
-								//infoWindow.redraw()	;
 								 choseMakerdata.brightness=100;
 								 $("#brightnessValue").html(100);
+								 $("#brightnessValueLight").html("<%=brightness_value%>"+"："+100);
 							} else {
 								BootstrapDialog.show({
 					                type:  BootstrapDialog.TYPE_DANGER,
@@ -1307,17 +1372,6 @@ body {
 							if (data.status == "SUCCESS") {
 								//choseMaker.style.backgroundImage = "url('map/img/light_grey.png')";
 								cleanAllMaker();//清除所有覆盖物
-								var a;
-								var mapcenter=map.getCenter();
-								var mapzoom=map.getZoom();
-								if(choseMakerdata.searchconditions!=null)
-								{a=choseMakerdata.searchconditions;getClientsData(a,mapcenter,mapzoom);}
-							else if(choseMakerdata.drawid.length!=0)
-								{ a=choseMakerdata;getClientsData(a,mapcenter,mapzoom);}
-							else
-									{a = parent.getmapTermpagein()[choseMakerdata.termid];getClientsData(a,mapcenter,mapzoom);}
-							//	alert(gMarker)
-								changeCenter(gMarker);
 								 BootstrapDialog.show({
 						                type:  BootstrapDialog.TYPE_PRIMARY,
 						                title: "<%=remind_infomation%>",
@@ -1329,7 +1383,7 @@ body {
 						                    }
 						                }]
 						            }); 
-
+								 $("#brightnessValueLight").html("<%=brightness_value%>"+"："+0);
 							} else {
 								BootstrapDialog.show({
 					                type:  BootstrapDialog.TYPE_DANGER,
@@ -1367,7 +1421,7 @@ body {
 	}
 
 	function change_bright(bright) {
-	if(choseMakerdata.partmapflag ==true){
+		if(choseMakerdata.partmapflag ==true){
 			if(document.getElementById('light'+$('#selLight').val())==null){
 				//alert('改路灯没有在局部图上加载。不能进行此操作');
 				alert('<%=part_map_light_notexist_inPart%>')
@@ -1375,7 +1429,6 @@ body {
 			}
 		}
 		choseMakerdata.brightness = bright;
-		$("#brightnessValue").html(bright);
 		//console.log(bright);
 		$.ajax({
 			url : "gomap/updateClientAttr_brightness",
@@ -1387,27 +1440,19 @@ body {
 				if (data.status == "SUCCESS") {
 					cleanAllMaker();//清除所有覆盖物
 					var a;
-					var mapcenter=map.getCenter();
-					var mapzoom=map.getZoom();
-					if(choseMakerdata.searchconditions!=null)
-					{a=choseMakerdata.searchconditions;getClientsData(a,mapcenter,mapzoom);}
-				else if(choseMakerdata.drawid.length!=0)
-					{ a=choseMakerdata;getClientsData(a,mapcenter,mapzoom);}
-				else
-						{a = parent.getmapTermpagein()[choseMakerdata.termid];getClientsData(a,mapcenter,mapzoom);}
-						changeCenter(gMarker);
-						BootstrapDialog.show({
-		                type:  BootstrapDialog.TYPE_PRIMARY,
-		                title: "<%=remind_infomation%>",
-		                message:"<%=road_light_brightness_update_success%>",
-		                buttons: [{
-		                    label: "<%=shut_down%>",
-		                    action: function(dialogItself){
-		                        dialogItself.close();
-		                    }
-		                }]
-		            }); 
-
+					BootstrapDialog.show({
+	                type:  BootstrapDialog.TYPE_PRIMARY,
+	                title: "<%=remind_infomation%>",
+	                message:"<%=road_light_brightness_update_success%>",
+	                buttons: [{
+	                    label: "<%=shut_down%>",
+	                    action: function(dialogItself){
+	                        dialogItself.close();
+	                    }
+	                }]
+	            }); 
+				$("#brightnessValue").html(bright);
+				$("#brightnessValueLight").html("<%=brightness_value%>"+"："+bright);
 				} else {
 						BootstrapDialog.show({
 		                type:  BootstrapDialog.TYPE_DANGER,
@@ -1479,17 +1524,6 @@ body {
 						success : function(data) {
 							if (data.status == "SUCCESS") {
 								cleanAllMaker();//清除所有覆盖物
-								var a;
-								var mapcenter=map.getCenter();
-								var mapzoom=map.getZoom();
-								if(chosetermid=="search")
-								{a=parent.getmapTermpage()[-1];getClientsData(a,mapcenter,mapzoom);}
-							else if(chosetermid=="draw")
-								{a=parent.getmapTermpage()[-2];getClientsData(a,mapcenter,mapzoom);}
-							else
-								{a = parent.getmapTermpagein()[choseMakerdata[0].termid];getClientsData(a,mapcenter,mapzoom);}
-								//alert(gMarker)
-								changeCenter(gMarker);
 								 BootstrapDialog.show({
 						                type:  BootstrapDialog.TYPE_PRIMARY,
 						                title: "<%=remind_infomation%>",
@@ -1501,7 +1535,7 @@ body {
 						                    }
 						                }]
 						            }); 
-
+								 $("#brightnessValueLight").html("<%=brightness_value%>"+"："+bright);
 							} else {
 								BootstrapDialog.show({
 					                type:  BootstrapDialog.TYPE_DANGER,
@@ -1538,7 +1572,7 @@ body {
 	}
 </script>
 <script type="text/javascript">
-	jQuery.getJSON("gomap/getFirstTermId/", function(data) {
+	jQuery.getJSON("gomap/getFirstTerm/", function(data) {
 		if (data != -1000) {
 			//alert(data);
 			var mapTermpage2 = {
@@ -1721,7 +1755,7 @@ function getInfoContent(data) {
 							"<a>"+"<%=group_name%>"+"："+ data.termname+"</a>"+
 						"</li>"+
 						"<li >"+
-							"<a>"+"<%=brightness_value%>"+"："+ data .brightness+"</a>"+
+							"<a  id='brightnessValueLight' >"+"<%=brightness_value%>"+"："+ data .brightness+"</a>"+
 					"</li>"+
    				"</ul>"+
    			"</div>"+

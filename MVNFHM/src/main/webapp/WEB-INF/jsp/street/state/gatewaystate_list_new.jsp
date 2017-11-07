@@ -99,15 +99,17 @@
 							<thead>
 								<tr>
 									<th class="center" style="width:50px;"><%=number %></th>
+									<th class="center"><%=gateway_net_number %></th>
+									<th class="center"><%=gateway_channel_number %></th>
 									<th class="center"><%=gateway_number %></th>
 									<th class="center"><%=gateway_name %></th>
 									<th class="center"><%=gateway_location %></th>
 									<th class="center"><%=signal_strength %></th>
 									<th class="center"><%=comment %></th>
-									<th class="center"><%=voltage %></th>
+									<%-- <th class="center"><%=voltage %></th> --%>
 									<th class="center"><%=device_counter %></th>
 									<th class="center"><%=work_status %></th>
-									<th class="center"><%=time %></th>
+									<th class="center"><%=refresh_date %></th>
 								</tr>
 							</thead>
 													
@@ -119,6 +121,8 @@
 									<c:forEach items="${gatewayStateList}" var="gatewayState" varStatus="vs">
 										<tr>
 											<td class='center' style="width: 30px;">${vs.index+1}</td>
+											<td class='center'>${gatewayState.number}</td>
+											<td class='center'>${gatewayState.number2}</td>
 											<td class='center'><a onclick="viewLampDetailUnderGateway('${gatewayState.id}')" style="cursor:pointer;">${gatewayState.gateway_code}</a></td>
 											<td class='center'>${gatewayState.name}</td>
 											<td class='center'>${gatewayState.location}</td>
@@ -134,7 +138,7 @@
 												</c:if>
 											</td>
 											<td class='center'>${gatewayState.comment}</td>
-											<td class='center'>${gatewayState.voltage}</td>
+											<%-- <td class='center'>${gatewayState.voltage}</td> --%>
 											<td class='center'>${gatewayState.client_num}</td>
 											<td class='center'>${gatewayState.status_name}</td>
 									        <td class='center'>${gatewayState.tdate}</td>

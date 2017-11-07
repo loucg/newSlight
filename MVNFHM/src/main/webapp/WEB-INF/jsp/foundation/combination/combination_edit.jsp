@@ -226,21 +226,29 @@
 						<div id="zhongxin" style="padding-top: 13px;">
 						<table id="table_report" class="table table-striped table-bordered table-hover">
 							<tr>
-								<td style="width:96px;text-align: right;padding-top: 13px;">*<%=device_number%>:</td>
-								<td><input style="width:50%;" type="text" name="number" id="number" value="${pd.number}" maxlength="500" onblur="testNumber()"/>
-									<!-- 
-									<input style="width: 20%;background-image: url('');" type="button" value="刷新编码">
-									 -->
-									<label id="number_tips" style="width:25%; color:red;" hidden><%=this_number_has_exist%></label>
+									<td style="width:96px;text-align: right;padding-top: 13px;">*<%=gateway_net_number%>:</td>
+									<td><input style="width:50%;" type="text" name="number" id="number" value="${pd.gateway_net}" maxlength="500" readonly="readonly"/>
+									</td>
+									
+							</tr>
+							<tr>
+									<td style="width:96px;text-align: right;padding-top: 13px;">*<%=gateway_channel_number%>:</td>
+									<td><input style="width:50%;" type="text" name="number" id="number" value="${pd.gateway_chanel}" maxlength="500" readonly="readonly"/>
+									</td>
+									
+							</tr>
+							<tr>
+								<td style="width:96px;text-align: right;padding-top: 13px;">*<%=gateway_number%>:</td>
+								<td><input style="width:50%;" type="text" name="number" id="number" value="${pd.number}" maxlength="500" readonly="readonly"/>
 								</td>
 								
 							</tr>
 							<tr>
-								<td style="width:96px;text-align: right;padding-top: 13px;">*<%=device_name%>:</td>
+								<td style="width:96px;text-align: right;padding-top: 13px;">*<%=gateway_name%>:</td>
 								<td><input style="width:95%;" type="text" name="name" id="name" value="${pd.name}" maxlength="500" /></td>
 							</tr>
 							<tr>
-								<td style="width:96px;text-align: right;padding-top: 13px;">*<%=device_type%>:</td>
+								<td style="width:96px;text-align: right;padding-top: 13px;">*<%=gateway_type%>:</td>
 								<td>
 								<!-- 
 									<select class="chosen-select form-control" name="typeid" id="typeid" data-placeholder="<%=please_choose_device_type%>" style="float:left;width:95%;" onclick="change1(this.value);">

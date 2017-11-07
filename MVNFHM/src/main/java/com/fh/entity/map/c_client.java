@@ -27,10 +27,58 @@ public class c_client extends PageBean implements Serializable {
 	private Date tdate;
 	private String client_attri_id;
 	private String map_pictrue_path;
+	private String coordinate_google_source;
 	private String coordinate_google;
+	private String coordinate_baidu_source;
+
+	public String getCoordinate_baidu_source() {
+		return coordinate_baidu_source;
+	}
+
+	public void setCoordinate_baidu_source(String coordinate_baidu_source) {
+		this.coordinate_baidu_source = coordinate_baidu_source;
+	}
+
 	private int partMaplinetCnt;
 	private String partMap_Id;
 	private String mapFlag;
+	private Integer gatewayid;
+	private String gatewayname;
+	private String c_client_id;
+
+	public String getcoordinate_google_source() {
+		return coordinate_google_source;
+	}
+
+	public void setCoordinate_source(String coordinate_google_source) {
+		this.coordinate_google_source = coordinate_google_source;
+	}
+
+	private String coordinate_source;
+
+	public String getC_client_id() {
+		return c_client_id;
+	}
+
+	public void setC_client_id(String c_client_id) {
+		this.c_client_id = c_client_id;
+	}
+
+	public String getGatewayname() {
+		return gatewayname;
+	}
+
+	public void setGatewayname(String gatewayname) {
+		this.gatewayname = gatewayname;
+	}
+
+	public Integer getGatewayid() {
+		return gatewayid;
+	}
+
+	public void setGatewayid(Integer gatewayid) {
+		this.gatewayid = gatewayid;
+	}
 
 	public String getMapFlag() {
 		return mapFlag;
@@ -165,13 +213,13 @@ public class c_client extends PageBean implements Serializable {
 	}
 
 	/*
-	 * public c_client(c_client c) { this.id=c.getId();
-	 * this.typeid=c.getTypeid(); this.termid=c.getTermid();
-	 * this.name=c.getName(); this.coordinate=c.getCoordinate();
-	 * this.location=c.getLocation(); this.lamppolenum=c.getLamppolenum();
-	 * this.termname=c.getTermname(); this.typename=c.getTypename();
-	 * this.status=c.getStatus(); this.brightness=c.getBrightness();
-	 * this.xcoordinate=c.getXcoordinate(); this.ycoordinate=c.getYcoordinate();
+	 * public c_client(c_client c) { this.id=c.getId(); this.typeid=c.getTypeid();
+	 * this.termid=c.getTermid(); this.name=c.getName();
+	 * this.coordinate=c.getCoordinate(); this.location=c.getLocation();
+	 * this.lamppolenum=c.getLamppolenum(); this.termname=c.getTermname();
+	 * this.typename=c.getTypename(); this.status=c.getStatus();
+	 * this.brightness=c.getBrightness(); this.xcoordinate=c.getXcoordinate();
+	 * this.ycoordinate=c.getYcoordinate();
 	 * 
 	 * }
 	 */

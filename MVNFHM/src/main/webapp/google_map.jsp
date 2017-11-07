@@ -46,7 +46,7 @@
 	src="http://api.map.baidu.com/library/DrawingManager/1.4/src/DrawingManager_min.js"></script>
 <link rel="stylesheet"
 	href="http://api.map.baidu.com/library/DrawingManager/1.4/src/DrawingManager_min.css" /> -->
-	<script type="text/javascript" src="static/map/js/DrawingManager_min.js"></script>
+<!-- 	<script type="text/javascript" src="static/map/js/DrawingManager_min.js"></script> -->
 	<link rel="stylesheet" type="text/css" href="static/map/css/DrawingManager_min.css" />
 	<base href="<%=basePath%>">
 	   <!--  <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet" type="text/css" />--> <!-- <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap3-dialog/1.34.5/css/bootstrap-dialog.min.css" rel="stylesheet" type="text/css" /> -->
@@ -96,20 +96,24 @@ body {
 	<input type =hidden id='partMapName'></input>
 	<input type =hidden id='partMapURL'></input>
 	<input type =hidden id='partMapID'></input>
+	<input type =hidden id='PartMapExist'></input>
 	
 </body>
 <script type="text/javascript">
 
 	var choseMaker;//全局变量很重要////////////////////////////////////////////////////////////////
 	var choseMakerdata;//全局变量很重要////////////////////////////////////////////////////////////
-	var preMakerdata;//全局变量很重要////////////////////////////////////////////////////////////
+	var desMakerdata;//全局变量很重要////////////////////////////////////////////////////////////
+	var srcMakerdata;
 	var moveo='false';   //捕获到的事件
     var moveX;  //box水平宽度
     var moveY;  //box垂直高度
     var gtermid;
+    var gGatewayID;
     var gPartMapCoordinate='';
     var gMarker;
     var markers = [];
+    var gPartmaps =[];
     var lat = 30.277330575908053;
     var lng = 120.13664131227415;
     var zoom = 12;
@@ -131,6 +135,13 @@ body {
 			clearAllOverlays();
 		}
 		gtermid = mapTermpage2.termid;
+		gGatewayID = mapTermpage2.gatewayid;
+		var tempobj =mapTermpage2;
+		mapTermpage2.typeid=null;
+		mapTermpage2.location=null;
+		mapTermpage2.name=null;
+		mapTermpage2.id=null;
+		mapTermpage2.client_attri_id='';
 		var partMaplightExists =false;
 		$.ajax({
 			url : "gomap/addClientMaker",
@@ -141,16 +152,19 @@ body {
 			success : function(clientdata) {
 				if (clientdata.length!=0) {
 					var arrpoints=[];
-					preMakerdata = clientdata;//记录当前展示的数据
-					for(var i=0;i<preMakerdata.length;i++){
-						preMakerdata[i].xcoordinate = preMakerdata[i].coordinate_google.split(",")[0];
-						preMakerdata[i].ycoordinate = preMakerdata[i].coordinate_google.split(",")[1];
+					desMakerdata = clientdata;//记录当前展示的数据
+					srcMakerdata=  clientdata;//记录当前展示的数据
+					for(var i=0;i<desMakerdata.length;i++){
+						if(desMakerdata[i].coordinate_google!=null){
+							desMakerdata[i].xcoordinate = desMakerdata[i].coordinate_google.split(",")[0];
+							desMakerdata[i].ycoordinate = desMakerdata[i].coordinate_google.split(",")[1];
+						}
 					}
 					gpsTObbd(arrpoints,clientdata,mapcenter,mapzoom);//////坐标转换
 					//addClientMaker(clientdata,mapcenter,mapzoom); 
 				} else {
 					if(!partMaplightExists){
-					//preMakerdata = [];
+					//desMakerdata = [];
 					//map.centerAndZoom("杭州", 14);
 					BootstrapDialog.show({
 		                type:  BootstrapDialog.TYPE_INFO,
@@ -186,17 +200,20 @@ body {
 			$.ajax({
 				url : "gomap/getPartMapInfo",
 				type : "POST",
-				data : {termid:mapTermpage2.termid,partMapID:$('#partMapID').val()},
+				data : {termid:mapTermpage2.termid,partMapID:$('#partMapID').val(),
+					gatewayID:gGatewayID},
 				dataType : "json",
 				success : function(aPartmap) {
 					var tempPartMapID ='';
 					if (aPartmap.length!=0) {
-						gtermid = mapTermpage2.termid
+						var j=0;
 						for(var i=0;i<aPartmap.length;i++){
 							document.getElementById('partMapID').value=aPartmap[i].id;
 							document.getElementById('MarkerXYCoordinate').value=aPartmap[i].external_coordinate;
 							if(aPartmap[i].id!=tempPartMapID){
 								addClickMarker();
+								gPartmaps[j]=aPartmap[i].id;
+								j++;
 							}
 							partMaplightExists=true;
 							tempPartMapID= aPartmap[i].id;
@@ -219,11 +236,14 @@ body {
 			dataType : "json",
 			cache: false,
 			success : function(data) {
-				for(var i=0;i<preMakerdata.length;i++){
-					if(preMakerdata[i].client_attri_id==client_attri_id){
-						preMakerdata[i].xcoordinate=newCoordinate.split(",")[0];
-						preMakerdata[i].ycoordinate=newCoordinate.split(",")[1];
-					
+				for(var i=0;i<desMakerdata.length;i++){
+					if(desMakerdata[i].client_attri_id==client_attri_id){
+						if(newCoordinate!=null){
+							desMakerdata[i].xcoordinate=newCoordinate.split(",")[0];
+							desMakerdata[i].ycoordinate=newCoordinate.split(",")[1];
+							srcMakerdata[i].coordinate_google_source =newCoordinate.split(",")[0]
+							 + ','+newCoordinate.split(",")[1];
+						}
 						break;
 					}
 				}	
@@ -251,20 +271,21 @@ body {
 		if(marker!=null){
 			partMapid = marker.partMapID;
 		}
-		
 		$.ajax({
 			url : "gomap/getClientInfo",
 			type : "POST",
 			data : {termid:termid,clientid:clientid,
-				partMapID:partMapid},
+				partMapID:partMapid,gatewayid:gGatewayID},
 			dataType : "json",
 			success : function(data) {
 				if (data.length!=0) {
 					if(clientid==''){
-						marker.partLightData = data;
-						marker.selLight ='';
-						for(var i=0;i<data.length;i++){
-							marker.selLight +="<option value="+data[i].client_attri_id+">"+data[i].name+"</option>";
+						if(marker!=null){
+							marker.partLightData = data;
+							marker.selLight ='';
+							for(var i=0;i<data.length;i++){
+								marker.selLight +="<option value="+data[i].id+">"+data[i].name+"</option>";
+							}
 						}
 					}else{
  						//路灯跳动设置
@@ -283,12 +304,16 @@ body {
 				} 
 				if(clientid==''){
 					//只有路灯初次装载的时候才执行，局部地图才开启
-					var strX = marker.coordinate.split(",")[0];
-					var strY = marker.coordinate.split(",")[1];
-					
+					var strX;
+					var strY;
+					if(marker!=null && marker.coordinate!=null){
+					 strX = marker.coordinate.split(",")[0];
+					 strY = marker.coordinate.split(",")[1];
+					}else{
+						return ;
+					}
 					document.getElementById('MarkerXYCoordinate').value=marker.coordinate;
 					document.getElementById('partMapID').value=marker.partMapID;
-					
 					var sContent = getmarkedContent(marker);
 					marker.content =sContent;
 					var infoWindow = new google.maps.InfoWindow
@@ -297,17 +322,19 @@ body {
 					$.ajax({
 						url : "gomap/getPartMapInfo",
 						type : "POST",
-						data : {partMapID:document.getElementById('partMapID').value},
+						data : {partMapID:document.getElementById('partMapID').value,gatewayID:gGatewayID,termid:gtermid},
 						dataType : "json",
 						success : function(aPartmap) {
 								var tempMarkerPoint ='';
 								if (aPartmap.length!=0) {
 									for(var i=0;i<aPartmap.length;i++){
-										addLightToMapsub(
-											aPartmap[i].inner_coordinate.split(",")[0],
-											aPartmap[i].inner_coordinate.split(",")[1],	
-											aPartmap[i].c_client_id
-										)
+										if(aPartmap[i].inner_coordinate!=null){
+											addLightToMapsub(
+												aPartmap[i].inner_coordinate.split(",")[0],
+												aPartmap[i].inner_coordinate.split(",")[1],	
+												aPartmap[i].c_client_id
+											)
+										}
 									}
 									lightFlashSet();
 								}
@@ -335,6 +362,7 @@ body {
 		});
 	
 	}
+
 	
 	//路灯跳动设置
 	function lightFlashSet(){
@@ -353,84 +381,118 @@ body {
 	}
 		//得到所有的Marker和路灯数据
 		function gpsTObbd(arrpoints,clientdata,mapcenter,mapzoom) {
-		 	var len = arrpoints.length;//所有点的长度  
-	        var points = [];//将大数组分成小数组存放。  50个一组
-	        var endPoints = [];//将大数组分成小数组存放。  50个一组
-	        var ajaxId = 0;//第几组请求  
-	        var i = 0 ;  
+	        var i = markers.length ;  
 	        var j = 0 ;  
 	        var ajaxLen =0;//要发起几次请求。  
 	        for (j=0; j < clientdata.length; j++) {  
-	        	var marker ;
-	        	if ("正常" == clientdata[j].status) {
-           			statuscolor = "green";
-           		} else if ("异常" == clientdata[j].status) {
-           			statuscolor = "red";
-           		} else if ("断电" == clientdata[j].status) {
-           			statuscolor = "grey";
-           		} else {
-           			statuscolor = "green";
-           		}
-                 	//灯的类型定义
-          		if ( clientdata[j].aliastypename.indexOf("灯" ) >=0) {
-          			clienttype = "light_";
-          		} else if (clientdata[j].aliastypename.indexOf("断路器" ) >=0) {
-          			clienttype = "breaker_";
-          		} else if (clientdata[j].aliastypename.indexOf("网关") >= 0) {
-          			clienttype = "gateway_";
-          		} else {
-          			clienttype = "light_";
-          		}
-          		lat = clientdata[j].coordinate_google.split(",")[0];
-          		lng = clientdata[j].coordinate_google.split(",")[1];
-          		gtermid=clientdata[j].termid;
-//                	//灯的各种终端类型显示。（路灯，网关等）
-              	var imageURL = "static/map/img/" + clienttype + statuscolor+ ".png"; 
-              	if ( clientdata[j].aliastypename.indexOf("灯" ) >=0) {
-              		//路灯的场合，已经在局部地图上追加的部分，就不在地图上显示。
-   					if(clientdata[j].partMaplinetCnt==0){
-   						 marker = new google.maps.Marker({
-   		       	            position:new google.maps.LatLng(lat, lng),
-   		       	            icon: imageURL,
-   		       	             map: map,
-   		       	          	draggable: true
-   		       	          });
-   						}
-              	}else{
-	      			 marker = new google.maps.Marker({
-	       	            position:new google.maps.LatLng(lat, lng),
+	        	var marker=null ;
+				if(clientdata[j].coordinate_google!=null){
+	           		clientdata[j].xcoordinate = clientdata[j].coordinate_google.split(",")[0];
+	           		clientdata[j].ycoordinate = clientdata[j].coordinate_google.split(",")[1];
+				}
+          		marker = attachlightToMap(clientdata[j])
+				
+ 	        }
+	        if(marker!=null){
+	        	changeCenter(marker);
+	        }
+		}
+		//增加灯到地图
+	
+		function attachlightToMap(clientdata){
+			var statuscolor;
+			var clienttype;
+			if ("正常" == clientdata.status) {
+       			statuscolor = "green";
+       		} else if ("异常" == clientdata.status) {
+       			statuscolor = "red";
+       		} else if ("断电" == clientdata.status) {
+       			statuscolor = "grey";
+       		} else {
+       			statuscolor = "green";
+       		}
+             	//灯的类型定义
+      		if ( clientdata.aliastypename.indexOf("灯" ) >=0) {
+      			clienttype = "light_";
+      		} else if (clientdata.aliastypename.indexOf("断路器" ) >=0) {
+      			clienttype = "breaker_";
+      		} else if (clientdata.aliastypename.indexOf("网关") >= 0) {
+      			clienttype = "gateway_";
+      		} else {
+      			clienttype = "light_";
+      		}
+      		var lat =clientdata.xcoordinate;
+      		var lng =clientdata.ycoordinate;
+      		var marker;
+//            	//灯的各种终端类型显示。（路灯，网关等）
+          	var imageURL = "static/map/img/" + clienttype + statuscolor+ ".png"; 
+          	
+          	if ( clientdata.aliastypename.indexOf("灯" ) >=0) {
+          		//路灯的场合，已经在局部地图上追加的部分，就不在地图上显示。
+				if(clientdata.partMaplinetCnt==0){
+					 marker = new google.maps.Marker({
+	       	            position:new google.maps.LatLng(lat,lng),
 	       	            icon: imageURL,
 	       	             map: map,
 	       	          	draggable: true
 	       	          });
-	       		 }
-              		if(marker!=null){
-						marker.content =  getInfoContent(clientdata[j]);
-						marker.clientdata = clientdata[j];
-						marker.aliastypename =clientdata[j].aliastypename;
-						marker.client_attri_id = clientdata[j].client_attri_id;
-						markers[i++]= marker;
-						attachInformation(map,marker);
-						dragMarker(map,marker);
-              		}
+					}
+          	}else{
+      			 marker = new google.maps.Marker({
+       	            position:new google.maps.LatLng(lat, lng),
+       	            icon: imageURL,
+       	             map: map,
+       	          	draggable: true
+       	          });
+       		 }
+          		if(marker!=null){
 					
- 	        }
-	        if(marker!=null){
-	        	marker=null;
-	        	changeCenter(marker);
-	        }
+					marker.clientdata = clientdata;
+					marker.aliastypename =clientdata.aliastypename;
+					marker.client_attri_id = clientdata.client_attri_id;
+					marker.id = clientdata.id;
+					markers[markers.length]= marker;
+					//i++;
+					attachInformation(map,marker);
+					dragMarker(map,marker);
+          		}
+          		
+          		return marker;
+
 		}
 		
 		//追加窗口信息事件
 		function attachInformation(map,marker) {
-			var infoWindow = new google.maps.InfoWindow({content: marker.content,size: new google.maps.Size(650,150)}); // 创建信息窗口对象
 			google.maps.event.addListener(marker,'click', function(e) {//这里是自定义覆盖物的事件
-					gMarker = marker
-    				infoWindow.open(map, marker); //开启信息窗口   
-    				choseMakerdata= marker.clientdata;
-					choseMakerdata.partmapflag =false
-               });
-
+				var infoWindow = new google.maps.InfoWindow({content: marker.content,size: new google.maps.Size(650,150)}); // 创建信息窗口对象
+				var clientData={} ;
+				var tempCondition ={};
+				tempCondition.termid=gtermid;
+				tempCondition.gatewayid=gGatewayID;
+				tempCondition.id = marker.id;
+				$.ajax({
+					url : "gomap/addClientMaker",
+					type : "POST",
+					contentType : "application/json; charset=UTF-8",
+					data : JSON.stringify(tempCondition),
+					dataType : "json",
+					success : function(clientdata) {
+						if(clientdata.length>0){
+							if(clientdata.length>0){
+								marker.content =  getInfoContent(clientdata[0]);
+								marker.clientdata=clientdata[0];
+								var infoWindow = new google.maps.InfoWindow	({content: marker.content}); // 创建信息窗口对象
+								gMarker = marker
+				   				infoWindow.open(map, marker); //开启信息窗口   
+								choseMakerdata= marker.clientdata;
+								choseMakerdata.partmapflag =false;
+							}else{
+								alert('There are no  light data');
+							}
+						}
+		 
+					}});
+              });
 			}
 		//拖动事件发生
 		function dragMarker(map,marker){
@@ -462,7 +524,7 @@ body {
 			var diag = new top.Dialog();
 			diag.Drag=true;
 			diag.Title ='<%=part_map_add%>';   
-			diag.URL = '<%=basePath%>/gomap/addpartmap.do?XPoint='+xPoint+'&YPoint='+yPoint+'&termID='+gtermid
+			diag.URL = '<%=basePath%>/gomap/addpartmap.do?XPoint='+xPoint+'&YPoint='+yPoint+'&termID='+gtermid+'&gatewayid='+gGatewayID
 			diag.Width = 400;
 			diag.Height = 300;
 			diag.Modal = true;				//有无遮罩窗口
@@ -473,19 +535,12 @@ body {
 				gMarker.partMapID = diag.innerFrame.contentWindow.document.getElementById('partMapID').value;
 				document.getElementById('partMapID').value =diag.innerFrame.contentWindow.document.getElementById('partMapID').value;
 			}
-			 if(diag.innerFrame.contentWindow.document.getElementById('zhongxin').style.display == 'none'){
-				 if('${page.currentPage}' == '0'){
-					 top.jzts();
-					 setTimeout("self.location=self.location",100);
-				 }else{
-					 nextPage('${page.currentPage}');
-				 }
-			}
+			
 			diag.close();
 			};
 			diag.show();
 		}else{
-			getLightData(gtermid,'',null);
+		//	getLightData(gtermid,'',null);
 		}
 	
 	});
@@ -494,10 +549,14 @@ body {
 	function clearAllOverlays(){
 		//局部图ID也初始化
 		document.getElementById('partMapID').value ='';
+		document.getElementById('PartMapExist').value ='';
+		gPartmaps =[];
 		//所有的Marks删除
 		for(var i=0;i<markers.length;i++){
 			var marker =markers[i];
-			marker.setMap(null); 
+			if(marker!=null){
+				marker.setMap(null); 
+			}
 		}
 	}
 	
@@ -515,41 +574,60 @@ body {
 
 	}
 	
-
+	//指定灯的Marks删除
 	function clearOverlaysByClientID(clinetid){
-		//所有的Marks删除
+		//指定灯的Marks删除
 		for(var i=0;i<markers.length;i++){
 			var marker =markers[i];
 			if(marker!=null){
-				if(marker.client_attri_id==clinetid){
+				if(marker.id==clinetid){
 					marker.setMap(null);
-					return;
+					markers[i]=null;
+					//坐标重置
+					if(desMakerdata[i]!=null && gMarker!=null){
+						for(var j=0;j<desMakerdata.length;j++){
+							if(desMakerdata[j].id==clinetid){
+								desMakerdata[j].xcoordinate = gMarker.coordinate.split(",")[0];
+								desMakerdata[j].ycoordinate = gMarker.coordinate.split(",")[1];
+								return;
+							}
+						}
+					}
+					
 				}
 			}
-			
 		}
 	}
+
 	//打开局部子画面
 	function openPartMapSub(marker,addLight){
 // 		//当List画面修改的时候才追加路灯。
-			getLightData(gtermid,'',marker);
+		getLightData(gtermid,'',marker);
 		
 	}
 	
 	//打开指定的覆盖层
 	function openPartMap(){
+		document.getElementById('PartMapExist').value ='1';
+		var partmapExistFlag=false;
 		if(gMarker!=null){
 			if(gMarker.partMapID==document.getElementById('partMapID').value){
 				openPartMapSub(gMarker,true);
-				return;
+				partmapExistFlag=true;
 			}
 		}
-		for(var i=0;i<markers.length;i++){
-			var marker =markers[i];
-			if(marker.partMapID==document.getElementById('partMapID').value){
-				openPartMapSub(marker,true);
-				return;
+		if(!partmapExistFlag){
+			for(var i=0;i<markers.length;i++){
+				var marker =markers[i];
+				if(marker.partMapID==document.getElementById('partMapID').value){
+					openPartMapSub(marker,true);
+					partmapExistFlag=true;
+				}
 			}
+		}
+		if(!partmapExistFlag){
+			document.getElementById('PartMapExist').value ='0';
+			alert('<%=forbitModifyPartMap%>')
 		}
 	}
 	
@@ -557,8 +635,12 @@ body {
 	function addClickMarker(){
 		if(document.getElementById('MarkerXYCoordinate').value!=null&&
 				document.getElementById('MarkerXYCoordinate').value!=undefined){
-			strX = document.getElementById('MarkerXYCoordinate').value.split(",")[0];
-			strY = document.getElementById('MarkerXYCoordinate').value.split(",")[1];
+			var strX;
+			var strY;
+			if(document.getElementById('MarkerXYCoordinate').value!=null){
+				strX = document.getElementById('MarkerXYCoordinate').value.split(",")[0];
+				strY = document.getElementById('MarkerXYCoordinate').value.split(",")[1];
+			}
 			var imageURL = 'static/map/img/partMapMarkers.jpg';
   			var marker = new google.maps.Marker({
    	            position:new google.maps.LatLng(strX, strY),
@@ -567,14 +649,16 @@ body {
    	          });
   			marker.coordinate = document.getElementById('MarkerXYCoordinate').value;
 			marker.partMapID =  document.getElementById('partMapID').value;
-			gMarker = marker;
+			gMarker =marker;
 			markers[markers.length] = marker;
+			gPartmaps[gPartmaps.length]=marker.partMapID;
 			if(marker!=null){
 				marker.addListener('click', function(e) {//这里是自定义覆盖物的事件
 					if($('#addPartMapFlag').val()!='1'){
 						getLightData(gtermid,'',marker);
 						
 					}
+					gMarker = this;
 				});
 				changeCenter(marker);
 			}
@@ -677,8 +761,20 @@ body {
 					},
 					dataType : "json",
 					success : function(clientdata) {
-						//alert('该路灯已经删除成功');
-						alert('<%=part_map_light_del_success%>');
+					//路灯重新加载
+					for(var i=0;i<srcMakerdata.length;i++){
+						if(srcMakerdata[i]!=null &&
+								srcMakerdata[i].client_attri_id==$('#selLight').val()){
+							if(srcMakerdata[i].coordinate_google_source!=null){
+								srcMakerdata[i].xcoordinate = srcMakerdata[i].coordinate_google_source.split(",")[0];
+								srcMakerdata[i].ycoordinate = srcMakerdata[i].coordinate_google_source.split(",")[1];
+								
+							}
+							attachlightToMap(srcMakerdata[i]);
+							break;
+						}
+					}
+					alert('<%=part_map_light_del_success%>');
 					},
 					error : function() {
 						BootstrapDialog.show({
@@ -709,7 +805,6 @@ body {
 		var lightnum =0;
 		for(var i=0;i<count;i++){
 			var tempdiv = document.getElementById('light'+$("#selLight ").get(0).options[i].value);
-			
 			if(tempdiv!=null){
 				lightnum++;
 				$.ajax({
@@ -895,8 +990,8 @@ body {
 		   "</tr>"+
 		   "<tr height=95px>"+
 		   "<td colspan=4 class='center'>"+
-		   "<a class='btn btn-xs btn-success' onclick='addLightToPartMap();'  onmouseover='this.style.cursor=hand'><%=part_map_confirm_light %></a>&nbsp;&nbsp;"+
-		   "<a class='btn btn-xs btn-danger' onclick='delLightFromPartMap();'  onmouseover='this.style.cursor=hand'><%=part_map_delete_light %></a>"+
+		   "<a class='btn btn-xs btn-success' onclick='addLightToPartMap();'><%=part_map_confirm_light %></a>&nbsp;&nbsp;"+
+		   "<a class='btn btn-xs btn-danger' onclick='delLightFromPartMap();'><%=part_map_delete_light %></a>"+
 			"</td>"+
 		   "</tr>"+
 			 "</table>"+
@@ -918,25 +1013,28 @@ body {
 	//0.5秒后根据id改变地图的展示中心       
 	function changeCenterByid(id) {
 		var data;
-		for(var i=0;i<preMakerdata.length;i++){
-			if(id==preMakerdata[i].id)
+		for(var i=0;i<desMakerdata.length;i++){
+			if(id==desMakerdata[i].id)
 			{
-				data=preMakerdata[i];
+				data=desMakerdata[i];
+				break;
 			}
-			
 		}
+		
 		CenterMarker(data);
 	}
 	//改变地图的中心  
 	function CenterMarker(data) {
-		var marker = new google.maps.Marker({
-  	            position:new google.maps.LatLng(data.xcoordinate, data.ycoordinate),
-  	             map: map
-  	          });	
-		marker.setAnimation(google.maps.Animation.BOUNCE);//
-		map.setCenter(marker.getPosition());
-		setTimeout(function() {marker.setMap(null);;
-		}, 2000);
+		if(data!=null && data.xcoordinate!=null&& data.ycoordinate!=null){
+			var marker = new google.maps.Marker({
+		  	            position:new google.maps.LatLng(data.xcoordinate, data.ycoordinate),
+		  	             map: map
+		  	          });	
+				marker.setAnimation(google.maps.Animation.BOUNCE);//
+				map.setCenter(marker.getPosition());
+				setTimeout(function() {marker.setMap(null);;
+				}, 2000);
+		}
 	}
 	//0.3秒后根据Point改变地图的展示中心       
 	function changeCenter(marker) {
@@ -945,7 +1043,7 @@ body {
 		}else{
 			map.setCenter(marker.getPosition());
 		}
-		map.setZoom(10);
+		map.setZoom(8);
 	}
 	//改变地图的zoom大小    
 	function changeZoom(center, minx, miny, maxx, maxy,mapcenter,mapzoom) {
@@ -970,39 +1068,39 @@ body {
 	}
 	//改变PreMakerdata，用于searchdata
 	function changePreMakerdata(data) {
-// 		preMakerdata=data;
+// 		desMakerdata=data;
 	}
 	//判断是否在选择框内
 	var drawdata;
 	function judgeSelection(bound) {
-		var drawtata=[];
-		var drawid=[];
-		for(var i=0;i<preMakerdata.length;i++){
-			var judgepoint = new BMap.Point(preMakerdata[i].xcoordinate,preMakerdata[i].ycoordinate);
-			if(bound.containsPoint(judgepoint))
-				{
-				 drawid.push(preMakerdata[i].id);
-				 preMakerdata[i].searchconditions=null;
-				 drawtata.push(preMakerdata[i]);
-				}
-		}
-		for(var i=0;i<drawtata.length;i++){
-			var a=drawtata[i];
-			a.drawid=drawid;
-		}
-		if(drawtata.length>0){
-			parent.cleardrawdata();//删除原有的左边框选列表
-			parent.setmapTermpage(-2,drawtata[0]);
-			//parent.changedrawdata(drawtata);//用于再次点击时可以加载出来
-			parent.gpsTObbddrawing(drawtata);//添加左边框选列表
-			drawdata=drawtata;
-		}
-		else{
-				alert("<%=no_data_in_box%>");
-				CircleAndRectangle.removeContextMenu(menu);
-				map.removeOverlay(CircleAndRectangle);
-				CircleAndRectangle = null;
-			}
+// 		var drawtata=[];
+// 		var drawid=[];
+// 		for(var i=0;i<desMakerdata.length;i++){
+// 			var judgepoint = new BMap.Point(desMakerdata[i].xcoordinate,desMakerdata[i].ycoordinate);
+// 			if(bound.containsPoint(judgepoint))
+// 				{
+// 				 drawid.push(desMakerdata[i].id);
+// 				 desMakerdata[i].searchconditions=null;
+// 				 drawtata.push(desMakerdata[i]);
+// 				}
+// 		}
+// 		for(var i=0;i<drawtata.length;i++){
+// 			var a=drawtata[i];
+// 			a.drawid=drawid;
+// 		}
+// 		if(drawtata.length>0){
+// 			parent.cleardrawdata();//删除原有的左边框选列表
+// 			parent.setmapTermpage(-2,drawtata[0]);
+// 			//parent.changedrawdata(drawtata);//用于再次点击时可以加载出来
+// 			parent.gpsTObbddrawing(drawtata);//添加左边框选列表
+// 			drawdata=drawtata;
+// 		}
+// 		else{
+<%-- 				alert("<%=no_data_in_box%>"); --%>
+// 				CircleAndRectangle.removeContextMenu(menu);
+// 				map.removeOverlay(CircleAndRectangle);
+// 				CircleAndRectangle = null;
+// 			}
 	}
 	function TurnOnLight() {
 		if(choseMakerdata.partmapflag ==true){
@@ -1040,14 +1138,6 @@ body {
 								var a;
 								var mapcenter=map.getCenter();
 								var mapzoom=map.getZoom();
-								if(choseMakerdata.searchconditions!=null)
-									{a=choseMakerdata.searchconditions;getClientsData(a,mapcenter,mapzoom);}
-								else if(choseMakerdata.drawid.length!=0)
-									{ a=choseMakerdata;getClientsData(a,mapcenter,mapzoom);}
-								else
-									{a = parent.getmapTermpagein()[choseMakerdata.termid];getClientsData(a,mapcenter,mapzoom);}
-								
-								changeCenter(gMarker);
 								 BootstrapDialog.show({
 						                type:  BootstrapDialog.TYPE_PRIMARY,
 						                title: "<%=remind_infomation%>",
@@ -1063,6 +1153,7 @@ body {
 								//infoWindow.redraw()	;
 								 choseMakerdata.brightness=100;
 								 $("#brightnessValue").html(100);
+								 $("#brightnessValueLight").html("<%=brightness_value%>"+"："+100);
 							} else {
 								BootstrapDialog.show({
 					                type:  BootstrapDialog.TYPE_DANGER,
@@ -1132,13 +1223,6 @@ body {
 								var a;
 								var mapcenter=map.getCenter();
 								var mapzoom=map.getZoom();
-								if(choseMakerdata.searchconditions!=null)
-								{a=choseMakerdata.searchconditions;getClientsData(a,mapcenter,mapzoom);}
-							else if(choseMakerdata.drawid.length!=0)
-								{ a=choseMakerdata;getClientsData(a,mapcenter,mapzoom);}
-							else
-									{a = parent.getmapTermpagein()[choseMakerdata.termid];getClientsData(a,mapcenter,mapzoom);}
-								changeCenter(gMarker);
 								 BootstrapDialog.show({
 						                type:  BootstrapDialog.TYPE_PRIMARY,
 						                title: "<%=remind_infomation%>",
@@ -1150,7 +1234,7 @@ body {
 						                    }
 						                }]
 						            }); 
-
+								 $("#brightnessValueLight").html("<%=brightness_value%>"+"："+0);
 							} else {
 								BootstrapDialog.show({
 					                type:  BootstrapDialog.TYPE_DANGER,
@@ -1197,7 +1281,7 @@ body {
 			}
 		}
 		choseMakerdata.brightness = bright;
-		$("#brightnessValue").html(bright);
+		
 		//console.log(bright);
 		$.ajax({
 			url : "gomap/updateClientAttr_brightness",
@@ -1211,13 +1295,6 @@ body {
 					var a;
 					var mapcenter=map.getCenter();
 					var mapzoom=map.getZoom();
-					if(choseMakerdata.searchconditions!=null)
-					{a=choseMakerdata.searchconditions;getClientsData(a,mapcenter,mapzoom);}
-				else if(choseMakerdata.drawid.length!=0)
-					{ a=choseMakerdata;getClientsData(a,mapcenter,mapzoom);}
-				else
-						{a = parent.getmapTermpagein()[choseMakerdata.termid];getClientsData(a,mapcenter,mapzoom);}
-					changeCenter(gMarker);
 					BootstrapDialog.show({
 	                type:  BootstrapDialog.TYPE_PRIMARY,
 	                title: "<%=remind_infomation%>",
@@ -1229,6 +1306,8 @@ body {
 	                    }
 	                }]
 	            }); 
+					$("#brightnessValue").html(bright);
+					$("#brightnessValueLight").html("<%=brightness_value%>"+"："+bright);
 
 				} else {
 						BootstrapDialog.show({
@@ -1359,7 +1438,7 @@ body {
 	}
 </script>
 <script type="text/javascript">
-	jQuery.getJSON("gomap/getFirstTermId/", function(data) {
+	jQuery.getJSON("gomap/getFirstTerm/", function(data) {
 		if (data != -1000) {
 			//alert(data);
 			var mapTermpage2 = {
@@ -1519,7 +1598,7 @@ function getInfoContent(data) {
    "<link rel='styleSheet' type='text/css' href='static/map/css/content_light.css' />"+
    "</head>"+
    "<body>"+
-   	"<div id= 'main'>"+
+   	"<div id= 'main' style='width:330px'>"+
    		"<div class = 'head'>"+
    			"<p>"+data.name+"</p>"+
    		"</div>"+
@@ -1542,7 +1621,7 @@ function getInfoContent(data) {
 							"<a>"+"<%=group_name%>"+"："+ data.termname+"</a>"+
 						"</li>"+
 						"<li >"+
-							"<a>"+"<%=brightness_value%>"+"："+ data .brightness+"</a>"+
+							"<a id='brightnessValueLight' >"+"<%=brightness_value%>"+"："+ data.brightness+"</a>"+
 					"</li>"+
    				"</ul>"+
    			"</div>"+
@@ -1550,7 +1629,7 @@ function getInfoContent(data) {
 //    				"<img src='static/map/img/light1.png' />"+
 //    			"</div>"+
    		"</div>"+
-   		"<div class='bottom'>"+
+   		"<div class='bottom' style='width:500px'>"+
        		"<div class='b1' onclick ='TurnOnLight()'>"+
 					"<div class='bimg1'>"+
 						"<img src='static/map/img/bulb_on.png'>"+
@@ -1575,7 +1654,7 @@ function getInfoContent(data) {
 						"<a href='javascript:void(0)' >"+"<%=control_strategy%>"+"</a>"+
 					"</div>"+
 				"</div>"+
-				"<div class='btx4'>"+
+				"<div class='btx4' style='width:300px'>"+
 					"<h2 class='sh'>"+"<%=brightness_value%>"+":</h2>"+
 					"<select class='s1'  onchange='change_bright(this.options[this.options.selectedIndex].value)'>"
 					

@@ -51,21 +51,35 @@ function cutStr(len){
 						<div class="col-xs-12">
 
 						<!-- 检索  -->
-						<form action="config/getLightConfigList" method="post" name="Form" id="Form">
+						<form action="config/getLightConfigList.do?gateway_id=${pd.gateway_id}" method="post" name="Form" id="Form">
 						<input type="hidden" id="excel" name="excel" value="0"/>
+						<input type="hidden" id="gateway_id" name="gateway_id" value="${pd.gateway_id}"/>
 						<!-- <input type="hidden" name="itype" id="itype" value="4"> -->
+						<table style="margin-top:5px;" class="table table-striped table-bordered table-hover">
+							<tr>
+							<td class="center">
+								<c:choose>
+								<c:when test="${not empty deviceList}">
+									<c:forEach items="${gatewaynamelist}" var="gateway" varStatus="vs">
+										<%=lamp_config_gatewayname %>${gateway.gateway_code }
+									</c:forEach>
+								</c:when>
+								</c:choose>
+							</td>
+							</tr>
+						</table>
 						<table style="margin-top:5px;">
 							<tr>
 								
 								<td>
 									<div class="nav-search">
-									    <label><%=equipment_code %>：</label>
+									    <label><%=node_number %>：</label>
 										<input class="nav-search-input" autocomplete="off" id="nav-search-input" type="text" name="number" value="${pd.number}" />
 									</div>
 								</td>
 								<td >
 								 	<div class="nav-search">
-									    <label style="margin-left:12px;"><%=equipment_name %>：</label>
+									    <label style="margin-left:12px;"><%=node_name %>：</label>
 										<input class="nav-search-input" autocomplete="off" id="nav-search-input" type="text" name="name" value="${pd.name }"  />
 									</div>
 								</td>
@@ -73,7 +87,7 @@ function cutStr(len){
 								<c:if test="${pd.itype==3 }">
 								</c:if>
 								 -->
-								<td>&nbsp;&nbsp;<%=equipment_type %>：</td>
+								<td>&nbsp;&nbsp;<%=node_type %>：</td>
 									<td >
 										<c:if test="${pd.itype==5}">
 								 			<input type="hidden" name="itype" id="itype" value="5">
@@ -139,9 +153,10 @@ function cutStr(len){
 						<table id="simple-table" class="table table-striped table-bordered table-hover"  style="margin-top:5px;">
 							<thead>
 								<tr>
-									<th class="center"><%=equipment_code%></th>
-									<th class="center"><%=equipment_name%></th>
-									<th class="center"><%=equipment_type%></th>
+									<th class="center"><%=node_address%></th>
+									<th class="center"><%=node_number%></th>
+									<th class="center"><%=node_name%></th>
+									<th class="center"><%=node_type%></th>
 									<th class="center"><%=location%></th>
 									<th class="center"><%=coordinate%></th>
 									<c:if test="${pd.itype==3 }">
@@ -179,6 +194,7 @@ function cutStr(len){
 									<c:if test="${QX.cha == 1 }">
 									<c:forEach items="${deviceList}" var="var" varStatus="vs">
 										<tr>
+											<td class="center">${var.node}</td>
 											<td class="center">${var.number}</td>
 											<td class="center">${var.name}</td>
 											<c:if test="${pd.itype==3 }">
@@ -433,6 +449,7 @@ function cutStr(len){
 		function toExcel(){
 			$("#excel").val("1");
 			$("#Form").submit();
+			$("#excel").val("0");
 		}
 		</script>
 

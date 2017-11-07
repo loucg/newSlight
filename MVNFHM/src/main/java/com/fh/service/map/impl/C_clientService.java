@@ -13,10 +13,14 @@ import com.fh.entity.map.c_client;
 import com.fh.entity.map.c_partmap;
 import com.fh.entity.map.c_term;
 import com.fh.entity.map.draw_client;
+import com.fh.entity.system.User;
 import com.fh.hzy.util.CMDType;
 import com.fh.hzy.util.UserUtils;
+import com.fh.service.fhoa.department.DepartmentManager;
 import com.fh.service.map.C_clientManager;
 import com.fh.service.system.fhlog.FHlogManager;
+import com.fh.util.Const;
+import com.fh.util.Jurisdiction;
 import com.fh.util.PageData;
 
 /**
@@ -32,14 +36,40 @@ public class C_clientService implements C_clientManager {
 
 	@Resource(name = "fhlogService")
 	private FHlogManager fhlogService;
-
+	@Resource(name = "departmentService")
+	private DepartmentManager departmentService;
 	////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	@SuppressWarnings("unchecked")
 	@Override
 	public List<c_term> queryAllterm() throws Exception {
-		c_term a = new c_term();
-		return (List<c_term>) dao.findForList("C_clientMapper.queryAllterm", a);
+		// 获得登录的用户id
+		User user = (User) Jurisdiction.getSession().getAttribute(Const.SESSION_USER);
+		String sys_user_id = user.getUSER_ID();
+		PageData pagedata = new PageData();
+		pagedata.put("sys_user_id", sys_user_id);
+		String userids = departmentService.getUseridsInDepartment(pagedata);
+		pagedata = new PageData();
+		pagedata.put("userids", userids);
+		Page page = new Page();
+		page.setPd(pagedata);
+		return (List<c_term>) dao.findForList("C_clientMapper.queryAllterm", page);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<c_client> queryAllGateway() throws Exception {
+		// c_client a = new c_client();
+		User user = (User) Jurisdiction.getSession().getAttribute(Const.SESSION_USER);
+		String sys_user_id = user.getUSER_ID();
+		PageData pagedata = new PageData();
+		pagedata.put("sys_user_id", sys_user_id);
+		String userids = departmentService.getUseridsInDepartment(pagedata);
+		pagedata = new PageData();
+		pagedata.put("userids", userids);
+		Page page = new Page();
+		page.setPd(pagedata);
+		return (List<c_client>) dao.findForList("C_clientMapper.queryAllgateway", page);
 	}
 
 	@SuppressWarnings("unchecked")
@@ -67,6 +97,28 @@ public class C_clientService implements C_clientManager {
 	public List<c_client> addClientMaker(c_client cc) throws Exception {
 
 		List<c_client> adm = (List<c_client>) dao.findForList("C_clientMapper.queryAllclient_status", cc);
+		c_client c = new c_client();
+		for (int i = 0; i < adm.size(); i++) {
+			c = adm.get(i);
+			String coordinate = c.getCoordinate();
+			coordinate = coordinate.trim();
+			coordinate = coordinate.replace(" ", "");
+			String[] coordsplit = coordinate.split(",");
+			double xcoordinate = Double.parseDouble(coordsplit[0]);
+			double ycoordinate = Double.parseDouble(coordsplit[1]);
+			c.setCoordinate(coordinate);
+			c.setXcoordinate(xcoordinate);
+			c.setYcoordinate(ycoordinate);
+
+		}
+		return adm;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<c_client> addClientMakerByGatewayid(c_client cc) throws Exception {
+
+		List<c_client> adm = (List<c_client>) dao.findForList("C_clientMapper.queryAllclient_statusByGateway", cc);
 		c_client c = new c_client();
 		for (int i = 0; i < adm.size(); i++) {
 			c = adm.get(i);
@@ -298,16 +350,20 @@ public class C_clientService implements C_clientManager {
 			cc.setCoordinate(coordinate);
 			cc.setXcoordinate(xcoordinate);
 			cc.setYcoordinate(ycoordinate);
+			cc1.setGatewayid(cc.getGatewayid());
+			cc1.setTermid(null);
 			cc.setSearchconditions(cc1);
-			if (cc.getTypename().contains("网关")) {
-				a = (ArrayList<String>) querGatewayClient(cc);
-				cc.setCclientgateway(a);
-			} else {
-				b = (ArrayList<c_client>) querGatewayPower(cc);
-				cc.setPowerup(b.get(0).getPowerup());
-				cc.setPowerdown(b.get(0).getPowerdown());
-			}
+			// if (cc.getTypename().contains("网关")) {
+			// a = (ArrayList<String>) querGatewayClient(cc);
+			// cc.setCclientgateway(a);
+			// } else {
+			// b = (ArrayList<c_client>) querGatewayPower(cc);
+			// cc.setPowerup(b.get(0).getPowerup());
+			// cc.setPowerdown(b.get(0).getPowerdown());
+			// }
+
 		}
+
 		return gcl;
 	}
 
@@ -321,6 +377,12 @@ public class C_clientService implements C_clientManager {
 	@SuppressWarnings("unchecked")
 	public List<String> querGatewayClient(c_client p) throws Exception {
 		return (List<String>) dao.findForList("C_clientMapper.querGatewayClient", p);
+	}
+
+	@Override
+	@SuppressWarnings("unchecked")
+	public List<c_client> querClientByGateway(c_client p) throws Exception {
+		return (List<c_client>) dao.findForList("C_clientMapper.querClientbyGateway", p);
 	}
 
 	@Override
@@ -404,6 +466,11 @@ public class C_clientService implements C_clientManager {
 		}
 		return qtg;
 
+	}
+
+	public List<c_client> getClientGatewayInfo(c_client cc) throws Exception {
+		List<c_client> qtg = (List<c_client>) dao.findForList("C_clientMapper.getClinetGatewayInfo", cc);
+		return qtg;
 	}
 
 	@Override

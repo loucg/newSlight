@@ -84,4 +84,12 @@ public interface C_clientManager {
 
 	public void delPartMapHeader(c_partmap cp) throws Exception;
 
+	public List<c_client> queryAllGateway() throws Exception;
+
+	public List<c_client> querClientByGateway(c_client p) throws Exception;
+
+	public List<c_client> addClientMakerByGatewayid(c_client cc) throws Exception;
+
+	public List<c_client> getClientGatewayInfo(c_client cc) throws Exception;
+
 }

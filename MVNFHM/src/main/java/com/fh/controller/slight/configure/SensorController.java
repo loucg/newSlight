@@ -64,8 +64,11 @@ public class SensorController extends BaseController{
 		pd = this.getPageData();
 		pd.put("userids", departmentService.getUseridsInDepartment(pd));
 		page.setPd(pd);
+		int gatewayId = Integer.valueOf((String)pd.get("gateway_id"));
 		List<PageData> typeList = configureService.getAllSensor(pd);
 		List<PageData> sensorList = configureService.getSensorList(page);
+		pd.put("id", gatewayId);
+		List<PageData> gatewaynamelist = gatewayStateService.viewgateWayName(page);
 		if(pd.get("excel")!=null&&pd.getString("excel").equals("1")){
 			ObjectExcelView erv = new ObjectExcelView();					//执行excel操作
 			mv = new ModelAndView(erv,ConfigureUtils.exportSensor(sensorList,typeList));
@@ -74,6 +77,7 @@ public class SensorController extends BaseController{
 		}else{
 			mv.addObject("pd", pd);
 			mv.addObject("sensorList", sensorList);
+			mv.addObject("gatewaynamelist", gatewaynamelist);
 			mv.addObject("typeList", typeList);
 			mv.addObject("QX",Jurisdiction.getHC());	//按钮权限
 			mv.setViewName(sensorJsp);
@@ -189,6 +193,9 @@ public class SensorController extends BaseController{
 	@RequestMapping(value="/goUploadExcel")
 	public ModelAndView goUploadExcel()throws Exception{
 		ModelAndView mv = this.getModelAndView();
+		PageData pd = new PageData();
+		pd = this.getPageData();
+		mv.addObject("pd", pd);
 		mv.setViewName(uploadJsp);
 		return mv;
 	}
@@ -213,7 +220,7 @@ public class SensorController extends BaseController{
 			List<PageData> listPd = (List)ObjectExcelRead.readExcel(filePath, fileName, 2, 0, 0);		//执行读EXCEL操作,读出的数据导入List 2:从第3行开始；0:从第A列开始；0:第0个sheet
 			List<PageData> typeList = configureService.getAllSensor(pd);
 			for (int i = 0; i < listPd.size(); i++) {
-				String typeName = listPd.get(i).getString("var2");
+				String typeName = listPd.get(i).getString("var4");
 				String typeId = "0";
 				for(PageData pg : typeList){
 					if(typeName.equals(pg.getString("name"))){
@@ -221,12 +228,14 @@ public class SensorController extends BaseController{
 						break;
 					}
 				}
-				pd.put("number", listPd.get(i).getString("var0")); // ID
-				pd.put("name", listPd.get(i).getString("var1")); // 姓名
-				pd.put("location", listPd.get(i).getString("var3"));
-				pd.put("coordinate", listPd.get(i).getString("var4"));
-				pd.put("polenumber", listPd.get(i).getString("var5"));
-				pd.put("comment", listPd.get(i).getString("var6"));
+				pd.put("node", listPd.get(i).getString("var0")); // node
+				pd.put("node2", listPd.get(i).getString("var1")); // node
+				pd.put("number", listPd.get(i).getString("var2")); // ID
+				pd.put("name", listPd.get(i).getString("var3")); // 姓名
+				pd.put("location", listPd.get(i).getString("var4"));
+				pd.put("coordinate", listPd.get(i).getString("var5"));
+				pd.put("polenumber", listPd.get(i).getString("var6"));
+				pd.put("comment", listPd.get(i).getString("var7"));
 				pd.put("status", 1);
 				pd.put("typeid", typeId);
 				pd.put("userid", UserUtils.getUserid());

@@ -120,18 +120,30 @@
 		<script type="text/javascript">
 		$(top.hangge());
 		function add(){
+			var ConframeObj = getParentFrameObj()
+			ConframeObj.getElementById('mapclick').click();
+			ConframeObj.getElementById('addPartMapFlag').value= '1';
+			top.Dialog.close(); 
+  		}
+		
+		function getParentFrameObj(){
 			var pagename = "page_z347";
 			if(window.parent.window.frames["mainFrame"].frames[pagename]==null){
 				pagename = "page_347";
 			}
-			window.parent.window.frames["mainFrame"].frames[pagename].frames["Conframe"].document.getElementById('mapclick').click();
-			window.parent.window.frames["mainFrame"].frames[pagename].frames["Conframe"].document.getElementById('addPartMapFlag').value= '1';
-			top.Dialog.close(); 
-  		}
+			var ConframeObj; 
+			var parentObj  =  window.parent.window.frames["mainFrame"].frames[pagename].contentDocument;
+			if(parentObj!=null){
+				ConframeObj= window.parent.window.frames["mainFrame"].frames[pagename].contentDocument.getElementById('Conframe').contentDocument;
+			}else{
+				ConframeObj =window.parent.window.frames["mainFrame"].frames[pagename].frames["Conframe"].document;
+			}
+			return ConframeObj;
+		}
 		//删除组
 		function del(partmapID){
 
-			 if(confirm("确定要删除局部地图吗？")){
+			 if(confirm("<%=part_map_del_confirm%>")){
 				 $.ajax({
 						url : "gomap/delPartMapInfo",
 						type : "POST",
@@ -148,24 +160,21 @@
 								}
 						}
 					});
-				 var pagename = "page_z347";
-					if(window.parent.window.frames["mainFrame"].frames[pagename]==null){
-						pagename = "page_347";
-					}
-				 window.parent.window.frames["mainFrame"].frames[pagename].frames["Conframe"].document.getElementById('partMapID').value=partmapID
-				 window.parent.window.frames["mainFrame"].frames[pagename].frames["Conframe"].document.getElementById('clearMarker').click();
+				
+				var ConframeObj = getParentFrameObj()	
+				 ConframeObj.getElementById('partMapID').value=partmapID
+				 ConframeObj.getElementById('clearMarker').click();
 			 }
 		}
 		
 		function edit(xycoordinate,partmapID){
-			var pagename = "page_z347";
-			if(window.parent.window.frames["mainFrame"].frames[pagename]==null){
-				pagename = "page_347";
+			var ConframeObj = getParentFrameObj()	
+			ConframeObj.getElementById('partMapID').value=partmapID;
+			ConframeObj.getElementById('MarkerXYCoordinate').value=xycoordinate;
+			ConframeObj.getElementById('openMarker').click();
+			if(ConframeObj.getElementById('PartMapExist').value=='1'){
+				top.Dialog.close();
 			}
-			window.parent.window.frames["mainFrame"].frames[pagename].frames["Conframe"].document.getElementById('partMapID').value=partmapID;
-			window.parent.window.frames["mainFrame"].frames[pagename].frames["Conframe"].document.getElementById('MarkerXYCoordinate').value=xycoordinate;
-			window.parent.window.frames["mainFrame"].frames[pagename].frames["Conframe"].document.getElementById('openMarker').click();
-			top.Dialog.close();
 	}
 		
 		</script>

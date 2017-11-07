@@ -132,8 +132,13 @@
 		SELECT a.c_sensor_id AS id, b.sensor_code AS number, a.`name`,a.c_sensor_type_id AS typeid,
 			d.`name` AS type,a.location,a.coordinate,a.`comment`,h.`name` AS statename,
 			h.`value` AS state, g.`name` AS pole,
-			a.`password`, a.lamp_pole_num AS polenumber
-		FROM c_sensor_attr1 AS a
+			a.`password`, a.lamp_pole_num AS polenumber,
+			CASE WHEN a.node2 = '0' or a.node2 = '00' THEN a.node
+			     ELSE concat_ws('.',a.node,a.node2) END as node
+		FROM 
+			c_client_gateway k
+			LEFT JOIN 
+			c_sensor_attr1 AS a on k.c_client_id = a.c_sensor_id
 			LEFT JOIN c_sensor AS b ON a.c_sensor_id = b.id
 			LEFT JOIN c_sensor_attr2 AS c ON a.c_sensor_id = c.c_sensor_id
 			LEFT JOIN c_sensor_type AS d ON a.c_sensor_type_id = d.id
@@ -141,15 +146,17 @@
 			LEFT JOIN b_status AS h ON a.status = h.`value`
 			LEFT JOIN b_status_main AS i ON h.b_status_main_id = i.id 
 		WHERE a.sys_user_id in ${pd.userids}
+			AND k.type = '2'
 			AND h.b_status_main_id = 1
 			AND a.id = c.id
+			AND k.c_gateway_id = #{pd.gateway_id}
 		<if test="pd.number!=null and pd.number!=''">
 			AND b.sensor_code LIKE CONCAT(CONCAT('%', #{pd.number}),'%')
 		</if>
 		<if test="pd.name!=null and pd.name!=''">
 			AND a.name LIKE CONCAT(CONCAT('%', #{pd.name}), '%')
 		</if>
-		<if test="pd.type!=0 and pd.type!=null and pd.type!=999">
+		<if test="pd.type!=-1 and pd.type!=null and pd.type!=999">
 			AND d.id = #{pd.type, jdbcType=INTEGER}
 		</if>
 	</select>
@@ -272,8 +279,12 @@
 		SELECT a.c_client_id AS id, b.client_code AS number, a.`name`,a.c_client_type_id AS typeid,
 			d.`name` AS type,a.location,a.coordinate,a.`comment`,h.`name` AS statename,
 			h.`value` AS state,<!-- e.`name` AS power, f.`name` AS lamp,--> g.`name` AS pole,
-			a.`password`, a.lamp_pole_num AS polenumber
-		FROM c_client_attr1 AS a
+			a.`password`, a.lamp_pole_num AS polenumber,
+			CASE WHEN a.node2 = '0' or a.node2 = '00' THEN a.node
+			     ELSE concat_ws('.',a.node,a.node2) END as node
+		FROM 
+			c_client_gateway k 
+		   	LEFT JOIN c_client_attr1 AS a ON k.c_client_id = a.c_client_id
 			LEFT JOIN c_client AS b ON a.c_client_id = b.id
 			LEFT JOIN c_client_attr2 AS c ON a.c_client_id = c.c_client_id
 			LEFT JOIN c_client_type AS d ON a.c_client_type_id = d.id
@@ -283,6 +294,7 @@
 			LEFT JOIN b_status AS h ON a.staus = h.`value`
 			LEFT JOIN b_status_main AS i ON h.b_status_main_id = i.id
 		WHERE a.sys_user_id in ${pd.userids}
+			AND k.type = '1'
 			AND h.b_status_main_id = 1
 			AND a.id = c.id
 		<if test="pd.number!=null and pd.number!=''">
@@ -291,6 +303,8 @@
 		<if test="pd.name!=null and pd.name!=''">
 			AND a.name LIKE CONCAT(CONCAT('%', #{pd.name}), '%')
 		</if>
+		AND
+		k.c_gateway_id = #{pd.gateway_id}
 		<!-- <if test="pd.type==null or pd.type==''">
 			<if test="pd.itype!=null and pd.itype==1">
 				AND d.id = 1
@@ -328,9 +342,11 @@
 		SELECT a.c_gateway_id AS id, b.gateway_code AS number, a.`name`,a.c_gateway_type_id AS typeid,
 			d.`name_CH` AS type1, d.`name_EN` AS type2, a.location,a.coordinate,a.`comment`,h.`name` AS statename,
 			h.`value` AS state,e.phone_number AS mobile, <!-- f.`name` AS sensor, --> g.`name` AS pole,
-			a.`password`, a.lamp_pole_num AS polenumber,IFNULL(exist_client.client_num,0) client_num
+			a.`password`, a.lamp_pole_num AS polenumber,IFNULL(exist_client.client_num,0) client_num,
+			j.number as gateway_net,j.number2 as gateway_chanel
 		FROM c_gateway_attr1 AS a
 			LEFT JOIN c_gateway AS b ON a.c_gateway_id = b.id
+			LEFT JOIN c_gateway_attr3 j ON j.c_gateway_id = a.c_gateway_id
 			LEFT JOIN c_gateway_attr2 AS c ON a.c_gateway_id = c.c_gateway_id
 			LEFT JOIN c_gateway_type AS d ON a.c_gateway_type_id = d.id
 			LEFT JOIN c_sim AS e ON c.c_sim_id = e.id
@@ -751,9 +767,11 @@
 		SELECT a.c_gateway_id AS id, b.gateway_code AS number, a.`name`,a.c_gateway_type_id AS typeid,
 			d.`name_EN`,d.`name_CH`,a.location,a.coordinate,a.`comment`,h.`name` AS statename,
 			h.`value` AS state,e.id AS mobile, g.id AS poleid,
-			a.`password`, a.lamp_pole_num AS polenumber
+			a.`password`, a.lamp_pole_num AS polenumber,
+			j.number as gateway_net,j.number2 as gateway_chanel
 		FROM c_gateway_attr1 AS a
 			LEFT JOIN c_gateway AS b ON a.c_gateway_id = b.id
+			LEFT JOIN c_gateway_attr3 j ON j.c_gateway_id = a.c_gateway_id
 			LEFT JOIN c_gateway_attr2 AS c ON a.c_gateway_id = c.c_gateway_id
 			LEFT JOIN c_gateway_type AS d ON a.c_gateway_type_id = d.id
 			LEFT JOIN c_sim AS e ON c.c_sim_id = e.id
@@ -770,7 +788,9 @@
 	SELECT a.c_client_id AS id, b.client_code AS number, a.`name`,a.c_client_type_id AS typeid,
 			d.`name` AS type,a.location,a.coordinate,a.`comment`,h.`name` AS statename,
 			h.`value` AS state, <!-- e.`id` AS powerid, e.`name` AS POWER, f.`id` AS lampid, f.`name` AS lamp, -->g.`id` AS poleid, g.`name` AS pole,
-			a.`password`, a.lamp_pole_num AS polenumber
+			a.`password`, a.lamp_pole_num AS polenumber,
+			CASE WHEN a.node2 = '0' or a.node2 = '00' THEN a.node
+			     ELSE concat_ws('.',a.node,a.node2) END as node
 		FROM c_client_attr1 AS a
 			LEFT JOIN c_client AS b ON a.c_client_id = b.id
 			LEFT JOIN c_client_attr2 AS c ON a.c_client_id = c.c_client_id
@@ -929,12 +949,12 @@
 		c_sensor_attr1
 	</sql>
 	<sql id="sensorAttr1Field">
-		c_sensor_id,name,password,c_sensor_type_id,location,coordinate,comment,status,lamp_pole_num,sys_user_id
+		c_sensor_id,name,password,c_sensor_type_id,location,coordinate,comment,status,lamp_pole_num,sys_user_id,node,node2
 	</sql>
 	<sql id="sensorAttr1FieldValue">
 		#{id, jdbcType=BIGINT},#{name, jdbcType=VARCHAR},#{password,jdbcType=VARCHAR},#{typeid,jdbcType=INTEGER},
 		#{location,jdbcType=VARCHAR},#{coordinate,jdbcType=VARCHAR},#{comment,jdbcType=VARCHAR},#{status,jdbcType=INTEGER},
-		#{polenumber,jdbcType=VARCHAR},#{userid,jdbcType=BIGINT}
+		#{polenumber,jdbcType=VARCHAR},#{userid,jdbcType=BIGINT},#{node,jdbcType=VARCHAR},#{node2,jdbcType=VARCHAR}
 	</sql>
 	<insert id="insertSensorAttr1" parameterType="pd">
 		insert into <include refid="sensorAttr1Table"/>(
@@ -975,6 +995,13 @@
 		WHERE c_gateway_id = #{c_gateway_id}
 	</select>
 	
+	<insert id="insertClientGateway" parameterType="pd">
+		insert into c_client_gateway(
+			c_client_id,c_gateway_id,type
+		) values (
+			#{id, jdbcType=BIGINT},#{gateway_id, jdbcType=BIGINT},#{client_type, jdbcType=INTEGER}
+		)
+	</insert>
 	<!-- end -->
 	
 </mapper>

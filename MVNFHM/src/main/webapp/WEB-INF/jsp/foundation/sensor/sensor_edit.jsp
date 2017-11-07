@@ -175,17 +175,17 @@
 						<div id="zhongxin" style="padding-top: 13px;">
 						<table id="table_report" class="table table-striped table-bordered table-hover">
 							<tr>
-								<td style="width:96px;text-align: right;padding-top: 13px;">*<%=device_number%>:</td>
-								<td><input style="width:50%;" type="text" name="number" id="number" value="${pd.number}" maxlength="500" onblur="testNumber()"/>
-									<!-- 
-									<input style="width: 20%;background-image: url('');" type="button" value="刷新编码">
-									 -->
-									<label id="number_tips" style="width:25%; color:red;" hidden><%=this_number_has_exist%></label>
+								<td style="width:96px;text-align: right;padding-top: 13px;">*<%=node_address%>:</td>
+								<td><input style="width:50%;" type="text" name="node" id="node" value="${pd.node}" maxlength="500" readonly="readonly"/>
 								</td>
-								
 							</tr>
 							<tr>
-								<td style="width:96px;text-align: right;padding-top: 13px;">*<%=device_name%>:</td>
+								<td style="width:96px;text-align: right;padding-top: 13px;">*<%=node_number%>:</td>
+								<td><input style="width:50%;" type="text" name="number" id="number" value="${pd.number}" maxlength="500" readonly="readonly"/>
+								</td>
+							</tr>
+							<tr>
+								<td style="width:96px;text-align: right;padding-top: 13px;">*<%=node_name%>:</td>
 								<td><input style="width:95%;" type="text" name="name" id="name" value="${pd.name}" maxlength="500" /></td>
 							</tr>
 							<tr>

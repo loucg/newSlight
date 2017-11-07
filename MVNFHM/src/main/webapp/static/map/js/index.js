@@ -1,6 +1,5 @@
 ﻿$(function () {
-	$('body').on("click",'.one',function() {
-				
+	$('body').on("click",'.one',function() { 
 				// $('.kid').hide();
 				// $(this).parent().parent().find('.kid').toggle();//
 				// $(this)指<a>
@@ -15,6 +14,7 @@
 					setChosetermid();
 					//console.log($(this).attr("id"));
 					if ($(this).attr("id") != "search" && $(this).attr("id") != "draw") {
+				
 						//Conframe.window.cleanAllMaker();// 清除所有覆盖物
 						Conframe.window.getClientsData(mapTermpagein[$(this)
 								.attr("id")]);// 加载对应组的终端maker
@@ -41,7 +41,6 @@
         //$(this).addClass('one-hover');
         var str=$(this).attr("id");
         if(str!="more"){
-        	
         	Conframe.window.changeCenterByid(str);
         }else{
         	$(this).parent().remove();

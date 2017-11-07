@@ -96,8 +96,6 @@ public class MapContentController extends BaseController {
 			logBefore(logger, filePath + " uploaded file path");
 			String xypointFileName = request.getParameter("xycoordinate");
 			xypointFileName = xypointFileName.replace(".", "-").replace(".", "-");
-			// filePath =
-			// "C:\\loucg\\github\\git\\MVNFHM\\src\\main\\webapp\\uploadFiles\\uploadImgs\\partmap\\";
 			fileName = FileUpload.fileUp(file, filePath, xypointFileName); // 执行上传
 
 			if (null != request.getParameter("xycoordinate")) {
@@ -108,7 +106,11 @@ public class MapContentController extends BaseController {
 			// 保存局部图概要信息
 			c_partmap cp = new c_partmap();
 			cp.setId(request.getParameter("partMapid"));
-			cp.setC_termid(request.getParameter("termID"));
+			if (!"undefined".equals(request.getParameter("termID"))) {
+				cp.setC_termid(request.getParameter("termID"));
+			} else {
+				cp.setC_gatewayid(request.getParameter("gatewayID"));
+			}
 			cp.setExternal_coordinate(request.getParameter("xycoordinate"));
 			cp.setMap_pictrue_path(fileName);
 			cp.setPartmap_name(request.getParameter("mapPicName"));
@@ -226,26 +228,73 @@ public class MapContentController extends BaseController {
 			}
 		}
 
-		p.setTermid(-999);
-		c_client more = new c_client();
-		more.setHavenest(true);
-		more.setTermid(-999);
-		more.setXcoordinate(120.147428);
-		more.setYcoordinate(30.277798);
-		List<c_client> listg = c_clientService.queryAllterm_gateway(p);
-		int totalcountg = c_clientService.queryCountgateway(p);
-		if ((p.getBegin() + p.getRows()) >= totalcountg) {
-			more.setHavenest(false);
+		// p.setTermid(-999);
+		// c_client more = new c_client();
+		// more.setHavenest(true);
+		// more.setTermid(-999);
+		// more.setXcoordinate(120.147428);
+		// more.setYcoordinate(30.277798);
+		// List<c_client> listg = c_clientService.queryAllterm_gateway(p);
+		// int totalcountg = c_clientService.queryCountgateway(p);
+		// if ((p.getBegin() + p.getRows()) >= totalcountg) {
+		// more.setHavenest(false);
+		// }
+		// listg.add(more);
+		// left_c.put(-999, listg);
+		return left_c;
+	}
+
+	// 左边列表的controller
+	@RequestMapping(value = "/lefe_cf", method = RequestMethod.POST)
+	public @ResponseBody HashMap<Integer, List<c_client>> getLeft_cf(HttpServletRequest request,
+			@RequestBody c_client p) throws Exception {
+		List<c_client> listct = c_clientService.queryAllGateway();
+		HashMap<Integer, List<c_client>> left_c = new HashMap<Integer, List<c_client>>();
+		// 查询所有分组的等
+		if (listct.size() != 0) {
+			for (int i = 0; i < listct.size(); i++) {
+				p.setId(listct.get(i).getId());
+				c_client more = new c_client();
+				more.setHavenest(true);
+				more.setXcoordinate(120.147428);
+				more.setYcoordinate(30.277798);
+				more.setId(listct.get(i).getId());
+				more.setGatewayname(listct.get(i).getName());
+
+				List<c_client> listc = c_clientService.querClientByGateway(p);
+				// if(listc.size()==0){more.setTermname(more.getTermname()+"(该分组没有成员)");}
+				int totalcount = listc.size();// c_clientService.queryCountterm_client(p);
+				if ((p.getBegin() + p.getRows()) >= totalcount) {
+					more.setHavenest(false);
+				} else {
+					more.setHavenest(true);
+				}
+
+				listc.add(more);
+				left_c.put(listct.get(i).getId(), listc);
+			}
 		}
-		listg.add(more);
-		left_c.put(-999, listg);
+
+		p.setTermid(-999);
+		// c_client more = new c_client();
+		// more.setHavenest(true);
+		// more.setTermid(-999);
+		// more.setXcoordinate(120.147428);
+		// more.setYcoordinate(30.277798);
+		//// List<c_client> listg = c_clientService.queryAllterm_gateway(p);
+		//// int totalcountg = c_clientService.queryCountgateway(p);
+		//// if ((p.getBegin() + p.getRows()) >= totalcountg) {
+		//// more.setHavenest(false);
+		//// }
+		//// listg.add(more);
+		// left_c.put(-999, listg);
 		return left_c;
 	}
 
 	@RequestMapping(value = "/lefe_cnext", method = RequestMethod.POST)
 	public @ResponseBody List<c_client> lefe_cnext(HttpServletRequest request, @RequestBody c_client p)
 			throws Exception {
-		if (p.getTermid() != -999) {
+		if (p.getTermid() != null && p.getTermid() != -999) {
 			List<c_client> listc = c_clientService.queryAllterm_client(p);
 			int totalcount = c_clientService.queryCountterm_client(p);
 			// c_client more = new c_client(p);
@@ -286,6 +335,13 @@ public class MapContentController extends BaseController {
 		return listct;
 	}
 
+	// 正上方搜索条件的controller
+	@RequestMapping(value = "/getgatewaynamesel")
+	public @ResponseBody List<c_client> getgatewaynamesel() throws Exception {
+		List<c_client> listct = c_clientService.queryAllGateway();
+		return listct;
+	}
+
 	@RequestMapping(value = "/getTypenameByGroup/{groupname}")
 	public @ResponseBody List<c_client> getTypenameByGroup(@PathVariable("groupname") int groupnameid)
 			throws Exception {
@@ -296,6 +352,13 @@ public class MapContentController extends BaseController {
 			List<c_client> listgype = c_clientService.getTypenameByGroupGateway(groupnameid);
 			return listgype;
 		}
+
+	}
+
+	@RequestMapping(value = "/getGateByGateway1/{Gatewayname}")
+	public @ResponseBody List<c_client> getGateByGateway1(@PathVariable("Gatewayname") int gatewayid) throws Exception {
+		List<c_client> listgype = c_clientService.getTypenameByGroupGateway(gatewayid);
+		return listgype;
 
 	}
 
@@ -314,6 +377,14 @@ public class MapContentController extends BaseController {
 
 	}
 
+	@RequestMapping(value = "/getAddressByTypeGateway", method = RequestMethod.POST)
+	public @ResponseBody List<c_client> getAddressByTypeGateway(HttpServletRequest request, @RequestBody c_client cc)
+			throws Exception {
+		List<c_client> listgype = c_clientService.getAddressByTypeGataway(cc);
+		return listgype;
+
+	}
+
 	@RequestMapping(value = "/getClientnameByaddress", method = RequestMethod.POST)
 	public @ResponseBody List<c_client> getClientnameByaddress(HttpServletRequest request, @RequestBody c_client cc)
 			throws Exception {
@@ -326,6 +397,14 @@ public class MapContentController extends BaseController {
 			return listgype;
 
 		}
+
+	}
+
+	@RequestMapping(value = "/getClientnameByaddressGateway", method = RequestMethod.POST)
+	public @ResponseBody List<c_client> getClientnameByaddressGateway(HttpServletRequest request,
+			@RequestBody c_client cc) throws Exception {
+		List<c_client> listgype = c_clientService.getClientnameByaddressGateway(cc);
+		return listgype;
 
 	}
 
@@ -343,8 +422,16 @@ public class MapContentController extends BaseController {
 
 	}
 
+	@RequestMapping(value = "/getClientigBynameGateway", method = RequestMethod.POST)
+	public @ResponseBody List<c_client> getClientigBynameGateway(HttpServletRequest request, @RequestBody c_client cc)
+			throws Exception {
+		List<c_client> listgype = c_clientService.getClientigBynameGateway(cc);
+		return listgype;
+
+	}
+
 	// 获取第一次加载所需的termid
-	@RequestMapping(value = "/getFirstTermId")
+	@RequestMapping(value = "/getFirstTerm")
 	public @ResponseBody int getFirstTermId() throws Exception {
 		List<c_term> listct = c_clientService.queryAllterm();
 		if (listct.size() != 0) {
@@ -365,7 +452,8 @@ public class MapContentController extends BaseController {
 	@RequestMapping(value = "/addClientMaker", method = RequestMethod.POST)
 	public @ResponseBody List<c_client> addClientMaker(HttpServletRequest request, @RequestBody c_client cc)
 			throws Exception {
-		if (-999 != cc.getTermid()) {
+
+		if (cc.getTermid() != null && -999 != cc.getTermid()) {
 			if (cc.getRows() != 0) {
 				List<c_client> clientlist = c_clientService.addClientMaker(cc);
 				return clientlist;
@@ -382,8 +470,9 @@ public class MapContentController extends BaseController {
 				}
 			}
 		} else {
+			// cc.setTermid(cc.getGatewayid());
 			if (cc.getRows() != 0) {
-				List<c_client> gatewaylist = c_clientService.queryAllterm_gateway(cc);
+				List<c_client> gatewaylist = c_clientService.addClientMakerByGatewayid(cc);
 				return gatewaylist;
 			} else {
 				if (cc.getDrawid().size() != 0) {
@@ -412,6 +501,15 @@ public class MapContentController extends BaseController {
 			List<c_client> glist = c_clientService.getSearchGateway(cc);
 			return glist;
 		}
+	}
+
+	// 根据搜索条件加载maker
+	@RequestMapping(value = "/getSearchClientGateway", method = RequestMethod.POST)
+	public @ResponseBody List<c_client> getSearchClientGateway(HttpServletRequest request, @RequestBody c_client cc)
+			throws Exception {
+		List<c_client> glist = c_clientService.getSearchGateway(cc);
+		return glist;
+
 	}
 
 	// 改变终端通坐标
@@ -475,6 +573,13 @@ public class MapContentController extends BaseController {
 		cp.setC_client_id(pd.getString("CLIENT_ID"));
 		cp.setInner_coordinate(pd.getString("INNER_COORDINATE"));
 		c_clientService.delPartMapDetail(cp);
+		c_client cc = new c_client();
+		cc.setC_client_id(pd.getString("CLIENT_ID"));
+		List<c_client> gatewayInfo = c_clientService.getClientGatewayInfo(cc);
+		if (gatewayInfo != null && gatewayInfo.size() > 0) {
+			cp.setC_gatewayid(String.valueOf(gatewayInfo.get(0).getGatewayid()));
+		}
+		cp.setC_termid(pd.getString("TERM_ID"));
 		c_clientService.insertPartMapDetail(cp);
 		List<PageData> pdList = new ArrayList<PageData>();
 		pdList.add(pd);
@@ -486,7 +591,9 @@ public class MapContentController extends BaseController {
 	public Object savePartMapHeader(PageData pd) throws Exception {
 		Map<String, Object> map = new HashMap<String, Object>();
 		c_partmap cp = new c_partmap();
+		cp.setC_client_id(pd.getString("CLIENT_ID"));
 		cp.setC_termid(pd.getString("TERM_ID"));
+		cp.setC_gatewayid(pd.getString("gatewayID"));
 		cp.setExternal_coordinate(pd.getString("EXTERNAL_COORDINATE"));
 		cp.setMap_pictrue_path(pd.getString("PARTMAP_URL"));
 		cp.setPartmap_name(pd.getString("PARTMAP_NAME"));
@@ -504,10 +611,18 @@ public class MapContentController extends BaseController {
 		PageData pd = new PageData();
 		pd = this.getPageData();
 		c_client cc = new c_client();
-		if (pd.getString("termid") != null) {
-			cc.setTermid(Integer.parseInt(pd.getString("termid")));
+		if (pd.getString("termid") != null && pd.getString("termid").length() > 0
+				&& !"undefined".equals(pd.getString("termid"))) {
+			cc.setTermid(Integer.valueOf(pd.getString("termid")));
 		}
-		cc.setClient_attri_id(pd.getString("clientid"));
+		if (pd.getString("clientid") != null && pd.getString("clientid").length() > 0
+				&& !"undefined".equals(pd.getString("clientid"))) {
+			cc.setId(Integer.valueOf(pd.getString("clientid")));
+		}
+		if (pd.getString("gatewayid") != null && pd.getString("gatewayid").length() > 0
+				&& !"gundefined".equals(pd.getString("gatewayid"))) {
+			cc.setGatewayid(Integer.valueOf(pd.getString("gatewayid")));
+		}
 		cc.setPartMap_Id(pd.getString("partMapID"));
 		List<c_client> clientlist = c_clientService.getSearchClient(cc);
 		return clientlist;
@@ -522,6 +637,7 @@ public class MapContentController extends BaseController {
 		c_partmap cp = new c_partmap();
 		cp.setId(pd.getString("partMapID"));
 		cp.setC_termid((pd.getString("termid")));
+		cp.setC_gatewayid(pd.getString("gatewayID"));
 		cp.setC_client_id(pd.getString("clinetid"));
 		List<c_partmap> partMapInfo = c_clientService.getPartMapInfo(cp);
 		return partMapInfo;

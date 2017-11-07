@@ -59,13 +59,13 @@ function cutStr(len){
 								
 								<td>
 									<div class="nav-search">
-									    <label><%=equipment_code %>：</label>
+									    <label><%=gateway_number %>：</label>
 										<input class="nav-search-input" autocomplete="off" id="nav-search-input" type="text" name="number" value="${pd.number}" />
 									</div>
 								</td>
 								<td >
 								 	<div class="nav-search">
-									    <label style="margin-left:12px;"><%=equipment_name %>：</label>
+									    <label style="margin-left:12px;"><%=gateway_name %>：</label>
 										<input class="nav-search-input" autocomplete="off" id="nav-search-input" type="text" name="name" value="${pd.name }"  />
 									</div>
 								</td>
@@ -73,7 +73,7 @@ function cutStr(len){
 								<c:if test="${pd.itype==3 }">
 								</c:if>
 								 -->
-								<td>&nbsp;&nbsp;<%=equipment_type %>：</td>
+								<td>&nbsp;&nbsp;<%=gateway_type %>：</td>
 									<td >
 										<c:if test="${pd.itype==5}">
 								 			<input type="hidden" name="itype" id="itype" value="5">
@@ -139,9 +139,11 @@ function cutStr(len){
 						<table id="simple-table" class="table table-striped table-bordered table-hover"  style="margin-top:5px;">
 							<thead>
 								<tr>
-									<th class="center"><%=equipment_code %></th>
-									<th class="center"><%=equipment_name %></th>
-									<th class="center"><%=equipment_type %></th>
+									<th class="center"><%=gateway_net_number %></th>
+									<th class="center"><%=gateway_channel_number %></th>
+									<th class="center"><%=gateway_number %></th>
+									<th class="center"><%=gateway_name %></th>
+									<th class="center"><%=gateway_type %></th>
 									<th class="center"><%=location%></th>
 									<th class="center"><%=coordinate%></th>
 									<th class="center"><%=phone_number%></th>
@@ -182,7 +184,9 @@ function cutStr(len){
 									<c:if test="${QX.cha == 1 }">
 									<c:forEach items="${deviceList}" var="var" varStatus="vs">
 										<tr>
-											<td class="center">${var.number}</td>
+											<td class="center">${var.gateway_net}</td>
+											<td class="center">${var.gateway_chanel}</td>
+											<td class='center'><a onclick="viewDevDetail('${var.id}')" style="cursor:pointer;">${var.number}</a></td>
 											<td class="center">${var.name}</td>
 											<c:if test="${pd.itype==3 }">
 												<c:if test="${sessionScope.session_language=='zh_CN' }">
@@ -372,7 +376,7 @@ function cutStr(len){
 			 diag.Title ="<%=modify%>";
 			 diag.URL = '<%=basePath%>config/goGatewayEdit?id='+Id+'&typeid='+type;
 			 diag.Width = 650;
-			 diag.Height = 440;
+			 diag.Height = 540;
 			 diag.CancelEvent = function(){ //关闭事件
 				 if(diag.innerFrame.contentWindow.document.getElementById('zhongxin').style.display == 'none'){
 					 nextPage('${page.currentPage}');
@@ -494,6 +498,32 @@ function cutStr(len){
 			 diag.CancelEvent = function(){ //关闭事件
 				 if(diag.innerFrame.contentWindow.document.getElementById('zhongxin').style.display == 'none'){
 					 nextPage('${page.currentPage}');
+				}
+				diag.close();
+			 };
+			 diag.show();
+		}
+		//查看配置
+		function viewDevDetail(Id){
+			selectBranch(Id);
+		}
+		//打开选择页面
+		function selectBranch(id){
+			 top.jzts();
+			 var diag = new top.Dialog();
+			 diag.Drag=true;
+			 diag.Title ="<%=please_select_page%>";
+			 diag.URL = '<%=basePath%>config/goDeviceConfigPage?id='+id;
+			 diag.Width = 260;
+			 diag.Height = 80;
+			 diag.CancelEvent = function(){ //关闭事件
+				 if(diag.innerFrame.contentWindow.document.getElementById('zhongxin').style.display == 'none'){
+					 if('${page.currentPage}' == '0'){
+						 top.jzts();
+						 setTimeout("self.location.reload()",100);
+					 }else{
+						 nextPage('${page.currentPage}');
+					 }
 				}
 				diag.close();
 			 };
