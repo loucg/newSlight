@@ -649,5 +649,5 @@
 	String sensor_config_gatewayname = properties.getProperty("sensor_config_gatewayname");//传感器配置列表 网关
 	String lamp_config_gatewayname = properties.getProperty("lamp_config_gatewayname");//路灯配置列表 网关
 	String pls_select_strategyset = properties.getProperty("pls_select_strategyset");//请选择需要删除的策略包
-
+	String PartMap_Light_No_Exists  = properties.getProperty("PartMap_Light_No_Exists");//	路灯在地图上不存在，请检查路灯参数(亮度值等相关参数）
 %>

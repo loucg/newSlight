@@ -1178,12 +1178,12 @@ body {
 					//map.setZoom(19);
 				}, 300);
 				setTimeout(function() {
-					map.setZoom(20);
+					map.setZoom(10);
 				}, 1000);
 				
  				}
-			
 		}
+
 		CenterMarker(data);
 	}
 	function CenterMarker(data) {
@@ -1194,6 +1194,9 @@ body {
 			marker.setAnimation(BMAP_ANIMATION_BOUNCE); //跳动的动画
 			setTimeout(function() {map.removeOverlay(marker);
 			}, 2000);
+		}else{
+			alert('<%=PartMap_Light_No_Exists%>');
+			
 		}
 	}
 	//0.3秒后根据Point改变地图的展示中心       

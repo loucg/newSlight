@@ -1034,6 +1034,9 @@ body {
 				map.setCenter(marker.getPosition());
 				setTimeout(function() {marker.setMap(null);;
 				}, 2000);
+		}else{
+			alert('<%=PartMap_Light_No_Exists%>');
+			
 		}
 	}
 	//0.3秒后根据Point改变地图的展示中心       
