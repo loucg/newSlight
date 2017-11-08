@@ -33,7 +33,7 @@ function init() {
 						else{
 							
 							if(document.getElementById("selectgroup").selectedIndex==0){
-								
+								postSearchData.gatewayid=null;
 								$.ajax({
 										url : "gomap/getSearchClient",
 										type : "POST",
@@ -65,6 +65,7 @@ function init() {
 										}
 									});
 							}else{
+								postSearchData.termid=null;
 							$.ajax({
 								url : "gomap/getSearchClientGateway",
 								type : "POST",
