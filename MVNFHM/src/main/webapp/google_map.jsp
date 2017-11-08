@@ -343,7 +343,7 @@ body {
 						});
 				}
 				if (marker!= null) {
-					changeCenter(marker,true);
+					changeCenter(marker,false);
 				}
 			},
 			error : function() {
@@ -611,7 +611,8 @@ body {
 		document.getElementById('PartMapExist').value ='1';
 		var partmapExistFlag=false;
 		if(gMarker!=null){
-			if(gMarker.partMapID==document.getElementById('partMapID').value){
+			if(gMarker.partMapID!=null && 
+					gMarker.partMapID==document.getElementById('partMapID').value){
 				openPartMapSub(gMarker,true);
 				partmapExistFlag=true;
 			}
@@ -619,7 +620,8 @@ body {
 		if(!partmapExistFlag){
 			for(var i=0;i<markers.length;i++){
 				var marker =markers[i];
-				if(marker.partMapID==document.getElementById('partMapID').value){
+				if(marker.partMapID!=null &&
+						marker.partMapID==document.getElementById('partMapID').value){
 					openPartMapSub(marker,true);
 					partmapExistFlag=true;
 				}
