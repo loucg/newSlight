@@ -343,7 +343,7 @@ body {
 						});
 				}
 				if (marker!= null) {
-					changeCenter(marker);
+					changeCenter(marker,true);
 				}
 			},
 			error : function() {
@@ -394,7 +394,7 @@ body {
 				
  	        }
 	        if(marker!=null){
-	        	changeCenter(marker);
+	        	changeCenter(marker,true);
 	        }
 		}
 		//增加灯到地图
@@ -660,7 +660,7 @@ body {
 					}
 					gMarker = this;
 				});
-				changeCenter(marker);
+				changeCenter(marker,false);
 			}
 			
 			
@@ -1040,13 +1040,15 @@ body {
 		}
 	}
 	//0.3秒后根据Point改变地图的展示中心       
-	function changeCenter(marker) {
+	function changeCenter(marker,bchangeZoom) {
 		if(marker==null){
-			map.setCenter(gCenter,10);
+			map.setCenter(gCenter);
 		}else{
 			map.setCenter(marker.getPosition());
 		}
-		map.setZoom(8);
+		if(bchangeZoom==true){
+			map.setZoom(8);
+		}
 	}
 	//改变地图的zoom大小    
 	function changeZoom(center, minx, miny, maxx, maxy,mapcenter,mapzoom) {
@@ -1392,7 +1394,7 @@ body {
 								{a=parent.getmapTermpage()[-2];getClientsData(a,mapcenter,mapzoom);}
 							else
 								{a = parent.getmapTermpagein()[choseMakerdata[0].termid];getClientsData(a,mapcenter,mapzoom);}
-								changeCenter(gMarker);
+								changeCenter(gMarker,true);
 								 BootstrapDialog.show({
 						                type:  BootstrapDialog.TYPE_PRIMARY,
 						                title: "<%=remind_infomation%>",
