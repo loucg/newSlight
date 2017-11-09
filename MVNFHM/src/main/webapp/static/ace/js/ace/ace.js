@@ -42,6 +42,7 @@
 //document ready function
 jQuery(function($) {
 	basics();
+//	endWith();
 	enableSidebar();
 	
 	enableDemoAjax();
@@ -58,7 +59,7 @@ jQuery(function($) {
 	
 	bsCollapseToggle();
 	smallDeviceDropdowns();
-	
+	controlF5();
 	////////////////////////////
 
 	function basics() {
@@ -533,3 +534,19 @@ jQuery(function($) {
 	}
  }
 })(ace.helper);
+
+
+function controlF5(){
+	var path = document.location.pathname;
+	$("body").bind("keydown", function(event) {
+        if (event.keyCode == 116) {
+        	event.preventDefault();
+        	if(null != path.match("main/index")){
+        		return false;
+        	}
+        	location = location;
+        }
+    }); 
+}
+
+
