@@ -92,4 +92,12 @@ public interface C_clientManager {
 
 	public List<c_client> getClientGatewayInfo(c_client cc) throws Exception;
 
+	/**
+	 * 根据局部ID和clientId查询局部图
+	 * 
+	 * @param cp
+	 * @return int 局部图数目
+	 */
+	public List<c_partmap> queryPartMapCountByClientId(c_partmap cp) throws Exception;
+
 }

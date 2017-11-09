@@ -482,8 +482,15 @@
          </foreach>
          ORDER BY cga.c_gateway_id ASC
 	</select>
-  	 	
-  	 	
+  	 
+  	<!-- 根据clientId查询灯所在局部图数目 -->
+	<select id="queryPartMapCountByClientId"  resultType="cpartmap" parameterType="java.util.List">
+  		SELECT a.id,b.name,a.c_client_id
+  		FROM
+  			c_partmap_detail a inner join  c_client_attr1 b  on a.c_client_id = b.c_client_id
+  		WHERE
+  			a.id != #{id}  and b.c_client_id = #{c_client_id}
+ 	</select>
   	 	
   	 <!-- 上方搜索框结束 -->
   	<update id="updateClientDraw_statusON"  parameterType = "java.util.List">

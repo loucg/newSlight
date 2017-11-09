@@ -568,21 +568,54 @@ public class MapContentController extends BaseController {
 		PageData pd = new PageData();
 		Map<String, Object> map = new HashMap<String, Object>();
 		pd = this.getPageData();
+
+		String[] clientIdList = pd.getString("CLIENT_ID").split(";");
+		String[] coordinateList = pd.getString("INNER_COORDINATE").split(";");
+
+		// 判断灯是否已经加入局部图
+		for (int i = 0; i < clientIdList.length; i++) {
+			String clientId = clientIdList[i];
+
+			c_partmap cp = new c_partmap();
+			cp.setId(pd.getString("ID"));
+			cp.setC_client_id(clientId);
+
+			List<c_partmap> cc = c_clientService.queryPartMapCountByClientId(cp);
+			// 局部图中已经有此灯
+			if (cc != null && cc.size() > 0) {
+				map.put("result", "failed");
+				map.put("clientId", clientId);
+				map.put("clientname", cc.get(0).getName());
+				return AppUtil.returnObject(pd, map);
+			}
+		}
+
+		// 先删除原来的局部图上所有灯的信息
 		c_partmap cp = new c_partmap();
 		cp.setId(pd.getString("ID"));
-		cp.setC_client_id(pd.getString("CLIENT_ID"));
-		cp.setInner_coordinate(pd.getString("INNER_COORDINATE"));
 		c_clientService.delPartMapDetail(cp);
-		c_client cc = new c_client();
-		cc.setC_client_id(pd.getString("CLIENT_ID"));
-		List<c_client> gatewayInfo = c_clientService.getClientGatewayInfo(cc);
-		if (gatewayInfo != null && gatewayInfo.size() > 0) {
-			cp.setC_gatewayid(String.valueOf(gatewayInfo.get(0).getGatewayid()));
+
+		// 再把所有灯信息插入数据表
+		for (int i = 0; i < clientIdList.length; i++) {
+			String clientId = clientIdList[i];
+			String coordinate = coordinateList[i];
+
+			c_client cc = new c_client();
+			cc.setC_client_id(clientId);
+			List<c_client> gatewayInfo = c_clientService.getClientGatewayInfo(cc);
+			if (gatewayInfo != null && gatewayInfo.size() > 0) {
+				cp.setC_gatewayid(String.valueOf(gatewayInfo.get(0).getGatewayid()));
+			}
+			cp.setC_client_id(clientId);
+			cp.setInner_coordinate(coordinate);
+			cp.setC_termid(pd.getString("TERM_ID"));
+			// 插入局部图信息
+			c_clientService.insertPartMapDetail(cp);
 		}
-		cp.setC_termid(pd.getString("TERM_ID"));
-		c_clientService.insertPartMapDetail(cp);
-		List<PageData> pdList = new ArrayList<PageData>();
-		pdList.add(pd);
+
+		// List<PageData> pdList = new ArrayList<PageData>();
+		// pdList.add(pd);
+		map.put("result", "success");
 		return AppUtil.returnObject(pd, map);
 	}
 

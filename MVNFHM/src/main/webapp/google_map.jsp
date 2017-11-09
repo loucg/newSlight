@@ -805,52 +805,65 @@ body {
 		var count=$("#selLight option").length; 
 		var succssflag=true;
 		var lightnum =0;
+		var strClientIds='';
+		var strCordinates='';
+		
 		for(var i=0;i<count;i++){
 			var tempdiv = document.getElementById('light'+$("#selLight ").get(0).options[i].value);
 			if(tempdiv!=null){
 				lightnum++;
-				$.ajax({
-					url : "gomap/savePartMapToDetail",
-					type : "POST",
-					data : {
-							ID :$("#partMapID").val(),
-							INNER_COORDINATE:tempdiv.name.replace("px",""),
-							CLIENT_ID:tempdiv.id.replace("light",""),
-					},
-					dataType : "json",
-					success : function(clientdata) {
-						succssflag=true;	
-						
-					},
-					error : function() {
-						BootstrapDialog.show({
-			                type:  BootstrapDialog.TYPE_DANGER,
-			                title: "<%=remind_infomation%>",
-			                message:  "<%=Part_map_addLightToPartMapFailuer%>",
-			                buttons: [{
-			                    label: "<%=shut_down%>",
-			                    action: function(dialogItself){
-			                        dialogItself.close();
-			                    }
-			                }]
-			            }); 
-						succssflag=false;
-					}
-				});
 				
-				clearOverlaysByClientID($("#selLight ").get(0).options[i].value);
-			}
-			if(!succssflag){
-				return;
+				if(strClientIds=='') strClientIds += tempdiv.id.replace("light","");
+				else strClientIds += ';' + tempdiv.id.replace("light","");
+				
+				if(strCordinates=='') strCordinates += tempdiv.name.replace("px","");
+				else strCordinates += ';' + tempdiv.name.replace("px","");							
 			}
 		}
-		if(lightnum>0){
-			//alert("路灯已保存完毕！");
-			alert('<%=part_map_light_save_finished%>');
-		}else{
-			//alert("没有要保存的路灯！");
-			alert('<%=part_map_noLight_need_save%>');
-		}
+		
+		$.ajax({
+			url : "gomap/savePartMapToDetail",
+			type : "POST",
+			data : {
+					ID :$("#partMapID").val(),
+					INNER_COORDINATE:strCordinates,
+					CLIENT_ID:strClientIds,
+			},
+			dataType : "json",
+			success : function(data) {
+				succssflag=true;	
+				if("failed" == data.result){
+					// 已经加入局部图的灯名称显示
+					alert(data.clientname)
+				}else{
+					if(lightnum>0){
+						//alert("路灯已保存完毕！");
+						alert('<%=part_map_light_save_finished%>');
+					}else{
+						//alert("没有要保存的路灯！");
+						alert('<%=part_map_noLight_need_save%>');
+					}
+				}
+			},
+			error : function() {
+				BootstrapDialog.show({
+	                type:  BootstrapDialog.TYPE_DANGER,
+	                title: "<%=remind_infomation%>",
+	                message:  "<%=Part_map_addLightToPartMapFailuer%>",
+	                buttons: [{
+	                    label: "<%=shut_down%>",
+	                    action: function(dialogItself){
+	                        dialogItself.close();
+	                    }
+	                }]
+	            }); 
+				succssflag=false;
+			}
+		});
+		
+		for(var i=0;i<count;i++){
+			clearOverlaysByClientID($("#selLight ").get(0).options[i].value);
+		}		
 	}
 	
 	function change_light(clientid){
@@ -1636,7 +1649,7 @@ function getInfoContent(data) {
 //    				"<img src='static/map/img/light1.png' />"+
 //    			"</div>"+
    		"</div>"+
-   		"<div class='bottom' style='width:325px;'>"+
+   		"<div class='bottom' style='width:320px;'>"+
        		"<div class='b1' onclick ='TurnOnLight()' style='width:50px;'>"+
 					"<div class='bimg1'>"+
 						"<img src='static/map/img/bulb_on.png'>"+
@@ -1661,7 +1674,7 @@ function getInfoContent(data) {
 						"<a href='javascript:void(0)' >"+"<%=control_strategy%>"+"</a>"+
 					"</div>"+
 				"</div>"+
-				"<div class='btx4' style='width:114px;'>"+
+				"<div class='btx4' style='width:110px;'>"+
 					"<h2 class='sh'>"+"<%=brightness_value%>"+":</h2>"+
 					"<select class='s1'  onchange='change_bright(this.options[this.options.selectedIndex].value)'>"
 					

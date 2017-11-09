@@ -15,6 +15,15 @@ public class c_partmap extends PageBean implements Serializable {
 	private int clinetCnt;
 	private String id;
 	private String c_gatewayid;
+	private String name;
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
 
 	public String getC_gatewayid() {
 		return c_gatewayid;
