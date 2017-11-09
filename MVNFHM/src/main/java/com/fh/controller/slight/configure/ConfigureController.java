@@ -252,10 +252,7 @@ public class ConfigureController extends BaseController {
 		pd.put("userids", departmentService.getUseridsInDepartment(pd));
 		page.setPd(pd);
 		List<PageData> deviceList = null;
-		int type = 0;
-		if(pd.get("type") != null && "".equals(pd.get("type"))){
-			type = Integer.valueOf((String) pd.get("type"));
-		}
+		int type = Integer.valueOf((String) pd.get("type"));
 		int itype = Integer.valueOf((String) pd.get("itype"));
 		if (itype == 4) {
 			deviceList = configureService.getDeviceList(page);
