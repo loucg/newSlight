@@ -1636,7 +1636,7 @@ function getInfoContent(data) {
 //    				"<img src='static/map/img/light1.png' />"+
 //    			"</div>"+
    		"</div>"+
-   		"<div class='bottom' style='width:320px;'>"+
+   		"<div class='bottom' style='width:325px;'>"+
        		"<div class='b1' onclick ='TurnOnLight()' style='width:50px;'>"+
 					"<div class='bimg1'>"+
 						"<img src='static/map/img/bulb_on.png'>"+
@@ -1661,7 +1661,7 @@ function getInfoContent(data) {
 						"<a href='javascript:void(0)' >"+"<%=control_strategy%>"+"</a>"+
 					"</div>"+
 				"</div>"+
-				"<div class='btx4' style='width:110px;'>"+
+				"<div class='btx4' style='width:114px;'>"+
 					"<h2 class='sh'>"+"<%=brightness_value%>"+":</h2>"+
 					"<select class='s1'  onchange='change_bright(this.options[this.options.selectedIndex].value)'>"
 					
