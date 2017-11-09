@@ -484,7 +484,7 @@
 	</select>
   	 
   	<!-- 根据clientId查询灯所在局部图数目 -->
-	<select id="queryPartMapCountByClientId"  resultType="cpartmap" parameterType="java.util.List">
+	<select id="queryPartMapCountByClientId"  resultType="cpartmap" parameterType="cpartmap">
   		SELECT a.id,b.name,a.c_client_id
   		FROM
   			c_partmap_detail a inner join  c_client_attr1 b  on a.c_client_id = b.c_client_id
