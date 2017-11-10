@@ -820,50 +820,47 @@ body {
 				else strCordinates += ';' + tempdiv.name.replace("px","");							
 			}
 		}
-		
-		$.ajax({
-			url : "gomap/savePartMapToDetail",
-			type : "POST",
-			data : {
-					ID :$("#partMapID").val(),
-					INNER_COORDINATE:strCordinates,
-					CLIENT_ID:strClientIds,
-			},
-			dataType : "json",
-			success : function(data) {
-				succssflag=true;	
-				if("failed" == data.result){
-					// 已经加入局部图的灯名称显示
-					alert(data.clientname)
-				}else{
-					if(lightnum>0){
+// 		alert(lightnum);
+		if(lightnum>0){
+			$.ajax({
+				url : "gomap/savePartMapToDetail",
+				type : "POST",
+				data : {
+						ID :$("#partMapID").val(),
+						INNER_COORDINATE:strCordinates,
+						CLIENT_ID:strClientIds,
+				},
+				dataType : "json",
+				success : function(data) {
+					succssflag=true;	
+					if("failed" == data.result){
+						// 已经加入局部图的灯名称显示
+						alert(data.clientname+' <%=partmap_already_added %>');
+					}else{
 						//alert("路灯已保存完毕！");
 						alert('<%=part_map_light_save_finished%>');
-					}else{
-						//alert("没有要保存的路灯！");
-						alert('<%=part_map_noLight_need_save%>');
 					}
+				},
+				error : function() {
+					BootstrapDialog.show({
+		                type:  BootstrapDialog.TYPE_DANGER,
+		                title: "<%=remind_infomation%>",
+		                message:  "<%=Part_map_addLightToPartMapFailuer%>",
+		                buttons: [{
+		                    label: "<%=shut_down%>",
+		                    action: function(dialogItself){
+		                        dialogItself.close();
+		                    }
+		                }]
+		            }); 
+					succssflag=false;
 				}
-			},
-			error : function() {
-				BootstrapDialog.show({
-	                type:  BootstrapDialog.TYPE_DANGER,
-	                title: "<%=remind_infomation%>",
-	                message:  "<%=Part_map_addLightToPartMapFailuer%>",
-	                buttons: [{
-	                    label: "<%=shut_down%>",
-	                    action: function(dialogItself){
-	                        dialogItself.close();
-	                    }
-	                }]
-	            }); 
-				succssflag=false;
-			}
-		});
-		
-		for(var i=0;i<count;i++){
-			clearOverlaysByClientID($("#selLight ").get(0).options[i].value);
-		}		
+			});
+		}else{
+			//alert("没有要保存的路灯！");
+			alert('<%=part_map_noLight_need_save%>');
+		}
+				
 	}
 	
 	function change_light(clientid){
