@@ -557,8 +557,8 @@ body {
 		function attachInformation(map,marker) {
 			marker.addEventListener('click', function(e) {//这里是自定义覆盖物的事件
 				var opts = {
-						width : 304, // 信息窗口宽度
-						height : 204, // 信息窗口高度
+						width : 404, // 信息窗口宽度
+						height : 304, // 信息窗口高度
 					};
 					var point = new BMap.Point(marker.clientdata.xcoordinate, marker.clientdata.ycoordinate);
 					var clientData={} ;
@@ -691,7 +691,7 @@ body {
 				if(marker.id==clinetid){
 					map.removeOverlay(marker);
 					//坐标重置
-					if(desMakerdata[i]!=null && gMarker!=null){
+					if(desMakerdata[i]!=null){
 						for(var j=0;j<desMakerdata.length;j++){
 							if(desMakerdata[j].id==clinetid){
 								desMakerdata[j].xcoordinate = gMarker.coordinate.split(",")[0];
@@ -933,51 +933,67 @@ body {
 		var count=$("#selLight option").length; 
 		var succssflag=true;
 		var lightnum =0;
+		var strClientIds='';
+		var strCordinates='';
+		
 		for(var i=0;i<count;i++){
 			var tempdiv = document.getElementById('light'+$("#selLight ").get(0).options[i].value);
 			if(tempdiv!=null){
 				lightnum++;
-				$.ajax({
-					url : "gomap/savePartMapToDetail",
-					type : "POST",
-					data : {
-							ID :$("#partMapID").val(),
-							INNER_COORDINATE:tempdiv.name.replace("px",""),
-							CLIENT_ID:tempdiv.id.replace("light",""),
-					},
-					dataType : "json",
-					success : function(clientdata) {
-						succssflag=true;	
-					},
-					error : function() {
-						BootstrapDialog.show({
-			                type:  BootstrapDialog.TYPE_DANGER,
-			                title: "<%=remind_infomation%>",
-			                message:  "<%=Part_map_addLightToPartMapFailuer%>",
-			                buttons: [{
-			                    label: "<%=shut_down%>",
-			                    action: function(dialogItself){
-			                        dialogItself.close();
-			                    }
-			                }]
-			            }); 
-						succssflag=false;
-					}
-				});
+				
+				if(strClientIds=='') strClientIds += tempdiv.id.replace("light","");
+				else strClientIds += ';' + tempdiv.id.replace("light","");
+				
+				if(strCordinates=='') strCordinates += tempdiv.name.replace("px","");
+				else strCordinates += ';' + tempdiv.name.replace("px","");			
 				//删除已经追加的路灯
 				clearOverlaysByClientID($("#selLight ").get(0).options[i].value);
 			}
-			if(!succssflag){
-				return;
-			}
+			
 		}
+// 		alert(lightnum);
 		if(lightnum>0){
-			//alert("路灯已保存完毕！");
-			alert('<%=part_map_light_save_finished%>');
+			$.ajax({
+				url : "gomap/savePartMapToDetail",
+				type : "POST",
+				data : {
+						ID :$("#partMapID").val(),
+						INNER_COORDINATE:strCordinates,
+						CLIENT_ID:strClientIds,
+						TERMID:gtermid,
+						GateWayID:gGatewayID
+				},
+				dataType : "json",
+				success : function(data) {
+					succssflag=true;	
+					if("failed" == data.result){
+						// 已经加入局部图的灯名称显示
+						alert(data.clientname+' <%=partmap_already_added %>');
+					}else{
+						//alert("路灯已保存完毕！");
+						alert('<%=part_map_light_save_finished%>');
+					}
+				},
+				error : function() {
+					BootstrapDialog.show({
+		                type:  BootstrapDialog.TYPE_DANGER,
+		                title: "<%=remind_infomation%>",
+		                message:  "<%=Part_map_addLightToPartMapFailuer%>",
+		                buttons: [{
+		                    label: "<%=shut_down%>",
+		                    action: function(dialogItself){
+		                        dialogItself.close();
+		                    }
+		                }]
+		            }); 
+					succssflag=false;
+				}
+			});
 		}else{
 			//alert("没有要保存的路灯！");
 			alert('<%=part_map_noLight_need_save%>');
 		}
+	
 	}
 	
 	function change_light(clientid){
@@ -1726,49 +1742,49 @@ function searchConerr() {
 function getInfoContent(data) {
 	
 	 //路灯
-   var sContent_light =   
-   "<html>"+
-   "<head>"+
-   "<meta charset='UTF-8'>"+
-   "<title>"+"Insert title here"+"</title>"+
-   "<link rel='styleSheet' type='text/css' href='static/map/css/base.css' />"+
-   "<link rel='styleSheet' type='text/css' href='static/map/css/content_light.css' />"+
-   "</head>"+
-   "<body>"+
-   	"<div id= 'main'>"+
-   		"<div class = 'head'>"+
-   			"<p>"+data.name+"</p>"+
-   		"</div>"+
-   		"<div class = 'mid'>"+
-   			"<div class='introduction'>"+
-   				"<ul >"+
-   					"<li>"+
-   						"<a>"+"<%=serial_number%>"+"："+data.id+"</a>"+
-   					"</li>"+
-   					"<li>"+
-   						"<a>"+"<%=name%>"+"："+ data.name+"</a>"+
-   					"</li>"+
-   					"<li>"+
-   						"<a>"+"<%=pole_number2%>"+"："+ data.lamppolenum+"</a>"+
-   					"</li>"+
-   					"<li >"+
-   						"<a>"+"<%=location%>"+"："+ data.location+"</a>"+
-   					"</li>"+
-   					"<li >"+
+  var sContent_light =   
+  "<html>"+
+  "<head>"+
+  "<meta charset='UTF-8'>"+
+  "<title>"+"Insert title here"+"</title>"+
+  "<link rel='styleSheet' type='text/css' href='static/map/css/base.css' />"+
+  "<link rel='styleSheet' type='text/css' href='static/map/css/content_light.css' />"+
+  "</head>"+
+  "<body>"+
+  	"<div id= 'main'>"+
+  		"<div class = 'head'>"+
+  			"<p>"+data.name+"</p>"+
+  		"</div>"+
+  		"<div class = 'mid'>"+
+  			"<div class='introduction'>"+
+  				"<ul >"+
+  					"<li>"+
+  						"<a>"+"<%=serial_number%>"+"："+data.id+"</a>"+
+  					"</li>"+
+  					"<li>"+
+  						"<a>"+"<%=name%>"+"："+ data.name+"</a>"+
+  					"</li>"+
+  					"<li>"+
+  						"<a>"+"<%=pole_number2%>"+"："+ data.lamppolenum+"</a>"+
+  					"</li>"+
+  					"<li >"+
+  						"<a>"+"<%=location%>"+"："+ data.location+"</a>"+
+  					"</li>"+
+  					"<li >"+
 							"<a>"+"<%=group_name%>"+"："+ data.termname+"</a>"+
 						"</li>"+
 						"<li >"+
 							"<a  id='brightnessValueLight' >"+"<%=brightness_value%>"+"："+ data .brightness+"</a>"+
 					"</li>"+
-   				"</ul>"+
-   			"</div>"+
-//    			"<div class='image'>"+
-//    				"<img src='static/map/img/light1.png' />"+
-//    			"</div>"+
-   		"</div>"+
-   		"<div class='bottom'>"+
-       		"<div class='b1' onclick ='TurnOnLight()'>"+
-					"<div class='bimg1'>"+
+  				"</ul>"+
+  			"</div>"+
+//   			"<div class='image'>"+
+//   				"<img src='static/map/img/light1.png' />"+
+//   			"</div>"+
+  		"</div>"+
+  		"<div class='bottom'>"+
+      		"<div class='b1' onclick ='TurnOnLight()'>"+
+					"<div style='width:20px;' class='bimg1'>"+
 						"<img src='static/map/img/bulb_on.png'>"+
 					"</div>"+
 					"<div class='btx1'>"+
@@ -1796,79 +1812,79 @@ function getInfoContent(data) {
 					"<select class='s1'  onchange='change_bright(this.options[this.options.selectedIndex].value)'>"
 					
 			        var lightop="";
-   				for(var i = 0; i <=100; i=i+10){
-   					var lightop2="";
-   					if(i!=data.brightness)
-   						{
-   							lightop2="<option value="+i+">"+i+"</option>";
-   						}else{
-   							lightop2="<option value="+i+" selected = 'selected'>"+i+"</option>";
-   						}
-   					lightop=lightop+lightop2;
-   				}
+  				for(var i = 0; i <=100; i=i+10){
+  					var lightop2="";
+  					if(i!=data.brightness)
+  						{
+  							lightop2="<option value="+i+">"+i+"</option>";
+  						}else{
+  							lightop2="<option value="+i+" selected = 'selected'>"+i+"</option>";
+  						}
+  					lightop=lightop+lightop2;
+  				}
 					 sContent_light=sContent_light+lightop+
 			    	"</select>"+
 			    "</div>"+
 			"</div>"+
-   	"</div>"+
-   "</body>"+
-   "</html>";
-   
-   
-  //断路器
-   var sContent_Breaker =   
-       "<html>"+
-       "<head>"+
-       "<meta charset='UTF-8'>"+
-       "<title>"+"Insert title here"+"</title>"+
-       "<link rel='styleSheet' type='text/css' href='static/map/css/base.css' />"+
-       "<link rel='styleSheet' type='text/css' href='static/map/css/content_breaker.css' />"+
-       "</head>"+
-       "<body>"+
-       	"<div id= 'main'>"+
-       		"<div class = 'head'>"+
-       			"<p>"+data.name+"</p>"+
-       		"</div>"+
-       		"<div class = 'mid'>"+
-       			"<div class='introduction'>"+
-       				"<ul >"+
-       					"<li>"+
-       						"<a>"+"<%=serial_number%>"+"："+data .id+"</a>"+
-       					"</li>"+
-       					"<li>"+
-       						"<a>"+"<%=name%>"+"："+  data .name+"</a>"+
-       					"</li>"+
-       					"<li>"+
-       						"<a>"+"<%=pole_number2%>"+"："+ data .lamppolenum+"</a>"+
-       					"</li>"+
-       					"<li >"+
-       						"<a>"+"<%=location%>"+"："+data .location+"</a>"+
-       					"</li>"+
-       					"<li >"+
-   							"<a>"+"<%=blockout_time%>"+"："+data .powerdown+"</a>"+
-   						"</li>"+
-   						"<li >"+
+  	"</div>"+
+  "</body>"+
+  "</html>";
+  
+  
+ //断路器
+  var sContent_Breaker =   
+      "<html>"+
+      "<head>"+
+      "<meta charset='UTF-8'>"+
+      "<title>"+"Insert title here"+"</title>"+
+      "<link rel='styleSheet' type='text/css' href='static/map/css/base.css' />"+
+      "<link rel='styleSheet' type='text/css' href='static/map/css/content_breaker.css' />"+
+      "</head>"+
+      "<body>"+
+      	"<div id= 'main'>"+
+      		"<div class = 'head'>"+
+      			"<p>"+data.name+"</p>"+
+      		"</div>"+
+      		"<div class = 'mid'>"+
+      			"<div class='introduction'>"+
+      				"<ul >"+
+      					"<li>"+
+      						"<a>"+"<%=serial_number%>"+"："+data .id+"</a>"+
+      					"</li>"+
+      					"<li>"+
+      						"<a>"+"<%=name%>"+"："+  data .name+"</a>"+
+      					"</li>"+
+      					"<li>"+
+      						"<a>"+"<%=pole_number2%>"+"："+ data .lamppolenum+"</a>"+
+      					"</li>"+
+      					"<li >"+
+      						"<a>"+"<%=location%>"+"："+data .location+"</a>"+
+      					"</li>"+
+      					"<li >"+
+  							"<a>"+"<%=blockout_time%>"+"："+data .powerdown+"</a>"+
+  						"</li>"+
+  						"<li >"+
 								"<a>"+"<%=electricity_time%>"+"："+data .powerup+"</a>"+
 						"</li>"+
-       				"</ul>"+
-       			"</div>"+
-       			"<div class='image'>"+
-       				"<img src='static/map/img/breaker.png' />"+
-       			"</div>"+
-       		"</div>"+
-       	"</div>"+
-       "</body>"+
-       "</html>";
-       var op="";
-   if(data.cclientgateway!=null){
- 
-   	for(var i = 0; i < data.cclientgateway.length; i++){
-   		op=op+"<option value='1'>"+data.cclientgateway[i]+"</option>";
-   	}
-   	  //console.log(op);
-   }
-       //网关
-       var sContent_Gateway =   
+      				"</ul>"+
+      			"</div>"+
+      			"<div class='image'>"+
+      				"<img src='static/map/img/breaker.png' />"+
+      			"</div>"+
+      		"</div>"+
+      	"</div>"+
+      "</body>"+
+      "</html>";
+      var op="";
+  if(data.cclientgateway!=null){
+
+  	for(var i = 0; i < data.cclientgateway.length; i++){
+  		op=op+"<option value='1'>"+data.cclientgateway[i]+"</option>";
+  	}
+  	  //console.log(op);
+  }
+      //网关
+      var sContent_Gateway =   
 	        "<html>"+
 	        "<head>"+
 	        "<meta charset='UTF-8'>"+
@@ -1902,7 +1918,7 @@ function getInfoContent(data) {
 		        					"<select class='s2'>"+
 										op+
 						    	    "</select>"+		
-       						"</li>"+
+      						"</li>"+
 	        				"</ul>"+
 	        			"</div>"+
 	        			"<div class='image'>"+
@@ -1912,15 +1928,15 @@ function getInfoContent(data) {
 	        	"</div>"+
 	        "</body>"+
 	        "</html>";
-       if(data.aliastypename.indexOf("灯" ) >=0){
-       	return sContent_light;
-       }else if(data.aliastypename.indexOf("断路器" ) >=0){
-       	return sContent_Breaker;
-       }else if(data.aliastypename.indexOf("网关") >= 0){
-       	return sContent_Gateway;
-       }else {
-       	return "无";
-       }
-       	
+      if(data.aliastypename.indexOf("灯" ) >=0){
+      	return sContent_light;
+      }else if(data.aliastypename.indexOf("断路器" ) >=0){
+      	return sContent_Breaker;
+      }else if(data.aliastypename.indexOf("网关") >= 0){
+      	return sContent_Gateway;
+      }else {
+      	return "无";
+      }
+      	
 }</script>
 </html>

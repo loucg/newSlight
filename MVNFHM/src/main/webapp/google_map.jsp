@@ -817,8 +817,11 @@ body {
 				else strClientIds += ';' + tempdiv.id.replace("light","");
 				
 				if(strCordinates=='') strCordinates += tempdiv.name.replace("px","");
-				else strCordinates += ';' + tempdiv.name.replace("px","");							
+				else strCordinates += ';' + tempdiv.name.replace("px","");	
+				//删除已经追加的路灯
+				clearOverlaysByClientID($("#selLight ").get(0).options[i].value);
 			}
+			
 		}
 // 		alert(lightnum);
 		if(lightnum>0){
@@ -829,6 +832,8 @@ body {
 						ID :$("#partMapID").val(),
 						INNER_COORDINATE:strCordinates,
 						CLIENT_ID:strClientIds,
+						TERMID:gtermid,
+						GateWayID:gGatewayID
 				},
 				dataType : "json",
 				success : function(data) {

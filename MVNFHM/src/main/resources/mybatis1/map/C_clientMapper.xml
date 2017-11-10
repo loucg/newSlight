@@ -373,7 +373,7 @@
 			#{inner_coordinate},
 			#{c_client_id},
 			(select cct.c_gateway_id from c_client_gateway cct where cct.c_client_id=#{c_client_id} limit 1),
-			(select cct.c_term_id from c_client_term cct where cct.c_client_id=#{c_client_id} limit 1)
+			#{c_termid}
 		)
   	</insert>
   	
@@ -401,8 +401,12 @@
   	select distinct a.id,partmap_name ,a.external_coordinate 
   			,a.map_pictrue_path,a.c_client_type_id ,b.c_termid,b.inner_coordinate, b.c_client_id,a.map_pictrue_path 
   	from c_partmap A LEFT JOIN c_partmap_detail B on a.id=b.id
- 	
-  
+		<if test="c_termid!=null and c_termid!=''">
+			and B.c_termid=#{c_termid}
+		</if>
+		<if test="c_gatewayid!=null and c_gatewayid!=''">
+			and B.c_gateway_id=#{c_gatewayid}
+		</if>
 	where  1=1  
 			<if test="partmap_name!=null and partmap_name!=''">
 			and (a.partmap_name=#{partmap_name})
@@ -417,18 +421,10 @@
 			and (a.id=#{id})
 			</if>
 			<if test="c_termid!=null and c_termid!=''">
-				and ((b.c_termid=#{c_termid})
-					OR ( Not Exists( select 1 from c_partmap_detail where c_termid=#{c_termid})
-					AND Exists( select 1 from c_partmap where   partmap_termid=a.partmap_termid
-					       		and partmap_termid=#{c_termid})))
-				
+				and A.partmap_termid=#{c_termid}			
 			</if>
 			<if test="c_gatewayid!=null and c_gatewayid!=''">
-				and ((b.c_gateway_id=#{c_gatewayid})
-					  OR ( Not Exists( select 1 from c_partmap_detail where c_gateway_id=#{c_gatewayid})
-					   			AND Exists( select 1 from c_partmap where   partmap_gateway_id=a.partmap_gateway_id
-					       		and partmap_gateway_id=#{c_gatewayid})))
-		
+				and A.partmap_gateway_id=#{c_gatewayid}			
 			</if>
 			ORDER BY a.id,external_coordinate
 			

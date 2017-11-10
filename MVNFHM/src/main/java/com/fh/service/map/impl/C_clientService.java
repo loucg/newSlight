@@ -510,7 +510,7 @@ public class C_clientService implements C_clientManager {
 	 */
 	@Override
 	public List<c_partmap> queryPartMapCountByClientId(c_partmap cp) throws Exception {
-		return (List<c_partmap>) dao.findForObject("C_clientMapper.queryPartMapCountByClientId", cp);
+		return (List<c_partmap>) dao.findForList("C_clientMapper.queryPartMapCountByClientId", cp);
 	}
 
 }

@@ -579,7 +579,6 @@ public class MapContentController extends BaseController {
 			c_partmap cp = new c_partmap();
 			cp.setId(pd.getString("ID"));
 			cp.setC_client_id(clientId);
-
 			List<c_partmap> cc = c_clientService.queryPartMapCountByClientId(cp);
 			// 局部图中已经有此灯
 			if (cc != null && cc.size() > 0) {
@@ -602,13 +601,16 @@ public class MapContentController extends BaseController {
 
 			c_client cc = new c_client();
 			cc.setC_client_id(clientId);
-			List<c_client> gatewayInfo = c_clientService.getClientGatewayInfo(cc);
-			if (gatewayInfo != null && gatewayInfo.size() > 0) {
-				cp.setC_gatewayid(String.valueOf(gatewayInfo.get(0).getGatewayid()));
-			}
+			// List<c_client> gatewayInfo = c_clientService.getClientGatewayInfo(cc);
+			// if (gatewayInfo != null && gatewayInfo.size() > 0) {
+			// cp.setC_gatewayid(String.valueOf(gatewayInfo.get(0).getGatewayid()));
+			// }
+			cp.setC_gatewayid(pd.getString("GateWayID"));
+			cp.setC_termid(pd.getString("TERMID"));
+
 			cp.setC_client_id(clientId);
 			cp.setInner_coordinate(coordinate);
-			cp.setC_termid(pd.getString("TERM_ID"));
+			// cp.setC_termid(pd.getString("TERM_ID"));
 			// 插入局部图信息
 			c_clientService.insertPartMapDetail(cp);
 		}
@@ -625,8 +627,8 @@ public class MapContentController extends BaseController {
 		Map<String, Object> map = new HashMap<String, Object>();
 		c_partmap cp = new c_partmap();
 		cp.setC_client_id(pd.getString("CLIENT_ID"));
-		cp.setC_termid(pd.getString("TERM_ID"));
-		cp.setC_gatewayid(pd.getString("gatewayID"));
+		// cp.setC_termid(pd.getString("TERM_ID"));
+		// cp.setC_gatewayid(pd.getString("gatewayID"));
 		cp.setExternal_coordinate(pd.getString("EXTERNAL_COORDINATE"));
 		cp.setMap_pictrue_path(pd.getString("PARTMAP_URL"));
 		cp.setPartmap_name(pd.getString("PARTMAP_NAME"));
