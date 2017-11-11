@@ -43,7 +43,7 @@ public class APowerController extends BaseController{
 		ModelAndView mv = this.getModelAndView();
 		PageData pd = new PageData();
 		pd = this.getPageData();
-		String groupname = pd.getString("groupname");					//组名 
+		String groupname = pd.getString("groupname");					//组名 11
 		if(null != groupname && !"".equals(groupname)){
 			pd.put("groupname", groupname.trim());
 		}
