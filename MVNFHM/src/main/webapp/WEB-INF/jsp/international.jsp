@@ -651,4 +651,8 @@
 	String pls_select_strategyset = properties.getProperty("pls_select_strategyset");//请选择需要删除的策略包
 	String PartMap_Light_No_Exists  = properties.getProperty("PartMap_Light_No_Exists");//	路灯在地图上不存在，请检查路灯参数(亮度值等相关参数）
 	String partmap_already_added  = properties.getProperty("partmap_already_added");// 已经加入其他局部图,不可重复加入！
+	String light_name = properties.getProperty("light_name");//label:路灯名称
+	String part_name =  properties.getProperty("part_name");//label:局部图名称
+	String light_select =  properties.getProperty("light_select");//label:路灯选择
+	String partMap_light_delconfirm =  properties.getProperty("partMap_light_delconfirm");//label:路灯确认删除确认
 %>

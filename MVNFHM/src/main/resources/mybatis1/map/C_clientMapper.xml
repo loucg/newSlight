@@ -251,8 +251,7 @@
 			</if>
 			<if test="partMap_Id!=null and partMap_Id!=''">
 			and Not exists(select cdl.c_client_id,external_coordinate,cpp.id from c_partmap cpp inner join 
-							c_partmap_detail cdl where cdl.id=cpp.id and (cdl.c_termid=#{termid} or cdl.c_gateway_id=#{gatewayid})
-							 and cdl.id!=#{partMap_Id} and cdl.c_client_id=cca.c_client_id)
+							c_partmap_detail cdl where cdl.id=cpp.id  and cdl.id!=#{partMap_Id} and cdl.c_client_id=cca.c_client_id)
 			</if>
 			ORDER BY cct.c_client_id ASC
   	</select>

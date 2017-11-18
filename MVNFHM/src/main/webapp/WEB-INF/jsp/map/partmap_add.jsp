@@ -34,7 +34,7 @@
 							</tr>
 							<tr>
 								<td class='center'><%=part_map_coordinate %></td>
-								<td><input type='text' name="xycoordinate"  id="xycoordinat" size=30 value="${pd.XPoint },${pd.YPoint }"/></td>
+								<td><input type='text' readonly name="xycoordinate"  id="xycoordinat" size=30 value="${pd.XPoint },${pd.YPoint }"/></td>
 							</tr>
 							<input type =hidden id='partMapURL'name="partMapURL" value="${pd.mapFilePath}"></input>
 							<input type =hidden id='termID' name="termID"  value="${pd.termID}"></input>
@@ -73,6 +73,17 @@
 	<!-- 上传控件 -->
 	<script src="static/ace/js/ace/elements.fileinput.js"></script>
 		<script type="text/javascript">
+		$(document).ready(function(){
+			if('${msg}'=='success'){
+				var parentObj =getParentFrameObj();
+				parentObj.getElementById('MarkerXYCoordinate').value=document.getElementById('xycoordinat').value;
+				parentObj.getElementById('partMapName').value= document.getElementById('mapPicName').value;
+				parentObj.getElementById('partMapID').value=document.getElementById('partMapID').value;;
+				parentObj.getElementById('addMarker').click();
+				getParentFrameObj().getElementById('openMarker').click();
+				top.Dialog.close();
+			}
+		});
 		$(top.hangge());
 		$(function() {
 			//上传
@@ -125,10 +136,8 @@
 			$("#Form").submit();
 			$("#zhongxin").hide();
 			$("#zhongxin2").show();
-			var parentObj =getParentFrameObj();
-			parentObj.getElementById('MarkerXYCoordinate').value=document.getElementById('xycoordinat').value;
-			parentObj.getElementById('addMarker').click();
-			parentObj.getElementById('partMapName').value= document.getElementById('mapPicName').value;
+			
+			
 		}
 		function fileType(obj){
 			var fileType=obj.value.substr(obj.value.lastIndexOf(".")).toLowerCase();//获得文件后缀名

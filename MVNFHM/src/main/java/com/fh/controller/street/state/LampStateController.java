@@ -338,8 +338,11 @@ public class LampStateController extends BaseController{
 		
 		String DATA_IDS = pd.getString("DATA_IDS");
 		
+		String DATA_CLIENTID = pd.getString("DATA_CLIENTID");
+		
 		if(null !=DATA_IDS && !"".equals(DATA_IDS)){
 			String ArrayDATA_IDS[] = DATA_IDS.split(";");
+			String ArrayDATA_CLIENTID[] = DATA_CLIENTID.split(";");
 			for(int i=0;i<ArrayDATA_IDS.length;i++){
 				pd.put("id", ArrayDATA_IDS[i]);
 				lampStateService.adjustBrt(pd);
@@ -348,7 +351,7 @@ public class LampStateController extends BaseController{
 			System.out.println(ArrayDATA_IDS.toString());
 			//日志的添加 2017-4-15
 			//fhlogService.saveDeviceLog(userid, comment, deviceids, gatewayid, cmdType, value);
-			fhlogService.saveDeviceLog(UserUtils.getUserid(), "调节亮度", ArrayDATA_IDS, null, 7, pd.getString("brightness"));
+			fhlogService.saveDeviceLog(UserUtils.getUserid(), "调节亮度", ArrayDATA_CLIENTID, null, 7, pd.getString("brightness"));
 			
 		}else{
 			System.out.println();
@@ -379,9 +382,12 @@ public class LampStateController extends BaseController{
 		Date tdate = new Date();
 		pd.put("tdate", tdate);
 		String DATA_IDS = pd.getString("DATA_IDS");
+		String DATA_CLIENTID = pd.getString("DATA_CLIENTID");
 		System.out.println(DATA_IDS);
+		System.out.println(DATA_CLIENTID);
 		if(null != DATA_IDS && !"".equals(DATA_IDS)){
 			String ArrayDATA_IDS[] = DATA_IDS.split(";");
+			String ArrayDATA_CLIENTID[] = DATA_CLIENTID.split(";");
 			for(int i=0;i<ArrayDATA_IDS.length;i++){
 				pd.put("id", ArrayDATA_IDS[i]);
 				pd.put("brightness", "100");
@@ -389,9 +395,9 @@ public class LampStateController extends BaseController{
 				lampStateService.adjustBrt(pd);
 			}
 			pd.put("msg", "ok");
-			System.out.println(ArrayDATA_IDS);
+			System.out.println(DATA_CLIENTID);
 			//日志的添加 2017-4-15
-			fhlogService.saveDeviceLog(UserUtils.getUserid(), "开灯", ArrayDATA_IDS, null, 6, "100");
+			fhlogService.saveDeviceLog(UserUtils.getUserid(), "开灯", ArrayDATA_CLIENTID, null, 6, "100");
 		}else{
 			pd.put("msg", "no");
 		}
@@ -419,15 +425,17 @@ public class LampStateController extends BaseController{
 		Date tdate = new Date();
 		pd.put("tdate", tdate);
 		String DATA_IDS = pd.getString("DATA_IDS");
+		String DATA_CLIENTID = pd.getString("DATA_CLIENTID");
 		if(null != DATA_IDS && !"".equals(DATA_IDS)){
 			String ArrayDATA_IDS[] = DATA_IDS.split(";");
+			String ArrayDATA_CLIENTID[] = DATA_CLIENTID.split(";");
 			for(int i=0;i<ArrayDATA_IDS.length;i++){
 				pd.put("id", ArrayDATA_IDS[i]);
 				pd.put("brightness", "0");
 				lampStateService.adjustBrt(pd);
 			}
 			//日志的添加 2017-4-15
-			fhlogService.saveDeviceLog(UserUtils.getUserid(), "关灯", ArrayDATA_IDS, null, 6, "0");
+			fhlogService.saveDeviceLog(UserUtils.getUserid(), "关灯", ArrayDATA_CLIENTID, null, 6, "0");
 			pd.put("msg", "ok");
 		}else{
 			pd.put("msg", "no");

@@ -139,6 +139,7 @@
 										<tr>
 											<td class='center'>
 												<label class="pos-rel"><input type='radio' name='ids' value="${lampState.id}" class="ace" /><span class="lbl"></span></label>
+												<input type= "hidden" name = "clientId" value = "${lampState.c_client_id}"></input>
 											</td>
 											<td class='center' style="width: 30px;">${vs.index+1}</td>
 											<td class='center'><a onclick="viewLampDetail('${lampState.id}')" style="cursor:pointer;">${lampState.client_code }</a></td>
@@ -288,6 +289,7 @@
 		function makeAll(msg){
 			bootbox.confirm(msg, function(result) {
 				if(result) {
+					var onClientId = '';
 					var onlamp = '';
 					var offlamp = '';
 					var bright = '';
@@ -297,6 +299,9 @@
 						  if(document.getElementsByName('ids')[i].checked){
 						  	if(onlamp=='') onlamp += document.getElementsByName('ids')[i].value;
 						  	else onlamp += ';' + document.getElementsByName('ids')[i].value;
+						  	
+						  	if(onClientId=='') onClientId += document.getElementsByName('clientId')[i].value;
+						  	else onClientId += ';' + document.getElementsByName('clientId')[i].value;
 						  	
 						  	if(offlamp=='') offlamp += document.getElementsByName('ids')[i].value;
 						  	else offlamp += ';' + document.getElementsByName('ids')[i].value;
@@ -328,7 +333,7 @@
 							$.ajax({
 								type: "POST",
 								url: '<%=basePath%>state/lamp/openLight.do',
-						    	data: {DATA_IDS:onlamp},
+						    	data: {DATA_IDS:onlamp,DATA_CLIENTID:onClientId},
 								dataType:'json',
 								//beforeSend: validateData,
 								cache: false,
@@ -343,7 +348,7 @@
 							$.ajax({
 								type: "POST",
 								url: '<%=basePath%>state/lamp/offLight.do',
-						    	data: {DATA_IDS:offlamp},
+						    	data: {DATA_IDS:offlamp,DATA_CLIENTID:onClientId},
 								dataType:'json',
 								//beforeSend: validateData,
 								cache: false,
@@ -354,9 +359,9 @@
 								}
 							});
 						}else if(msg == '<%=make_sure_adjust_brightness %>?'){
-							adjustBrt(bright);
+							adjustBrt(bright,onClientId);
 						}else if(msg == '<%=make_sure_adjust_strategy %>?'){
-							adjustStr(str);
+							adjustStr(str,onClientId);
 						}
 					}
 				}
@@ -364,12 +369,12 @@
 		}	
 		
 		//去调节亮度界面
-		function adjustBrt(bright){
+		function adjustBrt(bright,clientId){
 			 top.jzts();
 			 var diag = new top.Dialog();
 			 diag.Drag=true;
 			 diag.Title ="<%=brightness_adjust %>";
-			 diag.URL = '<%=basePath%>state/lamp/goAdjustBrt.do?DATA_IDS='+ bright; 
+			 diag.URL = '<%=basePath%>state/lamp/goAdjustBrt.do?DATA_IDS='+ bright +'&DATA_CLIENTID='+ clientId; 
 			 diag.Width = 469;
 			 diag.Height = 150;
 			 diag.CancelEvent = function(){ //关闭事件

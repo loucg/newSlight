@@ -42,6 +42,7 @@
 						<table id="table_report" class="table table-striped table-bordered table-hover">
 							<tr style="display:none">
 						   		 <td><input type="text" name="DATA_IDS" id="DATA_IDS" value="${pd.DATA_IDS }" /></td>
+						   		 <td><input type="text" name=DATA_CLIENTID id="DATA_CLIENTID" value="${pd.DATA_CLIENTID }" /></td>
 						    </tr>
 							<p>
 							  <label for="brightness"><%=brightness_level %>：</label>

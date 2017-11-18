@@ -89,7 +89,7 @@
 	<!--终端列表 -->
 	<select id="clientInfolistPage" parameterType="page" resultType="pd">
 		SELECT
-		c_client_attr1.id, c_client.client_code, c_client_attr1.`name` cname,
+		c_client_attr1.id, c_client_attr1.c_client_id,c_client.client_code, c_client_attr1.`name` cname,
 		c_client_attr1.location, c_client_attr1.lamp_pole_num, c_client_upload_status.temperature,
 		c_client_upload_status.voltage, c_client_upload_status.power_factor,  b_status.name as `status_name`,c_client_upload_status.brightness,
 		CASE WHEN c_client_attr1.node2 = '0' or c_client_attr1.node2 = '00' THEN c_client_attr1.node

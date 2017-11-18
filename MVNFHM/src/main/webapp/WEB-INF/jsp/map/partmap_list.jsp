@@ -49,10 +49,10 @@
 										<tr>
 									
 											<td class='center' style="width: 30px;">${vs.index+1}<input type='hidden' name="hdstrategyIds" value="${group.strategy_num}"/></td>
-											<td class='center'>${var.partmap_name}<input type='hidden' name="hdgroupname" value="${var.partmap_name}"/></td>
+											<td class='center' style="width: 200px;word-break:break-all" >${var.partmap_name}<input type='hidden' name="hdgroupname" value="${var.partmap_name}"/></td>
 											<td class='center' style="width: 50px;">${var.external_coordinate}</td>
-											<td class='center'>${var.clinetCnt}</td>
-											<td class='center'><img src="<%=basePath%>uploadFiles/uploadImgs/partmap/${var.map_pictrue_path}" width="100" height=50px></td>
+											<td class='center'  style="width: 80px;">${var.clinetCnt}</td>
+											<td class='center' style="width: 100px;"><img src="<%=basePath%>uploadFiles/uploadImgs/partmap/${var.map_pictrue_path}" width="100" height=50px></td>
 											<td class='center'>
 											<a class="btn btn-xs btn-danger" onclick="edit('${var.external_coordinate}','${var.ID}');">
 												<%=modify %>
@@ -153,6 +153,8 @@
 						dataType : "json",
 						success : function(data) {
 							if("success" == data.result){
+								//地图重新装载。
+								ConframeObj.getElementById('reloadMap').click();
 								 nextPage('${page.currentPage}');
 									 $("#zhongxin").hide();
 									$("#zhongxin2").show();

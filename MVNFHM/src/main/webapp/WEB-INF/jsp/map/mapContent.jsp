@@ -79,32 +79,37 @@
 			<table class="tbform">
 				<tbody>
 					<tr>
-					<td class="tdl"><span><%=part_map_select%></span> <select class="ipt"
+					<td class="tdl"  width="14%"><span><%=part_map_select%></span> <select 
+					style="width:70%;"
 							id="selectgroup"name=selectgroup onchange="changeselect()">
 								<option value="1" selected><%=group %></option>
 								<option value="2"><%=gateway%></option>
 						</select></td>
-						<td class="tdl"><span id='groupnamesel'><%=group_name %>:</span> <select class="ipt"
+						<td class="tdl" width="22%"><span id='groupnamesel'><%=group_name %>:</span> 
+						<select style="width:60%;"
 							id="groupname" onchange="changegroupname()">
 								<option value=""></option>
 						</select></td>
-						<td class="tdl"><span><%=type%>:</span> <select class="ipt"
+						<td class="tdl" width="15%"><span><%=type%>:</span> <select  style="width:70%;"
 							id="terminaltype" onchange="changeterminaltype()">
 								<option value=""></option>
 						</select></td>
-						<td class="tdl"><span><%=address%>:</span> <select class="ipt"
+						<td class="tdl" width="19%"><span><%=address%>:</span> 
+							<select style="width:70%;"
 							id="address" onchange="changeAddress()">
 								<option value=""></option>
 						</select></td>
-						<td class="tdl"><span><%=name %>:</span> <select class="ipt"
+						<td class="tdl" width="17%"><span><%=name %>:</span> 
+						<select style="width:70%;"
 							id="terminalname"  onchange="changeterminalname()">
 								<option value=""></option>
 						</select></td>
-						<td class="tdl"><span><%=serial_number %>:</span> <select class="ipt"
+						<td class="tdl" width="17%"><span><%=serial_number %>:</span> 
+						<select style="width:41%;"
 							id="terminalid">
 								<option value=""></option>
 						</select></td>
-						<td class="tdl" style="width: 4%;"><input class="btn btn-primary"
+						<td class="tdl" style="width: 2%;"><input class="btn btn-primary"
 							id="check" type="button"  value=<%=search1%> style=
 							"padding-left:10px;"/> <!-- <input class="btn btn-warning "
 							id="reset" type="button" value="重   置" /> --></td>
@@ -667,8 +672,8 @@ function getChosetermid(){
 		 diag.Drag=true;
 		 diag.Title ="局部地图";
 		 diag.URL = '<%=basePath%>gomap/goPartMap?id='+Id+'&typeid='+type;
-		 diag.Width = 650;
-		 diag.Height = 340;
+		 diag.Width = 950;
+		 diag.Height = 440;
 		 diag.CancelEvent = function(){ //关闭事件
 			diag.close();
 		 };

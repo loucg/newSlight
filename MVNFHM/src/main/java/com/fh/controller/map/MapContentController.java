@@ -102,7 +102,6 @@ public class MapContentController extends BaseController {
 				pd.put("XPoint", request.getParameter("xycoordinate").split(",")[0]);
 				pd.put("YPoint", request.getParameter("xycoordinate").split(",")[1]);
 			}
-			// fileName.replaceAll(".", "-");
 			// 保存局部图概要信息
 			c_partmap cp = new c_partmap();
 			cp.setId(request.getParameter("partMapid"));
