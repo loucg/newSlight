@@ -1,0 +1,165 @@
+@CHARSET "UTF-8";
+#main{
+	width: 300px; 
+	height: 200px; 
+	background-color: #f8f8f8;/* d3d3d3; */
+	border-radius: 5px;
+	border: 1px solid #f8f8f8;
+}
+.head{
+	height: 14%; 
+	width:100%;
+	/* border-radius: 5px 5px 0 0;
+	background:-webkit-linear-gradient(top, #cfd6e9, #9da6c3); */
+	text-align: left;
+}
+.head p {
+	font-size: 13px;
+	/* font-weight: bold; */
+	/* color: #ffffff; */
+	line-height: 28px;
+	margin-left: 8px;
+}
+.mid{
+	display: inline-block; 
+	height: 70%;  
+	width:100%; 
+	background-color: #ffffff;
+}
+.introduction{
+	float:left; 
+	display:inline-block;
+	height: 100%; 
+	width: 140px;
+	word-break:break-all;
+    margin-left: 10px;
+	
+}
+.introduction ul{
+	margin-top: 0px; 
+	margin-bottom: 0px; 
+	padding-left: 0px;
+	
+}
+.introduction li{
+	list-style: none;
+	margin-top: 3px;
+}
+.introduction li:nth-child(1){
+	margin-top: 10px;
+}
+.image{
+/* 	width: 140px; 
+	height: 140px; 
+	float:right; */
+	width: 220px;
+    height: 120px;
+    float: right;
+    padding: 10px;
+    border:2px;
+}
+.image img{
+	width: 120px; 
+	height: 120px; 
+}
+.bottom{
+	text-align:center;
+	height: 16%;  
+	width:100%;
+	justify-content:center;
+    align-items:center;
+}
+.bottom .b1{
+	margin-top:2px;
+	margin-left:10px;
+	height:24px;
+	width:41px;
+	float:left;
+	border-radius: 3px;
+}
+.bottom .b1:hover{
+	background-color: #ebe2e3;
+}
+.bottom .b1:active{
+	background-color: #ddcecf;
+}
+.bottom .b1 .bimg1{
+	float:left;
+	margin-top:4px
+}
+.bottom .b1 .btx1{
+	float:right;
+	margin-top:5px
+}
+
+.bottom .b2{
+	margin-top:2px;
+	margin-left:10px;
+	height:24px;
+	width:41px;
+	float:left;
+	border-radius: 3px;
+}
+.bottom .b2:hover{
+	background-color: #ebe2e3;
+}
+.bottom .b2:active{
+	background-color: #ddcecf;
+}
+.bottom .b2 .bimg2{
+	float:left;
+	margin-top:4px;
+}
+.bottom .b2 .btx2{
+	float:right;
+	margin-top:5px;
+}
+
+.bottom .b3{
+	margin-top:2px;
+	margin-left:10px;
+	height:24px;
+	width:76px;
+	float:left;
+	border-radius: 3px;
+}
+.bottom .b3:hover{
+	background-color: #ebe2e3;
+}
+.bottom .b3:active{
+	background-color: #ddcecf;
+}
+.bottom .b3 .bimg3{
+	float:left;
+	margin-top:4px
+}
+.bottom .b3 .btx3{
+	float:right;
+	margin-top:5px;
+}
+.bottom a{
+	text-decoration:none;
+	margin: 0 auto 0 0;
+	display:block;
+}
+.bottom a:hover{
+	color:#fff;
+}
+.bottom .btx4{
+	width:105px;
+	height:24px;
+	float:left;
+}
+.bottom .sh{
+	float:left;
+	height:32px;
+	margin-left:6px;
+	line-height: 30px;
+}
+.bottom .s1{
+	height:25px;
+	width:55px;
+	margin-left:5px;
+	float:left;
+}
+
