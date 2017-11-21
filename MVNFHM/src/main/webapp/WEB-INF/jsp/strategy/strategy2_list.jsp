@@ -63,11 +63,11 @@
 										<input type="text" class="nav-search-input" id="explain-input" autocomplete="off" name="explain" placeholder="<%=please_enter_app_explain %>" value="${pd.explain}"/>
 									</div>
 								</td>
+<%-- 								<c:if test="${QX.cha == 1 }"> --%>
+<%-- 								<td style="vertical-align:top;padding-left:2px;">&nbsp;&nbsp;<a class="btn btn-light btn-xs" onclick="clearSearchs();"  title="<%=clear_search_ %>" style="padding: 4px 4px;"><i id="nav-clear-icon" class="ace-icon fa fa-search bigger-110 nav-search-icon red"></i></a></td> --%>
+<%-- 								</c:if> --%>
 								<c:if test="${QX.cha == 1 }">
-								<td style="vertical-align:top;padding-left:2px;">&nbsp;&nbsp;<a class="btn btn-light btn-xs" onclick="clearSearchs();"  title="<%=clear_search_ %>" style="padding: 4px 4px;"><i id="nav-clear-icon" class="ace-icon fa fa-search bigger-110 nav-search-icon red"></i></a></td>
-								</c:if>
-								<c:if test="${QX.cha == 1 }">
-								<td style="vertical-align:top;padding-left:2px;">&nbsp;&nbsp;<a class="btn btn-light btn-xs" onclick="searchs();"  title="<%=search2 %>" style="padding: 4px 4px;"><i id="nav-search-icon" class="ace-icon fa fa-search bigger-110 nav-search-icon blue"></i></a></td>
+								<td style="vertical-align:top;padding-left:2px;">&nbsp;&nbsp;<a class="btn btn-light btn-xs" onclick="searchs();"  title="<%=search1 %>" style="padding: 3px 3px;"><i id="nav-search-icon" class="ace-icon fa fa-search bigger-110 nav-search-icon blue"></i><%=search1 %></a></td>
 								</c:if>
 							</tr>
 						</table>
@@ -145,15 +145,15 @@
 											<td class="center">${strategy2.time }</td>
 											<!-- 调节值 -->
 											<td id="adjustvalue" class="center">
-												<table width="100%" border=0>
+												<table style="width:150px;" >
 												<c:if test="${fn:startsWith(strategy2.value, 'C')}">  
-													<tr><td style="color:white;background-color:red;">${strategy2.value1 }</td></tr>
-													<tr><td style="color:white;background-color:green;">${strategy2.value2 }</td></tr>
-													<tr><td style="color:white;background-color:blue;">${strategy2.value3 }</td></tr>
+													<tr><td><img src="static/images/light-red.png" /></td><td width="50px">${strategy2.value1 }</td></tr>
+													<tr><td><img src="static/images/light-green.png" /></td><td width="50px">${strategy2.value2 }</td></tr>
+													<tr><td><img src="static/images/light-blue.png" /></td><td width="50px">${strategy2.value3 }</td></tr>
 												</c:if>
 												<c:if test="${fn:startsWith(strategy2.value, 'T')}">
-													<tr><td style="background-color:yellow;">${strategy2.value1 }</td>
-													<td style="background-color:white;">${strategy2.value2 }</td></tr>
+													<tr><td style="background-color:yellow;border: 1px solid #bbb;border-bottom-left-radius: 6px;">${strategy2.value1 }</td>
+													<td style="background-color:white;border: 1px solid #bbb;border-bottom-left-radius: 6px;">${strategy2.value2 }</td></tr>
 												</c:if>
 												</table>
 											</td>
@@ -186,7 +186,10 @@
 													<c:if test="${strategy2.status2=='2' }">
 														<div class="btn-group">
 														<c:if test="${QX.edit == 1 }">
-															<a class="btn btn-mini btn-info" title="<%=edit %>" onclick="editStrategy2(${strategy2.id});"><%=edit %></a>
+<%-- 															<a class="btn btn-mini btn-info" title="<%=edit %>" onclick="editStrategy2(${strategy2.id});"><%=edit %></a> --%>
+															<a style="cursor: pointer;" onclick="editStrategy2(${strategy2.id});" class="tooltip-success" data-rel="tooltip" title="<%=modify %>">
+																<span class="green"> <i class="ace-icon fa fa-pencil bigger-140"></i></span>
+															</a>
 														</c:if>
 														</div>
 													</c:if>
@@ -218,11 +221,11 @@
 						<tr>
 							<c:if test="${empty pd.c_term_id }">
 								<td style="vertical-align:top;">
-									<a class="btn btn-warning btn-mini" onclick="addStrategy('${pd.strategysetid}');" title="<%=add_strategy %>">
-										<%=add_strategy %>
+									<a class="btn btn-sm btn-info btn-blue" onclick="addStrategy('${pd.strategysetid}');" title="<%=add_strategy %>">
+										<i class="ace-icon fa fa-plus-square bigger-120 white"></i>&nbsp;<%=add_strategy %>
 									</a>
-									<a class="btn btn-xs btn-danger" title="<%=delete_strategy %>" onclick="makeAll('<%=make_sure_del_strategy%>');">
-										<%=delete_strategy %>
+									<a class="btn btn-sm btn-danger" title="<%=delete_strategy %>" onclick="makeAll('<%=make_sure_del_strategy%>');">
+										<i class="ace-icon fa fa-trash-o bigger-120 white"></i>&nbsp;<%=delete_strategy %>
 									</a>
 								</td>
 							</c:if>
@@ -380,7 +383,7 @@ function editStrategy2(strategy_id){
 } --%>
 
 //选择策略
-function selectStrategy(strategySet_id){
+<%-- function selectStrategy(strategySet_id){
 	 top.jzts();
 	 var diag = new top.Dialog();
 	 diag.Drag=true;
@@ -403,7 +406,7 @@ function selectStrategy(strategySet_id){
 		diag.close();
 	 };
 	 diag.show(); 
-}
+} --%>
 
 //新建策略
 function addStrategy(strategySet_id){

@@ -102,7 +102,7 @@ body,ul,li{	margin:0;
 			
 			</ul>	
 			 <ul class="box">
-			<li><a onclick="edit(314,'策略管理','strategy/listStrategys.do');" ><img src="static/login/images/clkz.jpg"/></a></li> 
+			<li><a onclick="edit(314,'策略管理','strategy/listStrategySet.do');" ><img src="static/login/images/clkz.jpg"/></a></li> 
 	 		<li><a onclick="edit(369,'数据分析','poweranalysis/powerlist');"><img src="static/login/images/sjfx.jpg"/></a></li> 
 			<li><a onclick="edit(344,'维修记录','repair/weixiu');"><img src="static/login/images/wxjl.jpg"/></a></li>
 <!-- 			<li><a onclick="edit(67,'基础配置','config/goCombination');"><img src="static/login/images/jcpz.jpg"/></a></li> -->
@@ -213,7 +213,7 @@ body,ul,li{	margin:0;
 			<li><a onclick="edit(369,'能耗统计','poweranalysis/powerlist');"><img src="static/login/images/sjfx_01.jpg"/></a></li>
 			<li><a onclick="edit(344,'维修记录','repair/weixiu');"><img src="static/login/images/wxjl_01.jpg"/></a></li> 
 			 -->
-			 <li><a onclick="edit(314,'策略管理','strategy/listStrategys.do');" ><img src="static/login/images/clkz_01.jpg"/></a></li> 
+			 <li><a onclick="edit(314,'策略管理','strategy/listStrategySet.do');" ><img src="static/login/images/clkz_01.jpg"/></a></li> 
 	 		 <li><a onclick="edit(369,'数据分析','poweranalysis/powerlist');"><img src="static/login/images/sjfx_01.jpg"/></a></li> 
 			 <li><a onclick="edit(344,'维修记录','repair/weixiu');"><img src="static/login/images/wxjl_01.jpg"/></a></li>
 			</ul>

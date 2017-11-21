@@ -52,11 +52,11 @@
 										<input type="text" class="nav-search-input" id="explain-input" autocomplete="off" name="explain" placeholder="<%=please_enter_strategyset_explain %>" value="${pd.explain}"/>
 									</div>
 								</td>
+<%-- 								<c:if test="${QX.cha == 1 }"> --%>
+<%-- 								<td style="vertical-align:top;padding-left:2px;">&nbsp;&nbsp;<a class="btn btn-light btn-xs" onclick="clearSearchs();"  title="<%=clear_search_ %>" style="padding: 4px 4px;"><i id="nav-clear-icon" class="ace-icon fa fa-search bigger-110 nav-search-icon red"></i></a></td> --%>
+<%-- 								</c:if> --%>
 								<c:if test="${QX.cha == 1 }">
-								<td style="vertical-align:top;padding-left:2px;">&nbsp;&nbsp;<a class="btn btn-light btn-xs" onclick="clearSearchs();"  title="<%=clear_search_ %>" style="padding: 4px 4px;"><i id="nav-clear-icon" class="ace-icon fa fa-search bigger-110 nav-search-icon red"></i></a></td>
-								</c:if>
-								<c:if test="${QX.cha == 1 }">
-								<td style="vertical-align:top;padding-left:2px;">&nbsp;&nbsp;<a class="btn btn-light btn-xs" onclick="searchs();"  title="<%=search2 %>" style="padding: 4px 4px;"><i id="nav-search-icon" class="ace-icon fa fa-search bigger-110 nav-search-icon blue"></i></a></td>
+								<td style="vertical-align:top;padding-left:2px;">&nbsp;&nbsp;<a class="btn btn-light btn-xs" onclick="searchs();"  title="<%=search1 %>" style="padding: 3px 3px;"><i id="nav-search-icon" class="ace-icon fa fa-search bigger-110 nav-search-icon white"></i><%=search1 %></a></td>
 								</c:if>
 							</tr>
 						</table>
@@ -112,14 +112,21 @@
 													</c:if>
 													<div class="btn-group">
 													<c:if test="${QX.edit == 1 }">
-														<a class="btn btn-mini btn-info" title="<%=edit %>" onclick="editStrategySet('${strategySet.id}');">
-															<%=edit %>
+<%-- 														<a class="btn btn-mini btn-info" title="<%=edit %>" onclick="editStrategySet('${strategySet.id}');"> --%>
+<%-- 															<%=edit %> --%>
+<!-- 														</a> -->
+														<a style="cursor: pointer;" onclick="editStrategySet('${strategySet.id}');" class="tooltip-success" data-rel="tooltip" title="<%=modify %>">
+															<span class="green"><i class="ace-icon fa fa-pencil bigger-140"></i></span>
 														</a>
 													</c:if>
 													<c:if test="${QX.del == 1 }">
-														<a class="btn btn-xs btn-danger" title="<%=delete %>" onclick="deleteStrategySet('<%=make_sure_del_strategyset%>','${strategySet.id}');">
-															<%=delete %>
+														<a style="cursor: pointer;" onclick="deleteStrategySet('<%=make_sure_del_strategyset%>','${strategySet.id}');" class="tooltip-error" data-rel="tooltip" title="<%=delete %>">
+															<span class="red"><i class="ace-icon fa fa-trash-o bigger-140"></i></span>
 														</a>
+													
+<%-- 														<a class="btn btn-xs btn-danger" title="<%=delete %>" onclick="deleteStrategySet('<%=make_sure_del_strategyset%>','${strategySet.id}');"> --%>
+<%-- 															<%=delete %> --%>
+<!-- 														</a> -->
 														<%-- <a class="btn btn-warning btn-mini" onclick="selectStrategy(${strategySet.id});" title="<%=select_strategy %>">
 															<%=select_strategy %>
 														</a>
@@ -153,7 +160,8 @@
 							<c:if test="${empty pd.c_term_id }">
 								<td style="vertical-align:top;">
 									<c:if test="${QX.add == 1 }">
-									<a class="btn btn-warning btn-mini" onclick="addStrategySet()" title="<%=add_strategy_set %>"><%=add_strategy_set %></a>
+<%-- 									<a class="btn btn-warning btn-mini" onclick="addStrategySet()" title="<%=add_strategy_set %>"><%=add_strategy_set %></a> --%>
+									<a class="btn btn-sm btn-info btn-blue" onclick="addStrategySet();" title="<%=add_strategy_set %>" ><i class="ace-icon fa fa-plus-square bigger-120 white"></i>&nbsp;<%=add_strategy_set %></a>
 									</c:if>
 								</td>
 							</c:if>
@@ -161,10 +169,10 @@
 								<!-- 添加策略包 -->
 								<td style="vertical-align:top;">
 									<c:if test="${QX.edit == 1 }">
-									<a class="btn btn-mini btn-success" onclick="applyStrategySet('<%=make_sure_apply_strategyset%>')" title="<%=apply %>"><%=apply %></a>
+									<a class="btn btn-sm btn-success btn-blue" onclick="applyStrategySet('<%=make_sure_apply_strategyset%>')" title="<%=apply %>"><%=apply %></a>
 									</c:if>
 									<c:if test="${QX.del == 1 }">
-									<a class="btn btn-mini btn-danger" onclick="top.Dialog.close();"><%=cancel%></a>
+									<a class="btn btn-sm btn-danger btn-blue" onclick="top.Dialog.close();"><%=cancel%></a>
 									</c:if>
 								</td>
 							</c:if>

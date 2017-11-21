@@ -63,7 +63,7 @@
 									</select>
 								</td> --%>
 								<c:if test="${QX.cha == 1 }">
-								<td style="vertical-align:top;padding-left:2px"><a class="btn btn-light btn-xs" onclick="tosearch();"  title="<%=search2 %>" style="padding: 3px 3px;"><i id="nav-search-icon" class="ace-icon fa fa-search bigger-110 nav-search-icon blue"></i></a></td>
+								<td style="vertical-align:top;padding-left:2px">&nbsp;&nbsp;<a class="btn btn-light btn-xs" onclick="tosearch();"  title="<%=search1 %>" style="padding: 3px 3px;"><i id="nav-search-icon" class="ace-icon fa fa-search bigger-110 nav-search-icon white"></i><%=search1 %></a></td>
 								</c:if>
 							</tr>
 						</table>
@@ -127,9 +127,9 @@
 <%-- 													<a class="btn btn-xs btn-danger" onclick="deleteStrategySet('${group.id}','strategyset${vs.index}')" ><%=del_apply_strategyset %></a> --%>
 <%-- 													<a class="btn btn-xs btn-success" onclick="selectStrategySet('${group.id}','${group.number }')" ><%=add_apply_strategyset %></a> --%>
 														<c:if test="${QX.del == 1 && group.strategy_num > 0}">
-														<a onclick="deleteStrategySet('${group.id}','${group.strategysetList[0].id}')" style="cursor:pointer;" alt="<%=del_apply_strategyset %>" title="<%=del_apply_strategyset %>"><img src="<%=basePath%>static/images/remove.jpg" /></a>
+														<a onclick="deleteStrategySet('${group.id}','${group.strategysetList[0].id}')" style="cursor:pointer;" alt="<%=del_apply_strategyset %>" title="<%=del_apply_strategyset %>"><img src="<%=basePath%>static/images/remove.png" /></a>
 														</c:if><c:if test="${QX.add == 1 && group.strategy_num <= 0}">														
-														<a onclick="selectStrategySet('${group.id}','${group.number }')" style="cursor:pointer;" alt="<%=add_apply_strategyset %>" title="<%=add_apply_strategyset %>"><img src="<%=basePath%>static/images/add.jpg" /></a>
+														<a onclick="selectStrategySet('${group.id}','${group.number }')" style="cursor:pointer;" alt="<%=add_apply_strategyset %>" title="<%=add_apply_strategyset %>"><img src="<%=basePath%>static/images/add.png" /></a>
 														</c:if>
 													</c:if>
 												</td></tr>
@@ -141,7 +141,7 @@
 												<c:if test="${QX.edit != 1 && QX.del != 1 }">
 												<span class="label label-large label-grey arrowed-in-right arrowed-in"><i class="ace-icon fa fa-lock" title="<%=no_permission %>"></i></span>
 												</c:if>
-												<div class="hidden-sm hidden-xs btn-group">
+<!-- 												<div class="hidden-sm hidden-xs btn-group"> -->
 													<c:if test="${QX.edit == 1 }">
 													<a class="btn btn-xs btn-success" title="<%=edit %>" onclick="editGroup('${group.id}');">
 														<%=edit %>
@@ -182,7 +182,7 @@
 															</a></li>
 															</c:if>
 														</ul>
-													</div>
+<!-- 													</div> -->
 												</c:if>
 												<c:if test="${group.strategy_num > 0 }">
 													<span class="label label-large label-grey arrowed-in-right arrowed-in" title="关联有策略时不能进行其他操作！"><i class="ace-icon fa fa-lock" ></i></span>
@@ -246,13 +246,13 @@
 							<tr>
 								<td style="vertical-align:top;">
 									<c:if test="${QX.add == 1 }">
-									<a class="btn btn-mini btn-success" onclick="add();"><%=add_divide_group %></a>
+									<a class="btn btn-sm btn-success btn-light" onclick="add();"><i class="ace-icon fa fa-plus-square bigger-120 white"></i>&nbsp;<%=add_divide_group %></a>
 									</c:if>
 									<c:if test="${QX.del == 1 }">
-									<a class="btn btn-xs btn-danger" onclick="del();"><%=del_divide_group %></a>
+									<a class="btn btn-sm btn-danger" onclick="del();"><i class="ace-icon fa fa-trash-o bigger-120 white"></i>&nbsp;<%=del_divide_group %></a>
 									</c:if>
 								</td>
-								<td style="vertical-align:top;"><div class="pagination" style="float: right;padding-top: 0px;margin-top: 0px;">${page.pageStr}</div></td>
+								<td class="center" style="vertical-align:top"><div class="pagination" style="padding-top: 0px;margin-top: 0px;">${page.pageStr}</div></td>
 							</tr>
 						</table>
 						</div>
