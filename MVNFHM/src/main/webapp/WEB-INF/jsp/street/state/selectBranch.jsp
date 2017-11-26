@@ -16,7 +16,6 @@
 
 <!-- jsp文件头和头部 -->
 <%@ include file="../../system/index/top.jsp"%>
-
 </head>
 <body class="no-skin">
 
@@ -28,24 +27,22 @@
 				<div class="page-content">
 					<div class="row">
 						<div class="col-xs-12">
-							<form action="clienttype/readLampExcel" name="Form" id="Form" method="post">
 								<input type="hidden" id="id" name="id" value="${pd.id }"/>
 								<div id="zhongxin">
 								<table style="width:95%;" >
 									<tr>
-										<td style="text-align: center;padding-top: 10px;width:80px">
-											<a onclick="viewLampDetail('${pd.id }')" style="cursor:pointer;"><%=lamp_state_page%></a>
+										<td style="text-align: center;padding-top: 50px;">
+											<button onclick="viewLampDetail('${pd.id }')" class = "button1"><%=lamp_state_page%></button>
 										</td>
 									</tr>
 									<tr>
-										<td style="text-align: center;padding-top: 10px;width:80px">
-											<a onclick="viewSensorDetail('${pd.id }')" style="cursor:pointer;"><%=sensor_state_page%></a>
+										<td style="text-align: center;padding-top: 40px;">
+											<button onclick="viewSensorDetail('${pd.id }')" class = "button2"><%=sensor_state_page%></button>
 										</td>
 									</tr>
 								</table>
 								</div>
 								<div id="zhongxin2" class="center" style="display:none"><br/><img src="static/images/jzx.gif" /><br/><h4 class="lighter block green"></h4></div>
-							</form>
 						</div>
 						<!-- /.col -->
 					</div>

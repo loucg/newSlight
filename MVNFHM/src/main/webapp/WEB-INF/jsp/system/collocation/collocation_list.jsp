@@ -49,7 +49,7 @@
 										<input class="nav-search-input" autocomplete="off" id="functiontype" type="text" name="functiontype" value="${pd.functiontype }" placeholder="<%=enter_function_classification_here %>" />
 									</div>
 								</td>
-								<c:if test="${QX.cha == 1 }"><td style="vertical-align:top;padding-left:2px;"><button class="btn btn-light btn-xs" onclick="search();"  title="<%=search2 %>"><i id="nav-search-icon" class="ace-icon fa fa-search bigger-110 nav-search-icon blue"></i></button></td></c:if>
+								<c:if test="${QX.cha == 1 }"><td style="vertical-align:top;padding-left:2px;"><button class="btn btn-light btn-xs" onclick="search();"  title="<%=search1 %>"><i id="nav-search-icon" class="ace-icon fa fa-search bigger-110 nav-search-icon white"></i><%=search1 %></button></td></c:if>
 							</tr>
 						</table>
 						<!-- 检索  -->

@@ -87,8 +87,8 @@
 								</div>
 								</td>
 								<td style="vertical-align:inherit;padding-left:12px;">
-								<c:if test="${QX.cha == 1 }"><button class="btn btn-light btn-xs" onclick="search();"  title="<%=search2%>"><i id="nav-search-icon" class="ace-icon fa fa-search bigger-110 nav-search-icon blue"></i></button></c:if>
-								<c:if test="${QX.toExcel == 1 }"><a class="btn btn-light btn-xs" onclick="toExcel();" title="<%=export_to_excel %>>"><i id="nav-search-icon" class="ace-icon fa fa-download bigger-110 nav-search-icon blue"></i></a></c:if>
+								<c:if test="${QX.cha == 1 }"><button class="btn btn-light btn-xs" onclick="search();"  title="<%=search1%>"><i id="nav-search-icon" class="ace-icon fa fa-search bigger-110 nav-search-icon white"></i><%=search1%></button></c:if>
+								<c:if test="${QX.toExcel == 1 }"><a class="btn btn-light btn-xs" onclick="toExcel();" title="<%=export_to_excel %>>"><i id="nav-search-icon" class="ace-icon fa fa-download bigger-110 nav-search-icon white"></i></a></c:if>
 								</td>
 								<%-- <td>&nbsp;&nbsp;状态：</td>
 								<td>

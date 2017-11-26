@@ -63,33 +63,18 @@
 								</td>
 								<td>&nbsp;&nbsp;<%=status %>：</td>
 								<td style="vertical-align:top;padding-left:2px;"> 
-								 	<select class="chosen-select form-control" name="status" id="status" data-placeholder=" " style="vertical-align:top;width: 130px;height:30px">
+								 	<select class="chosen-select form-control" name="status" id="status" data-placeholder="<%=please_choose_device_type%>" style="height:30px;width: 160px;border-width:1px;border-color:'#fff';border-radius:4px;">
 										<option value=""></option>
 										<option value=""><%=total %></option>
 										<c:forEach items="${workStatusList}" var="workStatus">
-											<option value="${workStatus.value }" <c:if test="${workStatus.value == pd.status }">selected</c:if>>${workStatus.name }</option>
+											<option value="${workStatus.value }" <c:if test="${workStatus.value == pd.status }">selected</c:if>>
+												${workStatus.name }
+											</option>
 										</c:forEach>
-										<%-- <option value="<%=normal %>"           <c:if test="${pd.status == '<%=normal %>' }">selected</c:if> ><%=normal %></option>
-										<option value="<%=over_voltage %>"     <c:if test="${pd.status == '<%=over_voltage %>' }">selected</c:if> ><%=over_voltage %></option>
-										<option value="<%=over_temperature %>" <c:if test="${pd.status == '<%=over_temperature %>' }">selected</c:if> ><%=over_temperature %></option>
-										<option value="<%=open_road %>"        <c:if test="${pd.status == '<%=open_road %>' }">selected</c:if> ><%=open_road %></option>
-										<option value="<%=short_circuit %>"    <c:if test="${pd.status == '<%=short_circuit %>' }">selected</c:if> ><%=short_circuit %></option>
-										<option value="<%=exception %>"        <c:if test="${pd.status == '<%=exception %>' }">selected</c:if> ><%=exception %></option>
-										<option value="<%=blockout %>"         <c:if test="${pd.status == '<%=blockout %>' }">selected</c:if> ><%=blockout %></option>
-										<option value="<%=undervoltage %>"     <c:if test="${pd.status == '<%=undervoltage %>' }">selected</c:if> ><%=undervoltage %></option> --%>
-<%-- 									<option value=""><%=total %>全部</option>
-										<option value="<%= %>正常" <c:if test="${pd.status == '<%= %>正常' }">selected</c:if> ><%= %>正常</option>
-										<option value="<%= %>过压" <c:if test="${pd.status == '<%= %>过压' }">selected</c:if> ><%= %>过压</option>
-										<option value="<%= %>过温" <c:if test="${pd.status == '<%= %>过温' }">selected</c:if> ><%= %>过温</option>
-										<option value="<%= %>开路" <c:if test="${pd.status == '<%= %>开路' }">selected</c:if> ><%= %>开路</option>
-										<option value="<%= %>短路" <c:if test="${pd.status == '<%= %>短路' }">selected</c:if> ><%= %>短路</option>
-										<option value="<%= %>异常" <c:if test="${pd.status == '<%= %>异常' }">selected</c:if> ><%= %>异常</option>
-										<option value="<%= %>断电" <c:if test="${pd.status == '<%= %>断电' }">selected</c:if> ><%= %>断电</option>
-										<option value="<%= %>欠压" <c:if test="${pd.status == '<%= %>欠压' }">selected</c:if> ><%= %>欠压</option> --%>
 									</select>
 								</td>
 								<c:if test="${QX.cha == 1 }">
-								<td style="vertical-align:top;padding-left:2px"><a class="btn btn-light btn-xs" onclick="tosearch();"  title="<%=search2 %>" style="padding: 4px 4px;"><i id="nav-search-icon" class="ace-icon fa fa-search bigger-110 nav-search-icon blue"></i></a></td>
+								<td style="vertical-align:top;padding-left:2px">&nbsp;&nbsp;<a class="btn btn-light btn-xs" onclick="tosearch();"  title="<%=search1 %>" style="padding: 4px;border-radius:6px"><i id="nav-search-icon" class="ace-icon fa fa-search bigger-110 nav-search-icon white"><%=search1 %></i></a></td>
 								</c:if>
 							</tr>
 						</table>

@@ -63,7 +63,7 @@
 								</td>
 								<td>&nbsp;&nbsp;<%=status %>：</td>
 								<td style="vertical-align:top;padding-left:2px;"> 
-								 	<select class="chosen-select form-control" name="status" id="status" data-placeholder=" " style="vertical-align:top;width: 130px;height:30px">
+								 	<select class="chosen-select form-control" name="status" id="status" data-placeholder="<%=please_choose_device_type%>" style="height:30px;width: 160px;border-width:1px;border-color:'#fff';border-radius:4px;">
 										<option value=""></option>
 										<option value=""><%=total %></option>
 										<c:forEach items="${workStatusList}" var="workStatus">
@@ -77,7 +77,7 @@
 										<option value="<%=exception %>"        <c:if test="${pd.status == '<%=exception %>' }">selected</c:if> ><%=exception %></option>
 										<option value="<%=blockout %>"         <c:if test="${pd.status == '<%=blockout %>' }">selected</c:if> ><%=blockout %></option>
 										<option value="<%=undervoltage %>"     <c:if test="${pd.status == '<%=undervoltage %>' }">selected</c:if> ><%=undervoltage %></option> --%>
-<%-- 									<option value=""><%=total %>全部</option>
+	<%-- 									<option value=""><%=total %>全部</option>
 										<option value="<%= %>正常" <c:if test="${pd.status == '<%= %>正常' }">selected</c:if> ><%= %>正常</option>
 										<option value="<%= %>过压" <c:if test="${pd.status == '<%= %>过压' }">selected</c:if> ><%= %>过压</option>
 										<option value="<%= %>过温" <c:if test="${pd.status == '<%= %>过温' }">selected</c:if> ><%= %>过温</option>
@@ -86,10 +86,10 @@
 										<option value="<%= %>异常" <c:if test="${pd.status == '<%= %>异常' }">selected</c:if> ><%= %>异常</option>
 										<option value="<%= %>断电" <c:if test="${pd.status == '<%= %>断电' }">selected</c:if> ><%= %>断电</option>
 										<option value="<%= %>欠压" <c:if test="${pd.status == '<%= %>欠压' }">selected</c:if> ><%= %>欠压</option> --%>
-									</select>
-								</td>
+										</select>
+									</td>
 								<c:if test="${QX.cha == 1 }">
-								<td style="vertical-align:top;padding-left:2px"><a class="btn btn-light btn-xs" onclick="tosearch();"  title="<%=search2 %>" style="padding: 4px 4px;"><i id="nav-search-icon" class="ace-icon fa fa-search bigger-110 nav-search-icon blue"></i></a></td>
+								<td style="vertical-align:top;padding-left:2px">&nbsp;&nbsp;<a class="btn btn-light btn-xs" onclick="tosearch();"  title="<%=search1 %>" style="padding: 4px;"><i id="nav-search-icon" class="ace-icon fa fa-search bigger-110 nav-search-icon white">&nbsp;&nbsp;<%=search1 %></i></a></td>
 								</c:if>
 							</tr>
 						</table>
@@ -264,8 +264,8 @@
 			 diag.Drag=true;
 			 diag.Title ="<%=please_select_page%>";
 			 diag.URL = '<%=basePath%>state/street/goSenlampStatePage?id='+id;
-			 diag.Width = 260;
-			 diag.Height = 80;
+			 diag.Width = 400;
+			 diag.Height = 240;
 			 diag.CancelEvent = function(){ //关闭事件
 				 if(diag.innerFrame.contentWindow.document.getElementById('zhongxin').style.display == 'none'){
 					 if('${page.currentPage}' == '0'){

@@ -74,7 +74,7 @@
 	<div style="width:100%;text-align: center;margin: 0 auto;position: absolute;">
 		<!-- 登录 -->
 		<div id="windows1">
-		<div id="loginbox" style="margin-top:280px;margin-left:300px;">
+		<div id="loginbox" style="margin-top:280px;margin-left:500px;">
 			<form action="" method="post" name="loginForm" id="loginForm">
 				<!-- <div class="control-group normal_text">
 					<h3>
@@ -218,7 +218,7 @@
 	</div>
  
 <div style="margin-top:2px,margin-bottom:2px">
-<img src="static/login/images/login.jpg" />
+<img src="static/login/images/login_1.png" />
 </div>
 	<script type="text/javascript">
 		//服务器校验

@@ -62,7 +62,7 @@
 								</td>
 								<td style="padding-left:8px;padding-bottom:4px;"><label><%=please_choose_start_time%>:</label><input class="span10 date-picker" name="Start" id="Start"  value="${pd.Start}" type="text" data-date-format="yyyy-mm-dd" readonly="readonly" style="width:80px;height:28px;" placeholder="<%=please_choose_start_time%>" title="<%=start_time%>"/></td>
 								<td style="padding-left:8px;padding-bottom:4px;"><label><%=please_choose_end_time%>:</label><input class="span10 date-picker" name="End" name="End"  value="${pd.End}" type="text" data-date-format="yyyy-mm-dd" readonly="readonly" style="width:80px;height:28px;" placeholder="<%=please_choose_end_time%>" title="<%=end_time%>"/></td>
-								<td style="vertical-align:right;padding-left:4px;padding-bottom:4px"><button class="btn btn-mini btn-light" onclick="search();"  title="<%=search1%>"><i id="nav-search-icon" class="ace-icon fa fa-search bigger-110 nav-search-icon blue"></i></button></td>
+								<td style="vertical-align:right;padding-left:4px;padding-bottom:4px"><button class="btn btn-mini btn-light" onclick="search();"  title="<%=search1%>"><i id="nav-search-icon" class="ace-icon fa fa-search bigger-110 nav-search-icon white"></i><%=search1%></button></td>
 							</tr>
 						</table>
 						<!-- 检索  -->

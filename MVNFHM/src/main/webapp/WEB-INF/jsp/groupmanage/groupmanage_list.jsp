@@ -63,7 +63,7 @@
 									</select>
 								</td> --%>
 								<c:if test="${QX.cha == 1 }">
-								<td style="vertical-align:top;padding-left:2px">&nbsp;&nbsp;<a class="btn btn-light btn-xs" onclick="tosearch();"  title="<%=search1 %>" style="padding: 3px 3px;"><i id="nav-search-icon" class="ace-icon fa fa-search bigger-110 nav-search-icon white"></i><%=search1 %></a></td>
+								<td style="vertical-align:top;padding-left:2px">&nbsp;&nbsp;<a class="btn btn-light btn-xs" onclick="tosearch();"  title="<%=search1 %>" style="padding: 4px 4px;"><i id="nav-search-icon" class="ace-icon fa fa-search bigger-110 nav-search-icon white"></i><%=search1 %></a></td>
 								</c:if>
 							</tr>
 						</table>
@@ -83,7 +83,7 @@
 									<th class="center"><%=summary %></th>
 <%-- 									<th class="center"><%=status %></th> --%>
 <%-- 									<th class="center"><%=ctrl_strategy %></th> --%>
-									<th class="center" style="width:100px;"><%=menber_number %></th>
+									<th class="center" style="width:150px;"><%=menber_number %></th>
 									<!-- 策略包 -->
 									<th class="center" style="width:400px;"><%=strategy_set %></th>
 									<th class="center" style="width:200px;"><%=operate %></th>
@@ -249,10 +249,10 @@
 									<a class="btn btn-sm btn-success btn-light" onclick="add();"><i class="ace-icon fa fa-plus-square bigger-120 white"></i>&nbsp;<%=add_divide_group %></a>
 									</c:if>
 									<c:if test="${QX.del == 1 }">
-									<a class="btn btn-sm btn-danger" onclick="del();"><i class="ace-icon fa fa-trash-o bigger-120 white"></i>&nbsp;<%=del_divide_group %></a>
+									<a class="btn btn-sm btn-danger" onclick="del('<%=make_sure_delete_group %>');"><i class="ace-icon fa fa-trash-o bigger-120 white"></i>&nbsp;<%=del_divide_group %></a>
 									</c:if>
 								</td>
-								<td class="center" style="vertical-align:top"><div class="pagination" style="padding-top: 0px;margin-top: 0px;">${page.pageStr}</div></td>
+								<td style="vertical-align:top;"><div class="pagination" style="float: right;padding-top: 0px;margin-top: 0px;">${page.pageStr}</div></td>
 							</tr>
 						</table>
 						</div>
@@ -389,52 +389,58 @@
 		}
 		
 		//删除分组
-		function del(){
+		function del(msg){
 			var str='';
-			 if(confirm("确定要删除分组？")){
-				for(var i=0;i < document.getElementsByName('ids').length;i++){
-					if(document.getElementsByName('ids')[i].checked){
-						if(document.getElementsByName('hdstrategyIds')[i].value>0){
-							alert('分组:'+document.getElementsByName('hdgroupname')[i].value+' 有策略存在，不能删除,请重新选择！');
-							return;
-						}
-						if(str=='') str += document.getElementsByName('ids')[i].value;
-						else str += ',' + document.getElementsByName('ids')[i].value;
-					}
-				}
-			 }else{
-				 return ;
-			 }
-			 if(str==''){
-				 bootbox.dialog({
-						message: "<span class='bigger-110'><%=you_have_not_choose_anything %></span>",
-						buttons: 			
-						{ "button":{ "label":"<%=make_sure %>", "className":"btn-sm btn-success"}}
-					});
-					$("#zcheckbox").tips({
-						side:3,
-			            msg:'<%=click_this_choose_all %>',
-			            bg:'#AE81FF',
-			            time:8
-			        });
-					return;
-			 }else{
-				 $.ajax({
-						type: "POST",
-						url: '<%=basePath%>group/goDel.do?',
-						data: {group_ids:""+str+""},
-						dataType:'json',
-						cache: false,
-						success: function(data){
-							if("success" == data.result){
-							 nextPage('${page.currentPage}');
-								 $("#zhongxin").hide();
-								$("#zhongxin2").show();
-				    		    top.Dialog.close(); 
+			bootbox.confirm(msg, function(result) {
+				if(result) {
+					for(var i=0;i < document.getElementsByName('ids').length;i++){
+						if(document.getElementsByName('ids')[i].checked){
+							if(document.getElementsByName('hdstrategyIds')[i].value>0){
+								bootbox.dialog({
+									message: "<span class='bigger-110'><%=group %>:"+document.getElementsByName('hdgroupname')[i].value+" <%=can_not_delete %></span>",
+									buttons: 			
+									{ "button":{ "label":"<%=make_sure %>", "className":"btn-sm btn-success"}}
+								});
+
+								return;
 							}
+							if(str=='') str += document.getElementsByName('ids')[i].value;
+							else str += ',' + document.getElementsByName('ids')[i].value;
 						}
-					});	
-			 }
+					}
+					if(str==''){
+						bootbox.dialog({
+								message: "<span class='bigger-110'><%=you_have_not_choose_anything %></span>",
+								buttons: 			
+								{ "button":{ "label":"<%=make_sure %>", "className":"btn-sm btn-success"}}
+						});
+						$("#zcheckbox").tips({
+							side:3,
+					           msg:'<%=click_this_choose_all %>',
+					           bg:'#AE81FF',
+					           time:8
+					       });
+						return;
+					}else{
+						 $.ajax({
+							type: "POST",
+							url: '<%=basePath%>group/goDel.do?',
+							data: {group_ids:""+str+""},
+							dataType:'json',
+							cache: false,
+							success: function(data){
+								if("success" == data.result){
+								 	nextPage('${page.currentPage}');
+									$("#zhongxin").hide();
+									$("#zhongxin2").show();
+							  		top.Dialog.close(); 
+								}
+							}
+						});	
+					 }
+				}
+			});
+
 		}
 		
 		//加入策略包
@@ -491,21 +497,27 @@
 		
 		//删除策略包
 		function deleteStrategySet(group_id, strategysetid){
-			if(confirm('<%=make_sure_del_strategyset %>')){
-				$.ajax({
-					type: "POST",
-					url: '<%=basePath%>strategy/delApplySet.do',
-			    	data: {c_term_id:group_id,strategyset_id:strategysetid},
-					dataType:'json',
-					cache: false,
-					success: function(data){
-						nextPage('${page.currentPage}');
-						$("#zhongxin").hide();
-						$("#zhongxin2").show();
-		    		    top.Dialog.close(); 
-					}
-				});
-			}
+			bootbox.confirm('<%=make_sure_del_strategyset %>', function(result) {
+				if(result) {
+					$.ajax({
+						type: "POST",
+						url: '<%=basePath%>strategy/delApplySet.do',
+				    	data: {c_term_id:group_id,strategyset_id:strategysetid},
+						dataType:'json',
+						cache: false,
+						success: function(data){
+							nextPage('${page.currentPage}');
+							$("#zhongxin").hide();
+							$("#zhongxin2").show();
+			    		    top.Dialog.close(); 
+						},
+						error: function(XMLHttpRequest, textStatus, errorThrown){
+//								setTimeout("self.location=self.location",0);			
+							alert('<%=del_strategyset_failed %>');
+						}
+					});
+				}
+			});
 		}
 		
 		//新增组员

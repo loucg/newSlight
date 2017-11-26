@@ -23,6 +23,10 @@
 	.table table-striped table-bordered table-hover{
 	　　table-layout: fixed;
 	}
+	th{
+		background-color: #4169E1;
+		color:#F0F8FF;
+	}
 	.td{
 	　　text-overflow: ellipsis;
 	　　white-space: nowrap;
@@ -89,7 +93,8 @@ function cutStr(len){
 									 			<option style="display:none" value="6" <c:if test="${pd.itype==4}">selected</c:if>><%=device_combination%></option>
 									 		</c:if> -->
 									 		<c:if test="${pd.itype==4}">
-									 			<option value="126" <c:if test="${pd.type!=0}">style="display:none"</c:if>>请选择类型</option>
+									 		
+									 			<option value="126" <c:if test="${pd.type!=0}">style="display:none"</c:if>><%=please_choose_device_type%></option>
 												<option value="1" <c:if test="${pd.type==1}">selected="selected"</c:if>><%=integration_power%></option>
 												<option value="2" <c:if test="${pd.type==2}">selected="selected"</c:if>><%=single_light_controller%></option>
 												<option value="6" <c:if test="${pd.type==6}">selected="selected"</c:if>><%=device_combination%></option>
@@ -105,7 +110,7 @@ function cutStr(len){
 												<option value="5" <c:if test="${pd.type==5}">selected="selected"</c:if>><%=normal_cutoff_device%></option>
 												<option value="345" <c:if test="${pd.type==345}">selected="selected"</c:if>><%=all%></option>
 											-->
-												<option value="0" <c:if test="${pd.type!=0}">style="display:none"</c:if>>请选择类型</option>
+												<option value="0" <c:if test="${pd.type!=0}">style="display:none"</c:if>><%=please_choose_device_type%></option>
 												<c:forEach items="${pd.typeList}" var="type">
 													<option value="${type.id}" <c:if test="${type.id==pd.type}">selected="selected"</c:if>>
 														<c:if test="${sessionScope.session_language=='zh_CN' }">
@@ -119,7 +124,7 @@ function cutStr(len){
 												<option value="999" <c:if test="${pd.type==999}">selected="selected"</c:if>><%=all%></option>
 									 		</c:if>
 									 		<c:if test="${pd.itype==5 }" >
-												<option value="0" <c:if test="${pd.type!=0}">style="display:none"</c:if>>请选择类型</option>
+												<option value="0" <c:if test="${pd.type!=0}">style="display:none"</c:if>><%=please_choose_device_type%></option>
 												<c:forEach items="${pd.typeList}" var="type">
 													<option value="${type.id}" <c:if test="${type.id==pd.type}">selected="selected"</c:if>>
 															${type.typeName}
@@ -129,9 +134,9 @@ function cutStr(len){
 									 		</c:if>
 									  	</select>
 									</td>
-								<c:if test="${QX.cha == 1 }"><td style="vertical-align:top;padding-left:2px;"><button class="btn btn-light btn-xs" onclick="search();"  title="<%=search2%>"><i id="nav-search-icon" class="ace-icon fa fa-search bigger-110 nav-search-icon blue"></i></button></td></c:if>
-								<c:if test="${QX.toExcel == 1 }"><td style="vertical-align:top;padding-left:2px;"><a class="btn btn-light btn-xs" onclick="toExcel();" title="<%=export_to_excel%>"><i id="nav-search-icon" class="ace-icon fa fa-download bigger-110 nav-search-icon blue"></i></a></td></c:if>
-								<c:if test="${QX.FromExcel == 1 }"><td style="vertical-align:top;padding-left:2px;"><a class="btn btn-light btn-xs" onclick="fromExcel();" title="<%=import_from_excel%>"><i id="nav-search-icon" class="ace-icon fa fa-cloud-upload bigger-110 nav-search-icon blue"></i></a></td></c:if>
+								<c:if test="${QX.cha == 1 }"><td style="vertical-align:top;padding-left:2px;"><button class="btn btn-light btn-xs" onclick="search();"  title="<%=search2%>" style="border-radius:6px"><i id="nav-search-icon" class="ace-icon fa fa-search bigger-110 nav-search-icon white">&nbsp;&nbsp;<%=search1 %></i></button></td></c:if>
+								<c:if test="${QX.toExcel == 1 }"><td style="vertical-align:top;padding-left:2px;"><a class="btn btn-light btn-xs" onclick="toExcel();" title="<%=export_to_excel%>" style="border-radius:6px"><i id="nav-search-icon" class="ace-icon fa fa-download bigger-110 nav-search-icon white"></i></a></td></c:if>
+								<c:if test="${QX.FromExcel == 1 }"><td style="vertical-align:top;padding-left:2px;"><a class="btn btn-light btn-xs" onclick="fromExcel();" title="<%=import_from_excel%>" style="border-radius:6px"><i id="nav-search-icon" class="ace-icon fa fa-cloud-upload bigger-110 nav-search-icon white"></i></a></td></c:if>
 							</tr>
 						</table>
 						<!-- 检索  -->
@@ -147,7 +152,7 @@ function cutStr(len){
 									<th class="center"><%=location%></th>
 									<th class="center"><%=coordinate%></th>
 									<th class="center"><%=phone_number%></th>
-									<td class="center"><%=device_counter%></td>
+									<th class="center"><%=device_counter%></th>
 									<c:if test="${pd.itype==3 }">
 									</c:if>
 									<!-- 
@@ -171,7 +176,7 @@ function cutStr(len){
 									<th class="center"><%=password%></th>
 									 --> --%>
 									<th class="center"><%=comment%></th>
-									<th class="center"><%=operate%></th>
+									<th class="center" style="width:320px;"><%=operate%></th>
 
 								</tr>
 							</thead>
@@ -244,25 +249,25 @@ function cutStr(len){
 <%-- 													</c:if> 
 													<%-- --%>
 													<c:if test="${QX.edit == 1 && pd.itype==3}">
-														<a class="btn btn-xs btn-danger" onclick="viewConfig('${var.id}');">
+														<a class="btn btn-xs btn-danger" style="border-radius:15px;" onclick="viewConfig('${var.id}');">
 															<%=viewConfig %>
 														</a>
 													</c:if>
 													 <c:if test="${QX.edit == 1}">
-														<a class="btn btn-xs btn-danger" onclick="gatewayRest('${var.id}','${var.name}','${var.number}' );">
+														<a class="btn btn-xs btn-danger" style="border-radius:15px;" onclick="gatewayRest('${var.id}','${var.name}','${var.number}' );">
 															<%=gateway_rest %>
 														</a>
 													</c:if>
 													<!-- //初始化 -->
 												    <c:if test="${QX.del == 1 && pd.itype==3}">
-													<a class="btn btn-xs btn-danger" onclick="initial('${var.id}','${var.name}' );">
+													<a class="btn btn-xs btn-danger" style="border-radius:15px;" onclick="initial('${var.id}','${var.name}' );">
 														<%=Initialization %>
 													</a>
 													</c:if>
 													
 													<c:if test="${QX.edit == 1 }">
 														<c:if test="${var.typeid != 5}">
-															<a class="btn btn-xs btn-success" onclick="edit('${var.id}','${var.typeid}');"><%=modify%></a>
+															<a class="btn btn-xs btn-success" style="border-radius:15px;" onclick="edit('${var.id}','${var.typeid}');"><%=modify%></a>
 														</c:if>
 														<c:if test="${var.typeid == 5}">
 														 	<i class="ace-icon fa fa-pencil-square-o bigger-120" title="无法操作，不是适配的类型"></i>
@@ -299,7 +304,7 @@ function cutStr(len){
 							</td>
 							<td style="vertical-align:top;">
 								<c:if test="${QX.add == 1 }">
-								<a class="btn btn-sm btn-success" onclick="claimGateway();"><%=claimGateway %></a>
+								<a class="btn btn-sm btn-success green" style="border-radius:15px;width: 120px; " onclick="claimGateway();"><%=claimGateway %></a>
 								</c:if>
 							</td>
 							<td style="vertical-align:top;"><div class="pagination" style="float: right;padding-top: 0px;margin-top: 0px;">${page.pageStr}</div></td>
@@ -512,10 +517,10 @@ function cutStr(len){
 			 top.jzts();
 			 var diag = new top.Dialog();
 			 diag.Drag=true;
-			 diag.Title ="<%=please_select_page%>";
+			 diag.Title = "<%=please_select_page%>";
 			 diag.URL = '<%=basePath%>config/goDeviceConfigPage?id='+id;
-			 diag.Width = 260;
-			 diag.Height = 80;
+			 diag.Width = 400;
+			 diag.Height = 240;
 			 diag.CancelEvent = function(){ //关闭事件
 				 if(diag.innerFrame.contentWindow.document.getElementById('zhongxin').style.display == 'none'){
 					 if('${page.currentPage}' == '0'){

@@ -98,7 +98,7 @@
 							</tr>
 							<tr>
 								<td style="text-align: center;" colspan="10">
-									<a class="btn btn-mini btn-danger" onclick="top.Dialog.close();"><%=make_sure%></a>
+									<a class="btn btn-mini btn-danger" style="border-radius:6px" onclick="top.Dialog.close();"><%=make_sure%></a>
 								</td>
 							</tr>
 						</table>

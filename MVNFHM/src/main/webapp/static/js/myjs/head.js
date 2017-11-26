@@ -14,6 +14,11 @@ var wimadress="";		//即时聊天服务器IP和端口
 var oladress="";		//在线管理和站内信服务器IP和端口
 
 function siMenu(id,fid,MENU_NAME,MENU_URL){
+	// undeveloped
+	if(id == 'z344' || id == 'z369'){
+		alert('undeveloped.');
+		return false;
+	}
 	if(id != mid){
 		$("#"+mid).removeClass();
 		mid = id;

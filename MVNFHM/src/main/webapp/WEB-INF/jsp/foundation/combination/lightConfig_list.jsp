@@ -143,9 +143,9 @@ function cutStr(len){
 									 		</c:if>
 									  	</select>
 									</td>
-								<c:if test="${QX.cha == 1 }"><td style="vertical-align:top;padding-left:2px;"><button class="btn btn-light btn-xs" onclick="search();"  title="<%=search2%>"><i id="nav-search-icon" class="ace-icon fa fa-search bigger-110 nav-search-icon blue"></i></button></td></c:if>
-								<c:if test="${QX.toExcel == 1 }"><td style="vertical-align:top;padding-left:2px;"><a class="btn btn-light btn-xs" onclick="toExcel();" title="<%=export_to_excel%>"><i id="nav-search-icon" class="ace-icon fa fa-download bigger-110 nav-search-icon blue"></i></a></td></c:if>
-								<c:if test="${QX.FromExcel == 1 }"><td style="vertical-align:top;padding-left:2px;"><a class="btn btn-light btn-xs" onclick="fromExcel();" title="<%=import_from_excel%>"><i id="nav-search-icon" class="ace-icon fa fa-cloud-upload bigger-110 nav-search-icon blue"></i></a></td></c:if>
+								<c:if test="${QX.cha == 1 }"><td style="vertical-align:top;padding-left:2px;"><button class="btn btn-light btn-xs" style="border-radius:6px" onclick="search();"  title="<%=search2%>"><i id="nav-search-icon" class="ace-icon fa fa-search bigger-110 nav-search-icon white">&nbsp;&nbsp;<%=search1 %></i></button></td></c:if>
+								<c:if test="${QX.toExcel == 1 }"><td style="vertical-align:top;padding-left:2px;"><a class="btn btn-light btn-xs" style="border-radius:6px" onclick="toExcel();" title="<%=export_to_excel%>"><i id="nav-search-icon" class="ace-icon fa fa-download bigger-110 nav-search-icon white"></i></a></td></c:if>
+								<c:if test="${QX.FromExcel == 1 }"><td style="vertical-align:top;padding-left:2px;"><a class="btn btn-light btn-xs" style="border-radius:6px" onclick="fromExcel();" title="<%=import_from_excel%>"><i id="nav-search-icon" class="ace-icon fa fa-cloud-upload bigger-110 nav-search-icon white"></i></a></td></c:if>
 							</tr>
 						</table>
 						<!-- 检索  -->
@@ -258,7 +258,7 @@ function cutStr(len){
 													
 													<c:if test="${QX.edit == 1 }">
 														<c:if test="${var.typeid != 5}">
-															<a class="btn btn-xs btn-success" onclick="edit('${var.id}');"><%=modify%></a>
+															<a class="btn btn-xs btn-success" style = "border-radius:6px" onclick="edit('${var.id}');"><%=modify%></a>
 														</c:if>
 														<c:if test="${var.typeid == 5}">
 														 	<i class="ace-icon fa fa-pencil-square-o bigger-120" title="无法操作，不是适配的类型"></i>

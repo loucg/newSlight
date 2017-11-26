@@ -67,7 +67,7 @@
 <%-- 								<td style="vertical-align:top;padding-left:2px;">&nbsp;&nbsp;<a class="btn btn-light btn-xs" onclick="clearSearchs();"  title="<%=clear_search_ %>" style="padding: 4px 4px;"><i id="nav-clear-icon" class="ace-icon fa fa-search bigger-110 nav-search-icon red"></i></a></td> --%>
 <%-- 								</c:if> --%>
 								<c:if test="${QX.cha == 1 }">
-								<td style="vertical-align:top;padding-left:2px;">&nbsp;&nbsp;<a class="btn btn-light btn-xs" onclick="searchs();"  title="<%=search1 %>" style="padding: 3px 3px;"><i id="nav-search-icon" class="ace-icon fa fa-search bigger-110 nav-search-icon blue"></i><%=search1 %></a></td>
+								<td style="vertical-align:top;padding-left:2px;">&nbsp;&nbsp;<a class="btn btn-light btn-xs" onclick="searchs();"  title="<%=search1 %>" style="padding: 3px 3px;"><i id="nav-search-icon" class="ace-icon fa fa-search bigger-110 nav-search-icon white"></i><%=search1 %></a></td>
 								</c:if>
 							</tr>
 						</table>
@@ -78,27 +78,27 @@
 								<tr>
 									<!-- 选择框 -->
 									<c:if test="${empty pd.c_term_id }">
-									<th class="center" style="width:35px;">
+									<th class="center" style="width:35px;" nowrap="nowrap">
 									<label class="pos-rel"><input type="checkbox" class="ace" id="zcheckbox" /><span class="lbl"></span></label>
 									</th>
 									</c:if>
-									<th class="center" style="width:50px"><%=number %></th>
-									<th class="center" style="width:100px"><%=type %></th>
-									<th class="center"><%=strategy_name %></th>
-									<th class="center" style="width:100px"><%=start_date %></th>
-									<th class="center" style="width:100px"><%=end_date %></th>
-									<th class="center" style="width:80px"><%=month_cycle %></th>
-									<th class="center" style="width:100px"><%=day_apply_days %></th>
-									<th class="center" style="width:50px"><%=time %></th>
-									<th class="center" style="width:120px"><%=adjust_value %></th>
-									<th class="center" style="width:120px"><%=brightness %></th>
+									<th class="center" style="width:50px" nowrap="nowrap"><%=number %></th>
+									<th class="center" style="width:100px" nowrap="nowrap"><%=type %></th>
+									<th class="center" nowrap="nowrap"><%=strategy_name %></th>
+									<th class="center" style="width:100px" nowrap="nowrap"><%=start_date %></th>
+									<th class="center" style="width:100px" nowrap="nowrap"><%=end_date %></th>
+									<th class="center" style="width:80px" nowrap="nowrap"><%=month_cycle %></th>
+									<th class="center" style="width:100px" nowrap="nowrap"><%=day_apply_days %></th>
+									<th class="center" style="width:50px" nowrap="nowrap"><%=time %></th>
+									<th class="center" style="width:120px" nowrap="nowrap"><%=adjust_value %></th>
+									<th class="center" style="width:120px" nowrap="nowrap"><%=brightness %></th>
 									<%-- <th class="center" style="width:80px"><%=term_num_in_strategy %></th> --%>
 <%-- 									<c:if test="${empty pd.c_term_id }"> --%>
 <%-- 										<th class="center"><%=send_status %></th> --%>
 <%-- 									</c:if> --%>
-									<th class="center"><%=app_explain %></th>
+									<th class="center" nowrap="nowrap"><%=app_explain %></th>
 									<c:if test="${empty pd.c_term_id }">
-										<th class="center" style="width:100px"><%=operate %></th>
+										<th class="center" style="width:100px" nowrap="nowrap"><%=operate %></th>
 									</c:if>
 								</tr>
 							</thead>
@@ -152,8 +152,8 @@
 													<tr><td><img src="static/images/light-blue.png" /></td><td width="50px">${strategy2.value3 }</td></tr>
 												</c:if>
 												<c:if test="${fn:startsWith(strategy2.value, 'T')}">
-													<tr><td style="background-color:yellow;border: 1px solid #bbb;border-bottom-left-radius: 6px;">${strategy2.value1 }</td>
-													<td style="background-color:white;border: 1px solid #bbb;border-bottom-left-radius: 6px;">${strategy2.value2 }</td></tr>
+													<tr><td style="background-color:yellow;">${strategy2.value1 }</td>
+													<td style="background-color:white;">${strategy2.value2 }</td></tr>
 												</c:if>
 												</table>
 											</td>
@@ -413,7 +413,7 @@ function addStrategy(strategySet_id){
 	 top.jzts();
 	 var diag = new top.Dialog();
 	 diag.Drag=true;
-	 diag.Title ="<%=select_strategy %>";
+	 diag.Title ="<%=add_strategy %>";
 	 diag.URL = "<%=basePath%>strategy/goAddS2.do?strategyset_id="+strategySet_id;
 	 diag.Width = 500;
 	 diag.Height = 550;

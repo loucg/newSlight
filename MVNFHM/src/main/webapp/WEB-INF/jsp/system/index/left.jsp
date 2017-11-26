@@ -8,7 +8,7 @@
 	<ul class="nav nav-list" id="main">
 		<li class="">
 			<a href="main/index">
-				<i class="menu-icon fa fa-tachometer"></i>
+				<i><img src="static/login/images/home.png" class="imgage"/></i>
 				<span class="menu-text"><%=background_home_page %></span>
 			</a>
 		</li>
@@ -17,7 +17,15 @@
 	<c:if test="${menu1.hasMenu && '1' == menu1.MENU_STATE}">
 		<li class=""  id="lm${menu1.MENU_ID }">
 			<a style="cursor:pointer;" class="dropdown-toggle" <c:if test="${menu1.MENU_ID==335}">target="mainFrame" onclick="openFrame()" })"</c:if>>
-				<i class="${menu1.MENU_ICON == null ? 'menu-icon fa fa-leaf black' : menu1.MENU_ICON}"></i>
+				<i class="${menu1.MENU_ICON == null ? 'menu-icon fa fa-leaf black' : menu1.MENU_ICON}">
+				<c:if test="${menu1.MENU_ICON == 'ztree_map'}"><img src="static/login/images/map.png" class="imgage"/></c:if>
+				<c:if test="${menu1.MENU_ICON == 'ztree_group'}"><img src="static/login/images/fzkz_icon.png" class="imgage"/></c:if>
+				<c:if test="${menu1.MENU_ICON == 'ztree_strategy'}"><img src="static/login/images/strategy_ztree.png" class="imgage"/></c:if>
+				<c:if test="${menu1.MENU_ICON == 'ztree_devicestatus'}"><img src="static/login/images/devicestatus.png" class="imgage"/></c:if>
+				<c:if test="${menu1.MENU_ICON == 'ztree_devicestatus'}"><img src="static/login/images/devicestatus.png" class="imgage"/></c:if>
+				<c:if test="${menu1.MENU_ICON == 'ztree_basesetting'}"><img src="static/login/images/basesetting.png" class="imgage"/></c:if>
+				
+				</i>
 					<span class="menu-text">
 					<c:if test="${sessionScope.session_language=='en_US' }">
 						${menu1.MENU_NAME_EN }
@@ -37,7 +45,7 @@
 				<c:if test="${menu2.hasMenu && '1' == menu2.MENU_STATE}">
 				<li class="" id="z${menu2.MENU_ID }">
 					<a style="cursor:pointer;" <c:if test="${not empty menu2.MENU_URL && '#' != menu2.MENU_URL}">target="mainFrame" onclick="siMenu('z${menu2.MENU_ID }','lm${menu1.MENU_ID }','${menu2.MENU_NAME }','${menu2.MENU_URL }')"</c:if><c:if test="${'[]' != menu2.subMenu}"> class="dropdown-toggle"</c:if>>
-						<i class="${menu2.MENU_ICON == null ? 'menu-icon fa fa-leaf black' : menu2.MENU_ICON}"></i>
+						<i class="${menu2.MENU_ICON == null ? 'menu-icon fa fa-leaf black' : menu2.MENU_ICON}"><c></i>
 							<c:if test="${sessionScope.session_language=='en_US' }">
 								${menu2.MENU_NAME_EN }
 							</c:if>
@@ -121,4 +129,9 @@
 			top.mainFrame.tabAddHandler(335,"设备状态","equimentanaylise/retrieve");
 		}
 	</script>
+	
+<style type="text/css"> /** 重置浏览器默认标签样式 */ 
+	.imgage{padding-left:11px;width:30px;}
+	/* .ztree_map{background-image:url('map.png');} */
+</style>
 </div>

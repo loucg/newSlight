@@ -74,13 +74,13 @@ public class Page {
 		if(totalResult>0){
 			sb.append("	<ul class=\"pagination pull-right no-margin\">\n");
 			if(currentPage==1){
-				sb.append("	<li><a>"+language.getTotal()+"<font color=red>"+totalResult+"</font>"+language.getItem()+"</a></li>\n");
+				sb.append("	<li><a>"+language.getTotal()+"&nbsp;<font color=red>"+totalResult+"</font>&nbsp;"+language.getItem()+"</a></li>\n");
 				sb.append("	<li><input type=\"number\" value=\"\" id=\"toGoPage\" style=\"width:50px;text-align:center;float:left\" placeholder=\""+language.getPageNumber()+"\"/></li>\n");
 				sb.append("	<li style=\"cursor:pointer;\"><a onclick=\"toTZ();\"  class=\"btn btn-mini btn-success\">"+language.getJump()+"</a></li>\n");
 				sb.append("	<li><a>"+language.getFirstPage()+"</a></li>\n");
 				sb.append("	<li><a>"+language.getPrePage()+"</a></li>\n");
 			}else{
-				sb.append("	<li><a>"+language.getTotal()+"<font color=red>"+totalResult+"</font>"+language.getItem()+"</a></li>\n");
+				sb.append("	<li><a>"+language.getTotal()+"&nbsp;<font color=red>"+totalResult+"</font>&nbsp;"+language.getItem()+"</a></li>\n");
 				sb.append("	<li><input type=\"number\" value=\"\" id=\"toGoPage\" style=\"width:50px;text-align:center;float:left\" placeholder=\""+language.getPageNumber()+"\"/></li>\n");
 				sb.append("	<li style=\"cursor:pointer;\"><a onclick=\"toTZ();\"  class=\"btn btn-mini btn-success\">"+language.getJump()+"</a></li>\n");
 				sb.append("	<li style=\"cursor:pointer;\"><a onclick=\"nextPage(1)\">"+language.getFirstPage()+"</a></li>\n");
@@ -88,7 +88,7 @@ public class Page {
 			}
 			int showTag = 5;//分页标签显示数量
 			int startTag = 1;
-			if(currentPage>showTag){
+			if(currentPage>showTag){	
 				startTag = currentPage-1;
 			}
 			int endTag = startTag+showTag-1;
@@ -105,7 +105,7 @@ public class Page {
 				sb.append("	<li style=\"cursor:pointer;\"><a onclick=\"nextPage("+(currentPage+1)+")\">"+language.getNextPage()+"</a></li>\n");
 				sb.append("	<li style=\"cursor:pointer;\"><a onclick=\"nextPage("+totalPage+")\">"+language.getLastPage()+"</a></li>\n");
 			}
-			sb.append("	<li><a>"+language.getTotal()+totalPage+language.getPage()+"</a></li>\n");
+			sb.append("	<li><a>"+language.getTotal()+"&nbsp;"+totalPage+"&nbsp;"+language.getPage()+"</a></li>\n");
 			sb.append("	<li><select title='"+language.getVisiableItem()+"' style=\"width:55px;float:left;margin-top:1px;\" onchange=\"changeCount(this.value)\">\n");
 			sb.append("	<option value='"+showCount+"'>"+showCount+"</option>\n");
 			sb.append("	<option value='10'>10</option>\n");

@@ -178,13 +178,13 @@
 							<tr>
 								<td style="vertical-align:top;">
 									<c:if test="${QX.edit == 1 }">
-									<a class="btn btn-mini btn-danger" onclick="makeAll('<%=make_sure_divider_open_light %>?');" title="<%=open_light %>" ><%=open_light %></a>
+									<a class="btn btn-mini btn-danger" style="border-radius:15px;width: 120px;background-color: #4169E1!important;border-color:#4169E1!important; " onclick="makeAll('<%=make_sure_divider_open_light %>?');" title="<%=open_light %>" ><%=open_light %></a>
 									</c:if>
 									<c:if test="${QX.edit == 1 }">
-									<a class="btn btn-mini btn-danger" onclick="makeAll('<%=make_sure_shut_down_light %>?');" title="<%=shut_down_light %>" ><%=shut_down_light %></a>
+									<a class="btn btn-mini btn-danger" style="border-radius:15px;width: 120px;" onclick="makeAll('<%=make_sure_shut_down_light %>?');" title="<%=shut_down_light %>" ><%=shut_down_light %></a>
 									</c:if>
 									<c:if test="${QX.edit == 1 }">
-									<a class="btn btn-mini btn-danger" onclick="makeAll('<%=make_sure_adjust_brightness %>?');" title="<%=brightness_adjust %>" ><%=brightness_adjust %></a>
+									<a class="btn btn-mini btn-danger" style="border-radius:15px;width: 120px;background-color: #008B00!important; border-color:#008B00!important;" onclick="makeAll('<%=make_sure_adjust_brightness %>?');" title="<%=brightness_adjust %>" ><%=brightness_adjust %></a>
 									</c:if>
 									<%--
 									--%>

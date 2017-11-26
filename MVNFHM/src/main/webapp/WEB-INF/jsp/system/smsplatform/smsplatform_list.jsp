@@ -30,9 +30,7 @@
 							<!-- 检索  -->
 							<form action="smsplatform/list.do" method="post" name="Form"
 								id="Form">
-								<table id="simple-table"
-									class="table table-striped table-bordered table-hover"
-									style="margin-top: 5px; border: 0">
+								<table id="simple-table" class="table table-striped table-bordered table-hover"	style="margin-top: 15px;">
 									<thead>
 										<tr>
 											<th class="center" style="width: 50px;"><%=number%></th>
@@ -63,7 +61,7 @@
 																		class="ace-icon fa fa-lock"
 																		title="<%=no_permission%>"></i></span>
 																</c:if>
-																<div class="hidden-sm hidden-xs btn-group">
+																<div class="hidden-sm hidden-xs">
 																	<c:if test="${QX.edit == 1 }">
 																		<a class="btn btn-xs btn-success" title="<%=edit %>"
 																			onclick="edit('${var.id}');"> <i
@@ -72,10 +70,10 @@
 																		</a>
 																	</c:if>
 																	<c:if test="${QX.del == 1 }">
-													<a class="btn btn-xs btn-danger" onclick="del('${var.id}');">
-														<i class="ace-icon fa fa-trash-o bigger-120" title="删除"></i>
-													</a>
-													</c:if>
+																		<a class="btn btn-xs btn-danger" onclick="del('${var.id}');">
+																			<i class="ace-icon fa fa-trash-o bigger-120" title="<%=delete %>"></i>
+																		</a>
+																	</c:if>
 																</div>
 																<div class="hidden-md hidden-lg">
 																	<div class="inline pos-rel">

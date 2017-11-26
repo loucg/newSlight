@@ -47,7 +47,7 @@
 						    </tr>
 						    <!-- 名称 -->
 							<tr>
-								<td style="width:75px;text-align: right;padding-top: 13px;"><span style="color:red;">*</span><%=strategy_name %>:</td>
+								<td style="width:75px;text-align: right;padding-top: 13px;" nowrap="nowrap"><span style="color:red;">*</span><%=strategy_name %>:</td>
 								<td><input type="text" name="NAME" id="name" value="${pd.name }" maxlength="50" title="<%=strategy_name %>" style="width:98%;" placeholder="<%=please_enter_strategy_name %>"/></td>
 							</tr>
 							<!-- 类型 -->
@@ -179,7 +179,7 @@
 						    </tr> --%>
 						    <!-- 说明 -->
 							<tr>
-								<td style="width:75px;text-align: right;padding-top: 13px;"><%=app_explain %>:</td>
+								<td style="width:75px;text-align: right;padding-top: 13px;" nowrap="nowrap"><%=app_explain %>:</td>
 								<td><input autocomplete="off" type="text" name="EXPLAIN" id="explain" value="${pd.explain }" maxlength="100" title="<%=app_explain %>" style="width:98%;" placeholder="<%=please_enter_app_explain %>"/></td>
 							</tr>
 						</table>

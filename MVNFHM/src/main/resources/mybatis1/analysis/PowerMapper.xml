@@ -13,14 +13,16 @@
 	e.lamp_pole_num,
 	f.name as wgname, 
 	b.name as clname
-	from b_client_power_daily_report a,c_term c,c_client d,c_client_attr1 e,c_gateway_attr1 f,c_client_term g,c_client_gateway h,b_ctrl_strategy b
+	from b_client_power_daily_report a,c_term c,c_client d,c_client_attr1 e,c_gateway_attr1 f,c_client_term g,c_client_gateway h,b_ctrl_strategy2_apply b,b_gateway_strategy j
 	where a.c_client_id=g.c_client_id 
 	and g.c_term_id=c.id 
 	and a.c_client_id=d.id 
 	and a.c_client_id=e.c_client_id 
 	and a.c_client_id=h.c_client_id 
 	and h.c_gateway_id=f.c_gateway_id 
-	and c.b_ctrl_strategy_id=b.id
+	<!-- and c.b_ctrl_strategy_id=b.id -->
+	and j.c_gateway_id = h.c_gateway_id
+ 	and b.id = j.b_ctrl_strategy_id
 	and e.sys_user_id in ${pd.userids}
 	<if test="pd.groupname!= null and pd.groupname != ''"><!-- 检索 -->
 			and c.name LIKE CONCAT(CONCAT('%', #{pd.groupname}),'%')
@@ -50,14 +52,16 @@
 	e.lamp_pole_num,
 	f.name as wgname, 
 	b.name as clname
-	from b_client_power_monthly_report a,c_term c,c_client d,c_client_attr1 e,c_gateway_attr1 f,c_client_term g,c_client_gateway h,b_ctrl_strategy b
+	from b_client_power_monthly_report a,c_term c,c_client d,c_client_attr1 e,c_gateway_attr1 f,c_client_term g,c_client_gateway h,b_ctrl_strategy2_apply b,b_gateway_strategy j
 	where a.c_client_id=g.c_client_id 
 	and g.c_term_id=c.id 
 	and a.c_client_id=d.id 
 	and a.c_client_id=e.c_client_id 
 	and a.c_client_id=h.c_client_id 
 	and h.c_gateway_id=f.c_gateway_id 
-	and c.b_ctrl_strategy_id=b.id
+	<!-- and c.b_ctrl_strategy_id=b.id -->
+	and j.c_gateway_id = h.c_gateway_id
+ 	and b.id = j.b_ctrl_strategy_id
 	and e.sys_user_id in ${pd.userids}
 	<if test="pd.groupname!= null and pd.groupname != ''"><!-- 检索 -->
 			and c.name LIKE CONCAT(CONCAT('%', #{pd.groupname}),'%')
@@ -87,7 +91,7 @@
 	e.lamp_pole_num,
 	f.name as wgname, 
 	b.name as clname
-	from b_client_power_monthly_report a,c_term c,c_client d,c_client_attr1 e,c_gateway_attr1 f,c_client_term g,c_client_gateway h,b_ctrl_strategy b
+	from b_client_power_monthly_report a,c_term c,c_client d,c_client_attr1 e,c_gateway_attr1 f,c_client_term g,c_client_gateway h,b_ctrl_strategy2_apply b,b_gateway_strategy j
 	where a.c_client_id=g.c_client_id 
 	and g.c_term_id=c.id 
 	and a.c_client_id=d.id 
@@ -95,6 +99,8 @@
 	and a.c_client_id=h.c_client_id 
 	and h.c_gateway_id=f.c_gateway_id 
 	<!-- and c.b_ctrl_strategy_id=b.id -->
+	and j.c_gateway_id = h.c_gateway_id
+ 	and b.id = j.b_ctrl_strategy_id
 	and a.month LIKE CONCAT(CONCAT('%', #{pd.starttime}),'%')
 	and e.sys_user_id in ${pd.userids}
 	<if test="pd.groupname!= null and pd.groupname != ''"><!-- 检索 -->

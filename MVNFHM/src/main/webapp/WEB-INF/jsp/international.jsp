@@ -655,4 +655,8 @@
 	String part_name =  properties.getProperty("part_name");//label:局部图名称
 	String light_select =  properties.getProperty("light_select");//label:路灯选择
 	String partMap_light_delconfirm =  properties.getProperty("partMap_light_delconfirm");//label:路灯确认删除确认
+	String make_sure_delete_group =  properties.getProperty("make_sure_delete_group");//label:确定要删除分组?
+	String apply_strategyset_failed =  properties.getProperty("apply_strategyset_failed");//label:应用策略包失败！
+	String del_strategyset_failed =  properties.getProperty("del_strategyset_failed");//label:删除策略包失败！
+	
 %>

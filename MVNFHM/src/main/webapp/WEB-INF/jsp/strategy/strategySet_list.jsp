@@ -67,18 +67,18 @@
 								<tr>
 									<!-- 选择框 -->
 									<c:if test="${not empty pd.c_term_id }">
-									<th class="center" style="width:35px;">
+									<th class="center" style="width:35px;" nowrap="nowrap">
 <!-- 										<label class="pos-rel"><input type="checkbox" class="ace" id="zcheckbox" /><span class="lbl"></span></label> -->
 									</th>
 									</c:if>
-									<th class="center" style="width:50px;"><%=number %></th>
-									<th class="center" style="width: 30%;"><%=strategyset_name %></th>
+									<th class="center" style="width:50px;" nowrap="nowrap"><%=number %></th>
+									<th class="center" style="width: 30%;" nowrap="nowrap"><%=strategyset_name %></th>
 									<!-- 策略数 -->	
-									<th class="center" style="width:100px;"><%=strategy_number %></th>
-									<th class="center"><%=strategyset_explain %></th>
+									<th class="center" style="width:100px;" nowrap="nowrap"><%=strategy_number %></th>
+									<th class="center" nowrap="nowrap"><%=strategyset_explain %></th>
 									<c:if test="${empty pd.c_term_id }">
 										<!-- 操作 -->
-										<th class="center" style="width:220px;"><%=operate %></th>
+										<th class="center" style="width:220px;" nowrap="nowrap"><%=operate %></th>
 									</c:if>
 								</tr>
 							</thead>
@@ -169,10 +169,10 @@
 								<!-- 添加策略包 -->
 								<td style="vertical-align:top;">
 									<c:if test="${QX.edit == 1 }">
-									<a class="btn btn-sm btn-success btn-blue" onclick="applyStrategySet('<%=make_sure_apply_strategyset%>')" title="<%=apply %>"><%=apply %></a>
+									<a class="btn btn-mini btn-success" onclick="applyStrategySet('<%=make_sure_apply_strategyset%>')" title="<%=apply %>"><%=apply %></a>
 									</c:if>
 									<c:if test="${QX.del == 1 }">
-									<a class="btn btn-sm btn-danger btn-blue" onclick="top.Dialog.close();"><%=cancel%></a>
+									<a class="btn btn-mini btn-danger" onclick="top.Dialog.close();" title="<%=cancel %>"><%=cancel%></a>
 									</c:if>
 								</td>
 							</c:if>
@@ -361,9 +361,11 @@ function applyStrategySet(msg,c_term_id){
 	bootbox.confirm(msg, function(result) {
 		if(result) {
 			var str = '';
+			var selected = '';
 			
 			for(var i=0;i < document.getElementsByName('ids').length;i++){
 				if(document.getElementsByName('ids')[i].checked){
+					selected = 'ids'+i;
 					if(str=='') str += document.getElementsByName('ids')[i].value;
 					else str += ',' + document.getElementsByName('ids')[i].value;
 				  }
@@ -401,6 +403,10 @@ function applyStrategySet(msg,c_term_id){
 								setTimeout("self.location=self.location",0);			
 								alert(data.msg);
 							}
+						},
+						error: function(XMLHttpRequest, textStatus, errorThrown){
+							setTimeout("self.location=self.location",0);			
+							alert('<%=apply_strategyset_failed %>');
 						}
 					});
 				}

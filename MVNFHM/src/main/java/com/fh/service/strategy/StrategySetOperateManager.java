@@ -3,6 +3,7 @@ package com.fh.service.strategy;
 import java.util.List;
 
 import com.fh.entity.Page;
+import com.fh.util.Logger;
 import com.fh.util.PageData;
 
 /**
@@ -115,8 +116,7 @@ public interface StrategySetOperateManager {
 	/**
 	 * 添加应用策略与平台/网关对应表
 	 */
-	public void addGroup(PageData pd) throws Exception;
-	
+	public void addGroup(PageData pd) throws Exception;	
 
 	/**
 	 * 注销应用策略包
@@ -126,4 +126,21 @@ public interface StrategySetOperateManager {
 	 * @throws Exception
 	 */
 	public void deleteApplyStragySet(PageData pd) throws Exception;
+	
+	/**
+	 * 应用所选策略包
+	 * @param page
+	 * @param gatewayList
+	 * @return
+	 */
+	public void insertApplyStrategySet(Page page, List<PageData> gatewayList) throws Exception;
+	
+	/**
+	 * 删除应用策略包
+	 * @param page
+	 * @param strategyGatewayList
+	 * @return
+	 */
+	public void deleteAppliedStrategySet(Page page, List<PageData> strategyGatewayList) throws Exception;
+
 }

@@ -55,13 +55,13 @@
 												<td style="padding-left: 2px;"><a
 													class="btn btn-light btn-xs" onclick="toExcel();"
 													title="<%=export_to_excel%>"><i id="nav-search-icon"
-														class="ace-icon fa fa-download bigger-110 nav-search-icon blue"></i></a></td>
+														class="ace-icon fa fa-download bigger-110 nav-search-icon white"></i></a></td>
 											</c:if>
 											<c:if test="${QX.FromExcel == 1 }">
 												<td style="padding-left: 2px;"><a
 													class="btn btn-light btn-xs" onclick="fromExcel();"
 													title="<%=importt%>"><i id="nav-search-icon"
-														class="ace-icon fa fa-cloud-upload bigger-110 nav-search-icon blue"></i></a></td>
+														class="ace-icon fa fa-cloud-upload bigger-110 nav-search-icon white"></i></a></td>
 											</c:if>
 										</c:if>
 									</tr>

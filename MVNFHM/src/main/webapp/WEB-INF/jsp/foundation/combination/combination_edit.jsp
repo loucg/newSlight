@@ -378,8 +378,9 @@
 							</tr>
 							<tr>
 								<td style="text-align: center;" colspan="10">
-									<a class="btn btn-mini btn-primary" onclick="save();"><%=save%></a>
-									<a class="btn btn-mini btn-danger" onclick="top.Dialog.close();"><%=cancel%></a>
+									<a class="btn btn-mini btn-primary" style="border-radius:6px;" onclick="save();"><%=save%></a>
+									&nbsp;&nbsp;
+									<a class="btn btn-mini btn-danger" style="border-radius:6px;" onclick="top.Dialog.close();"><%=cancel%></a>
 								</td>
 							</tr>
 						</table>

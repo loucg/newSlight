@@ -23,14 +23,13 @@
 body,ul,li{	margin:0;
 			padding:0;
 			}
-.xttblog{   width: 800px;
-			padding-top:140px; 
-			margin-left: 200px;
- 			 
+.xttblog{   width: 1400px;
+			padding-top:100px; 
+			margin-left: 20px;
  			 }
-.box{		margin-left: 20%;
+.box{		margin-left: 1%;
 			margin-top: 5px;
-			margin-bottom:10px;
+			margin-bottom:20px;
 			list-style-type:none;
 			}
 .box:after{ content: ".";
@@ -43,8 +42,9 @@ body,ul,li{	margin:0;
        		overflow: hidden;
        		 }
 .box li{	float:left;
-			line-height: 20px;
+			line-height: 10px;
 			cursor: pointer;
+			padding-left : 100px;
 			}
 .box li a,.box li a:visited{ 
 			display:block;
@@ -74,6 +74,8 @@ body,ul,li{	margin:0;
 			img{
 			cursor:pointer;
 			transition:all 0.6s;
+			height:200px;
+			width:240px;
 			}
 			img:hover{
 			transform:scale(1.15);
@@ -89,22 +91,22 @@ body,ul,li{	margin:0;
 </div> -->
  	<!-- /section:basics/navbar.layout -->
  	<c:if test="${sessionScope.session_language=='zh_CN' }">
-	<div class="main-container" id="main-container" style="background:url('static/login/images/bg2.jpg') no-repeat;width:100%;height:566px;margin-top:5px;background-size:cover">	
+	<div class="main-container" id="main-container" style="background:url('static/login/images/bg.png') no-repeat;width:100%;height:566px;margin-top:5px;background-size:cover">	
 	     	<div class="xttblog"> 		
 			<ul class="box">
 <!-- 			<li><a onclick="edit(3,'日志管理','fhlog/list.do');" ><img src="static/login/images/czrz.jpg"/></a></li>  -->
 <!-- 			<li><a onclick="edit(314,'管理','strategy/listStrategys.do');" ><img src="static/login/images/clkz.jpg"/></a></li> -->
 <!-- 			<li><a onclick="edit(347,'地图控制','gomap/content.do');" ><img src="static/login/images/dtkz.jpg"/></a></li> -->
 <!-- 			<li><a onclick="edit(371,'故障统计','analysis/faultlist');" ><img src="static/login/images/gzbj.jpg"/></a></li> -->
-				<li><a onclick="edit(3,'设备状态','equimentanaylise/retrieve.do');" ><img src="static/login/images/sbzt.jpg"/></a></li> 
-	 			<li><a onclick="edit(80,'分组控制','group/listGroups.do');"><img src="static/login/images/ldfz.jpg"/></a></li> 
-	 			<li><a onclick="edit(347,'地图控制','gomap/content.do');" ><img src="static/login/images/dtkz.jpg"/></a></li> 
+				<li><a onclick="edit(3,'设备状态','equimentanaylise/retrieve.do');" ><img src="static/login/images/sbzt.png" /></a></li>
+	 			<li><a onclick="edit(80,'分组控制','group/listGroups.do');"><img src="static/login/images/fzkz.png"/></a></li> 
+	 			<li><a onclick="edit(347,'地图控制','gomap/content.do');" ><img src="static/login/images/dtkz.png"/></a></li> 
 			
 			</ul>	
-			 <ul class="box">
-			<li><a onclick="edit(314,'策略管理','strategy/listStrategySet.do');" ><img src="static/login/images/clkz.jpg"/></a></li> 
-	 		<li><a onclick="edit(369,'数据分析','poweranalysis/powerlist');"><img src="static/login/images/sjfx.jpg"/></a></li> 
-			<li><a onclick="edit(344,'维修记录','repair/weixiu');"><img src="static/login/images/wxjl.jpg"/></a></li>
+		    <ul class="box">
+			<li><a onclick="edit(314,'策略管理','strategy/listStrategySet.do');" ><img src="static/login/images/clsd.png"/></a></li> 
+	 		<li><a onclick="edit(369,'数据分析','poweranalysis/powerlist');"><img src="static/login/images/sjfx.png"/></a></li> 
+			<li><a onclick="edit(344,'维修记录','repair/weixiu');"><img src="static/login/images/tswx.png"/></a></li>
 <!-- 			<li><a onclick="edit(67,'基础配置','config/goCombination');"><img src="static/login/images/jcpz.jpg"/></a></li> -->
 <!-- 			<li><a onclick="edit(80,'分组设置','group/listGroups.do');"><img src="static/login/images/ldfz.jpg"/></a></li> -->
 <!-- 			<li><a onclick="edit(369,'能耗统计','poweranalysis/powerlist');"><img src="static/login/images/sjfx.jpg"/></a></li> -->
@@ -194,7 +196,7 @@ body,ul,li{	margin:0;
 	</div>
  	</c:if>
  	<c:if test="${sessionScope.session_language=='en_US' }">
-			<div class="main-container" id="main-container" style="background:url('static/login/images/bg_01.jpg') no-repeat;width:100%;height:566px;margin-top:5px;background-size:cover">	
+			<div class="main-container" id="main-container" style="background:url('static/login/images/bg.png') no-repeat;width:100%;height:566px;margin-top:5px;background-size:cover">	
 	     <div class="xttblog"> 		
 			<ul class="box">
 			<!-- <li><a onclick="edit(3,'日志管理','fhlog/list.do');" ><img src="static/login/images/czrz_01.jpg"/></a></li> 
@@ -202,9 +204,9 @@ body,ul,li{	margin:0;
 			<li><a onclick="edit(347,'地图控制','gomap/content.do');" ><img src="static/login/images/dtkz_01.jpg"/></a></li>
 			<li><a onclick="edit(371,'故障统计','analysis/faultlist');" ><img src="static/login/images/gzbj_01.jpg"/></a></li>
 			 -->
-			 <li><a onclick="edit(3,'设备状态','equimentanaylise/retrieve.do');" ><img src="static/login/images/sbzt_01.jpg"/></a></li> 
- 			 <li><a onclick="edit(80,'分组控制','group/listGroups.do');"><img src="static/login/images/ldfz_01.jpg"/></a></li> 
- 			 <li><a onclick="edit(347,'地图控制','gomap/content.do');" ><img src="static/login/images/dtkz_01.jpg"/></a></li> 
+			 <li><a onclick="edit(3,'设备状态','equimentanaylise/retrieve.do');" ><img src="static/login/images/sbzt_en.png"/></a></li> 
+ 			 <li><a onclick="edit(80,'分组控制','group/listGroups.do');"><img src="static/login/images/fzkz_en.png"/></a></li> 
+ 			 <li><a onclick="edit(347,'地图控制','gomap/content.do');" ><img src="static/login/images/dtkz_en.png"/></a></li> 
 			
 			</ul>
 			 <ul class="box">
@@ -213,9 +215,9 @@ body,ul,li{	margin:0;
 			<li><a onclick="edit(369,'能耗统计','poweranalysis/powerlist');"><img src="static/login/images/sjfx_01.jpg"/></a></li>
 			<li><a onclick="edit(344,'维修记录','repair/weixiu');"><img src="static/login/images/wxjl_01.jpg"/></a></li> 
 			 -->
-			 <li><a onclick="edit(314,'策略管理','strategy/listStrategySet.do');" ><img src="static/login/images/clkz_01.jpg"/></a></li> 
-	 		 <li><a onclick="edit(369,'数据分析','poweranalysis/powerlist');"><img src="static/login/images/sjfx_01.jpg"/></a></li> 
-			 <li><a onclick="edit(344,'维修记录','repair/weixiu');"><img src="static/login/images/wxjl_01.jpg"/></a></li>
+			 <li><a onclick="edit(314,'策略管理','strategy/listStrategySet.do');" ><img src="static/login/images/clsd_en.png"/></a></li> 
+	 		 <li><a onclick="edit(369,'数据分析','poweranalysis/powerlist');"><img src="static/login/images/sjfx_en.png"/></a></li> 
+			 <li><a onclick="edit(344,'维修记录','repair/weixiu');"><img src="static/login/images/tswx_en.png"/></a></li>
 			</ul>
 			</div> 
 			
