@@ -535,6 +535,7 @@
 	
 	String	equip_year=properties.getProperty("equip_year");
 	String	equip_month=properties.getProperty("equip_month");
+	String  equip_day=properties.getProperty("equip_day"); 
 	String  equip_7days=properties.getProperty("equip_7days");
 	String	equip_7week=properties.getProperty("equip_7week");
 	String	equip_7month=properties.getProperty("equip_7month");
@@ -658,5 +659,4 @@
 	String make_sure_delete_group =  properties.getProperty("make_sure_delete_group");//label:确定要删除分组?
 	String apply_strategyset_failed =  properties.getProperty("apply_strategyset_failed");//label:应用策略包失败！
 	String del_strategyset_failed =  properties.getProperty("del_strategyset_failed");//label:删除策略包失败！
-	
 %>
