@@ -535,6 +535,7 @@
 	
 	String	equip_year=properties.getProperty("equip_year");
 	String	equip_month=properties.getProperty("equip_month");
+	String  equip_date = properties.getProperty("equip_date");
 	String  equip_7days=properties.getProperty("equip_7days");
 	String	equip_7week=properties.getProperty("equip_7week");
 	String	equip_7month=properties.getProperty("equip_7month");

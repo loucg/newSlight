@@ -361,7 +361,7 @@
 								  dayOfWeek = firstday.getDay(),           //判断第一天是星期几(返回[0-6]中的一个，0代表星期天，1代表星期一，以此类推)
 								  days_per_month = new Array(31, 28 + isLeap(y), 31, 30, 31, 30, 31, 31, 30, 31, 30, 31),         //创建月份数组
 								  str_nums = Math.ceil((dayOfWeek + days_per_month[m]) / 7);                        //确定日期表格所需的行数
-								  document.write("<font style='font-weight:bold;font-size:15px';margin-left:20px;>"+"<%=equip_currentdate%>："+y+"<%=equip_year%>"+(today.getMonth()+1)+"<%=equip_month%>"+d+"</font>");
+								  document.write("<font style='font-weight:bold;font-size:15px';margin-left:20px;>"+"<%=equip_currentdate%>："+y+"<%=equip_year%>"+(today.getMonth()+1)+"<%=equip_month%>"+d+"<%=equip_date%>"+"</font>");
 								  document.write("<table border=1 width=80% height=70% style='margin-left:20px;'><tr height=30px ><th class='calander_Head'><%=equip_day_week0%></th><th class='calander_Head'><%=equip_day_week1%></th><th class='calander_Head'><%=equip_day_week2%></th><th class='calander_Head'><%=equip_day_week3%></th><th class='calander_Head' ><%=equip_day_week4%></th><th class='calander_Head'><%=equip_day_week5%></th><th class='calander_Head'><%=equip_day_week6%></th></tr>"); //打印表格第一行(显示星期)
 								  for (i = 0; i < str_nums; i += 1) {         //二维数组创建日期表格
 								  document.write('<tr height=30px>');

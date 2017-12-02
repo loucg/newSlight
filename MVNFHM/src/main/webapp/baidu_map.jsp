@@ -623,6 +623,9 @@ body {
     				cType ='2';
     			}
 				updateClientCoordinate(p.lng+','+p.lat,marker.clientdata.client_attri_id,cType);
+				marker.xcoordinate=p.lng;
+				marker.ycoordinate=p.lat;
+				
 			});
 		}
 		
