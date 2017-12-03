@@ -116,7 +116,7 @@ public class EquipmentanalyseController extends BaseController {
 			int equipmentcnt = Integer.parseInt(pdEquipmen.get("equipmentcnt").toString());
 			DecimalFormat df = new DecimalFormat("0.0");//
 			df.setRoundingMode(RoundingMode.HALF_UP);
-			String rate = "0";
+			String rate = "0.0";
 			if (faultCount != 0) {
 				rate = df.format(100 * (float) faultCount / (float) equipmentcnt);//
 			}
@@ -128,7 +128,7 @@ public class EquipmentanalyseController extends BaseController {
 		} else {
 			pdEquipmentFault.put("faultnum", 0);
 			pdEquipmentFault.put("equipmentcnt", 0);
-			pdEquipmentFault.put("faultRate", "0%");
+			pdEquipmentFault.put("faultRate", "0.0%");
 			equipmenttList.set(0, pdEquipmentFault);
 		}
 		mv.addObject("equipment_fault", equipmenttList); // 对应jsp页面内的名称
