@@ -135,7 +135,7 @@ public class EquipmentanalyseController extends BaseController {
 
 		// 设备统计处理1
 		equipmentService.delete(page); //
-		// 设备统计处理2
+		// 设备统计处理3
 		equipmentService.update(page);
 		List<PageData> deviceFaultList = null;
 		// 7日
