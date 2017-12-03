@@ -495,7 +495,7 @@ body {
 	//路灯跳动设置
 	function lightFlashSet(){
 		var count=$("#selLight option").length; 
-		//路灯跳动全清除
+		//路灯跳动全清除 
 		for(var i=0;i<count;i++){
 			var tempdiv = document.getElementById('light'+$("#selLight").get(0).options[i].value);
 			if(tempdiv!=null){
