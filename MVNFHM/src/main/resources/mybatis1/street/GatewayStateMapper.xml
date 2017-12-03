@@ -16,6 +16,7 @@
 		b_status.`name` status_name,
 		c_gateway_upload_status.interstatus,
 		c_gateway_upload_status.tdate,
+		timestampdiff(minute,c_gateway_upload_status.tdate,now()) AS gateway_rate,
 		c_gateway_attr3.number,
 		c_gateway_attr3.number2 
 		FROM

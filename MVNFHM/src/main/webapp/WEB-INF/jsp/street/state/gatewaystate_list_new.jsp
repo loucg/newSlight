@@ -127,15 +127,20 @@
 											<td class='center'>${gatewayState.name}</td>
 											<td class='center'>${gatewayState.location}</td>
 											<td class='center'>
-												<c:if test="${gatewayState.interstatus == 0}">
-													<img src="<%=basePath%>uploadFiles/uploadImgs/weak_signal.png" alt="弱信号"/>
-												</c:if>
-												<c:if test="${gatewayState.interstatus == 1}">
-													<img src="<%=basePath%>uploadFiles/uploadImgs/strong_signal.png" alt="有信号"/>
-												</c:if>
-												<c:if test="${gatewayState.interstatus == 2}">
+												<c:if test="${gatewayState.gateway_rate > 5}">
 													<img src="<%=basePath%>uploadFiles/uploadImgs/no_signal.png" alt="无信号"/>
 												</c:if>
+												<c:if test="${gatewayState.gateway_rate <= 5}">
+													<c:if test="${gatewayState.interstatus == 0}">
+														<img src="<%=basePath%>uploadFiles/uploadImgs/weak_signal.png" alt="弱信号"/>
+													</c:if>
+													<c:if test="${gatewayState.interstatus == 1}">
+														<img src="<%=basePath%>uploadFiles/uploadImgs/strong_signal.png" alt="有信号"/>
+													</c:if>
+													<c:if test="${gatewayState.interstatus == 2}">
+														<img src="<%=basePath%>uploadFiles/uploadImgs/no_signal.png" alt="无信号"/>
+													</c:if>
+												</c:if>	
 											</td>
 											<td class='center'>${gatewayState.comment}</td>
 											<%-- <td class='center'>${gatewayState.voltage}</td> --%>

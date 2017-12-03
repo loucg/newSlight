@@ -26,7 +26,7 @@
 	-moz-border-radius:50%;
 	-webkit-border-radius:50%;
 	line-height:100px;
-	font-size:20px
+	font-size:20px;
 }
 
 .circle2{
@@ -39,6 +39,60 @@
 	-webkit-border-radius:50%;
 	line-height:100px;
 	font-size:20px
+}
+
+.arc {
+    width: 110px;
+    height: 110px;  
+    position: absolute;
+    border-radius: 50%;
+    background: #ffffff  ;
+}
+.arc_left, .arc_right {
+    width: 110px; 
+    height: 110px;
+    position: absolute;
+    top: 0;left: 0;
+}
+.left, .right {
+    display: block;
+    width:110px; 
+    height:110px;
+    background:blue;
+    border-radius: 50%;
+    position: absolute;
+    top: 0;
+    left: 0;
+/*     transform: rotate(30deg); */
+}
+.arc_right, .right {
+    clip:rect(0,auto,auto,55px);
+}
+.arc_left, .left {
+    clip:rect(0,55px,auto,0);
+}
+.mask {
+    width: 102px;
+    height: 102px;
+    border-radius: 50%;
+    left: 4px;
+    top: 4px;
+    background: #FFF;
+    position: absolute;
+    text-align: center;
+    line-height: 102px;
+    font-size: 16px;
+}
+.block_title {
+    font-size:14px;
+}
+.block_sub_title {
+    font-size:12px;
+    color:white;
+}
+.block_num {
+    font-size:20px;
+    color:white;
 }
 
 .border-table {   
@@ -137,7 +191,7 @@
 	  vertical-align: middle;
 	  margin: 0;
 /*  	  position: relative;  */
-/*  	  border-top-left-radius: 10px; */
+/*  	  border-top-left-radius: 10px; transparent*/
 	  background-color: #007cf9 !important;
  	  border-color: #007cf9;
  	  width:100%;height:100%;
@@ -157,7 +211,6 @@
 		border:1px solid transparent;
 	}
 </style>
-
 
 <base href="<%=basePath%>">
 
@@ -183,19 +236,19 @@
 						<table class="chart-table" >
 						<tr><td colspan="4" style="padding:20px 10px 40px 10px" >
 							<table style="width: 800px;height: 300px;">
-							<tr>
-								<td style="width:300px;"><a class="title-back" style="border-top-left-radius: 10px;"><div class="dot"><b style="font-size:14px;"><%=equip_collect%></b></div></a></td>
-								<td class="title-bar" style="width:100%;text-align:right;" border="1"><%=sequenceselect %></td>
-								<td class="title-bar" style="width:100px;" border="1">
-									<select class="chosen-select form-control" name="TYPE" 
-										id="id" data-placeholder="请选择" style="vertical-align:top;font-size:12px;" onchange="switchAdjustItems(this.value)">
-										<option value="0" <c:if test="${pd.TYPE==0}">selected</c:if>><%=equip_7days %></option>
-										<option value="1" <c:if test="${pd.TYPE==1}">selected</c:if>><%=equip_7week %></option>
-										<option value="2" <c:if test="${pd.TYPE==2}">selected</c:if>><%=equip_7month %></option>
-									</select>
-								</td>
-								<td style="width:100px;" border="1"><a class="title-back" style="border-top-right-radius: 10px;"></a></td>
-							</tr>
+								<tr>
+									<td width="300px;"><a class="title-back" style="border-top-left-radius: 10px;"><div class="dot"><b style="font-size:14px;"><%=equip_collect%></b></div></a></td>
+									<td class="title-bar" style="width:100%;text-align:right;" border="1"><%=sequenceselect %></td>
+									<td class="title-bar" style="width:100px;" border="1">
+										<select class="chosen-select form-control" name="TYPE" 
+											id="id" data-placeholder="请选择" style="vertical-align:top;font-size:12px;" onchange="switchAdjustItems(this.value)">
+											<option value="0" <c:if test="${pd.TYPE==0}">selected</c:if>><%=equip_7days %></option>
+											<option value="1" <c:if test="${pd.TYPE==1}">selected</c:if>><%=equip_7week %></option>
+											<option value="2" <c:if test="${pd.TYPE==2}">selected</c:if>><%=equip_7month %></option>
+										</select>
+									</td>
+									<td style="width:100px;" border="1"><a class="title-back" style="border-top-right-radius: 10px;"></a></td>
+								</tr>
 								<!-- 设备损坏统计图 start-->
 								<tr>
 									<td colspan="4" width=100% style="text-align:center">
@@ -264,76 +317,130 @@
 								</tr><!-- 设备损坏统计图 end-->
 								<!-- 网关在线个数，设备编码，设备故障数 start -->
 								<tr>
+									<td colspan="4" height="20px"></td>
+								</tr>
+								<tr>
 									<td valign="bottom" colspan="4">
 										<div style="width:100%;color:white;">					
 										<!-- 网关在线个数 -->
-										<div class="divtable" style="width:320px;height:100%;border-radius:10px;background-color:#3CB371;text-align:center;">
+										<div class="divtable" style="width:320px;border-radius:10px;background-color:#3CB371;text-align:center;">
 											<c:forEach items="${equipment_analyse}" var="equipment" varStatus="vs">		
-											<div class="divtd" style="float:left;margin-top:3px;">
-												<div class="dot"><b style="font-size:14px;"><%=equip_gateway_onlinenum%></b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
-											</div>
-											<div class="divtd">
-												<div class="divtd circle" style="background:url(static/images/r-halfgreen.png);background-size:100% 100%;margin-top:15px">
-													<b style="font-size:20px;color:white">${equipment.onlineGateWayCount} <%=equip_unit1 %></b>
-												</div>
-												<div class="divtd" style="float:right;margin-left:50px">
-													<div class="divtd" style="text-align:center;">
-														<div class="divtd" style="font-size:12px;color:white"><%=equip_gateway_num %></div><br>
-														<div class="divtd"><b style="font-size:20px;color:white">${equipment.gatewayCount}</b></div>
-													</div>
-													<div style="text-align:center;margin-top:10px">
-														<div class="divtd" style="font-size:12px;color:white"><%=equip_gateway_onlinerate %></div><br>
-														<div class="divtd" style="margin-bottom:0px"><b style="font-size:20px;color:white;">${equipment.gatewyOnlineRate}</b></div>
-													</div>
-												</div>
-											</div>
+											<table width="100%" border="0">
+												<tr>
+													<td colspan="3" style="text-align:left;" height="35px">
+														<div class="dot"><b class="block_title"><%=equip_gateway_onlinenum %></b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
+													</td>
+												</tr>
+												<tr>
+													<td width="30px">&nbsp;</td>
+													<td width="120px">
+															<div class="arc" >
+															    <div class="arc_left"><div class="left" style="background:#009966;"></div></div>
+															    <div class="arc_right"><div class="right" style="background:#009966	;"></div></div>
+															    <div class="mask" style="background:#3CB371;"><b class="block_num">${equipment.onlineGateWayCount} <%=equip_unit1 %></b>
+															    	<span style="display:none">${equipment.onlineGateWayCount/equipment.gatewayCount*100}</span>
+															    </div>
+															</div>
+													</td>
+													<td rowspan="2">
+														<div class="divtd" style="text-align:center">
+															<div class="divtd" style="text-align:center;">
+																<div class="divtd block_sub_title"><%=equip_gateway_num %> </div><br>
+																<div class="divtd"><b class="block_num">${equipment.gatewayCount}</b></div>
+															</div>
+															<div style="text-align:center;margin-top:10px">
+																<div class="divtd block_sub_title"><%=equip_gateway_onlinerate %></div><br>
+																<div class="divtd" style="margin-bottom:0px"><b class="block_num">${equipment.gatewyOnlineRate}</b></div>
+															</div>
+														</div>
+													</td>
+												</tr>
+												<tr>
+													<td height="120px">&nbsp;</td>
+													<td>&nbsp;</td>
+												</tr>
+											</table>
 											</c:forEach>
 										</div>
-										<!-- 设备编码 -->
+										<!--设备编码 -->
 										<div class="divtable" style="width:320px;height:100%;border-radius:10px;background-color:#4169E1;text-align:center;">
-											<c:forEach items="${equipmentLight}" var="equipmentlight" varStatus="vs">		
-											<div class="divtd" style="float:left;margin-top:3px;">
-												<div class="dot"><b style="font-size:14px;"><%=equip_light_onlinenum %></b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
-											</div>
-											<div class="divtd">
-												<div class="divtd circle" style="background:url(static/images/r-halfblue.png);background-size:100% 100%;margin-top:15px">
-													<b style="font-size:20px;color:white">${equipmentlight.onlineLightCount} <%=equip_unit1 %></b>
-												</div>
-												<div class="divtd" style="float:right;margin-left:50px">
-													<div class="divtd" style="text-align:center;">
-														<div class="divtd" style="font-size:12px;color:white"><%=equip_light_num %></div><br>
-														<div class="divtd"><b style="font-size:20px;color:white">${equipmentlight.lightCount}</b></div>
-													</div>
-													<div style="text-align:center;margin-top:10px">
-														<div class="divtd" style="font-size:12px;color:white"><%=equip_light_onlinrate %></div><br>
-														<div class="divtd" style="margin-bottom:0px"><b style="font-size:20px;color:white;">${equipmentlight.onlineLightRate}</b></div>
-													</div>
-												</div>
-											</div>
+											<c:forEach items="${equipmentLight}" var="equipmentlight" varStatus="vs">
+											<table width="100%" >
+												<tr>
+													<td colspan="3" style="text-align:left;" height="35px">
+														<div class="dot"><b class="block_title"><%=equip_light_onlinenum %></b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
+													</td>
+												</tr>
+												<tr>
+													<td width="30px">&nbsp;</td>
+													<td width="120px">
+															<div class="arc" >
+															    <div class="arc_left"><div class="left" style="background:#3333FF ;"></div></div>
+															    <div class="arc_right"><div class="right" style="background:#3333FF ;"></div></div>
+															    <div class="mask" style="background: #4169E1;"><b class="block_num">${equipmentlight.onlineLightCount} <%=equip_unit2 %></b>
+															    	<span style="display:none;" style="">${equipmentlight.onlineLightCount/equipmentlight.lightCount*100}</span>
+															    </div>
+															</div>
+													</td>
+													<td rowspan="2">
+														<div class="divtd" style="text-align:center">
+															<div class="divtd" style="text-align:center;">
+																<div class="divtd block_sub_title"><%=equip_light_num %> </div><br>
+																<div class="divtd"><b class="block_num">${equipmentlight.lightCount}</b></div>
+															</div>
+															<div style="text-align:center;margin-top:10px">
+																<div class="divtd block_sub_title"><%=equip_light_onlinrate %></div><br>
+																<div class="divtd" style="margin-bottom:0px"><b class="block_num">${equipmentlight.onlineLightRate}</b></div>
+															</div>
+														</div>
+													</td>
+												</tr>
+												<tr>
+													<td height="120px">&nbsp;</td>
+													<td>&nbsp;</td>
+												</tr>
+											</table>
 											</c:forEach>
 										</div>
 										
 										<!-- 设备故障数 -->
 										<div class="divtable" style="width:320px;border-radius:10px;background-color:#EE6363;text-align:center;">
-											<c:forEach items="${equipment_fault}" var="equipmentfault" varStatus="vs">		
-											<div class="divtd" style="float:left;margin-top:3px;">
-												<div class="dot"><b style="font-size:14px;"><%=equip_faultnum %></b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
-											</div>
-											<div class="divtd">
-												<div class="divtd circle" style="background:url(static/images/r-halfred.png);background-size:100% 100%;margin-top:15px">
-													<b style="font-size:20px;color:white">${equipmentfault.faultnum} <%=equip_unit1 %></b>
-												</div>
-												<div class="divtd" style="float:right;margin-left:50px">
-													<div class="divtd" style="text-align:center;">
-														<div class="divtd" style="font-size:12px;color:white"><%=equip_num %></div><br>
-														<div class="divtd"><b style="font-size:20px;color:white">${equipmentfault.equipmentcnt}</b></div>
-													</div>
-													<div style="text-align:center;margin-top:10px">
-														<div class="divtd" style="font-size:12px;color:white"><%=equip_fault_rate %></div><br>
-														<div class="divtd" style="margin-bottom:0px"><b style="font-size:20px;color:white;">${equipmentfault.faultRate}</b></div>
-													</div>
-												</div>
-											</div>
+											<c:forEach items="${equipment_fault}" var="equipmentfault" varStatus="vs">
+											<table width="100%" border="0">
+												<tr>
+													<td colspan="3" style="text-align:left;" height="35px">
+														<div class="dot"><b class="block_title"><%=equip_faultnum %></b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</div>
+													</td>
+												</tr>
+												<tr>
+													<td width="30px">&nbsp;</td>
+													<td width="120px">
+															<div class="arc" >
+															    <div class="arc_left"><div class="left" style="background: #FF4040;"></div></div>
+															    <div class="arc_right"><div class="right" style="background: #FF4040;"></div></div>
+															    <div class="mask" style="background:#EE6363;"><b class="block_num">${equipmentfault.faultnum} <%=equip_unit1 %></b>
+															    	<span style="display:none">${equipmentfault.faultnum/equipmentfault.equipmentcnt*100}</span>
+															    </div>
+															</div>
+													</td>
+													<td rowspan="2">
+														<div class="divtd" style="text-align:center">
+															<div class="divtd" style="text-align:center;">
+																<div class="divtd block_sub_title"><%=equip_num %> </div><br>
+																<div class="divtd"><b class="block_num">${equipmentfault.equipmentcnt}</b></div>
+															</div>
+															<div style="text-align:center;margin-top:10px">
+																<div class="divtd block_sub_title"><%=equip_fault_rate %></div><br>
+																<div class="divtd" style="margin-bottom:0px"><b class="block_num">${equipmentfault.faultRate}</b></div>
+															</div>
+														</div>
+													</td>
+												</tr>
+												<tr>
+													<td height="120px">&nbsp;</td>
+													<td>&nbsp;</td>
+												</tr>
+											</table>
 											</c:forEach>
 										</div>
 
@@ -342,6 +449,7 @@
 									
 								</tr>								
 								<!-- 网关在线个数，设备编码，设备故障数 end -->
+								
 							</table>
 						</td></tr></table>
 						</td>
@@ -383,15 +491,7 @@
 		</div>
 				<!-- /.page-content -->
 		</div>
-		</div>
-		<script>
-	//设定显示项目
-		function switchAdjustItems(type){
-			$("#Form").submit();
-			
-		}
-		</script>
-		
+		</div>	
        
 		<!-- /.main-content -->
 	
@@ -401,4 +501,28 @@
 	<!-- 页面底部js¨ -->
 	<%@ include file="../system/index/foot.jsp"%>
 </body>
+
+<script type="text/javascript">
+	//设定显示项目
+	function switchAdjustItems(type){
+		$("#Form").submit();
+		
+	}
+
+	$(function() {
+	    $('.arc').each(function(index, el) {
+	    	var num = $(this).find('span').text() * 3.6;
+	    	num=360-num;
+			if (num<=180) {
+				$(this).find('.right').css('transform', "rotate(" + num + "deg)");
+			} else {
+				$(this).find('.right').css('transform', "rotate(180deg)");
+				$(this).find('.left').css('transform', "rotate(" + (num - 180) + "deg)");
+			};
+	    });
+	});
+		
+		
+</script>
+
 </html>

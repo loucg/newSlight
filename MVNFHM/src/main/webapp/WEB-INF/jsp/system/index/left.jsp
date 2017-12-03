@@ -22,7 +22,6 @@
 				<c:if test="${menu1.MENU_ICON == 'ztree_group'}"><img src="static/login/images/fzkz_icon.png" class="imgage"/></c:if>
 				<c:if test="${menu1.MENU_ICON == 'ztree_strategy'}"><img src="static/login/images/strategy_ztree.png" class="imgage"/></c:if>
 				<c:if test="${menu1.MENU_ICON == 'ztree_devicestatus'}"><img src="static/login/images/devicestatus.png" class="imgage"/></c:if>
-				<c:if test="${menu1.MENU_ICON == 'ztree_devicestatus'}"><img src="static/login/images/devicestatus.png" class="imgage"/></c:if>
 				<c:if test="${menu1.MENU_ICON == 'ztree_basesetting'}"><img src="static/login/images/basesetting.png" class="imgage"/></c:if>
 				
 				</i>

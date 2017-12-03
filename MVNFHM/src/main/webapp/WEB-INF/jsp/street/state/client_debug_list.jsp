@@ -112,7 +112,8 @@
 									<th class="center" style="width:35px;">
 									<label class="pos-rel"><input type="checkbox" class="ace" id="zcheckbox" /><span class="lbl"></span></label>
 									</th>
-									<th class="center" style="width:50px;"><%=number %></th>
+									<%-- <th class="center" style="width:50px;"><%=number %></th> --%>
+									<th class="center"><%=node_address %></th>
 									<th class="center"><%=node_number%></th>
 									<th class="center"><%=node_name %></th>
 									<th class="center"><%=location %></th>
@@ -123,7 +124,6 @@
 									<th class="center"><%=power_rate_factor %></th>
 									<th class="center"><%=current %></th>
 									<th class="center"><%=energy_consumption %></th>
-									<th class="center"><%=node_address %></th>
 									<th class="center"><%=work_status %></th>
 									<th class="center"><%=comment %></th>
 									<th class="center"><%=time %></th>
@@ -141,7 +141,8 @@
 												<label class="pos-rel"><input type='radio' name='ids' value="${lampState.id}" class="ace" /><span class="lbl"></span></label>
 												<input type= "hidden" name = "clientId" value = "${lampState.c_client_id}"></input>
 											</td>
-											<td class='center' style="width: 30px;">${vs.index+1}</td>
+											<%-- <td class='center' style="width: 30px;">${vs.index+1}</td> --%>
+											<td class='center'>${lampState.node}</td>
 											<td class='center'><a onclick="viewLampDetail('${lampState.id}')" style="cursor:pointer;">${lampState.client_code }</a></td>
 											<td class='center'>${lampState.cname}</td>
 											<td class='center'>${lampState.location}</td>
@@ -152,7 +153,6 @@
 									        <td class='center'>${lampState.power_factor}</td>
 									        <td class='center'>${lampState.current}</td>
 									        <td class='center'>${lampState.kwh}</td>
-									        <td class='center'>${lampState.node}</td>
 									        <td class='center'>${lampState.status_name}</td>
 									        <td class='center'>${lampState.comment}</td>
 									        <td class='center'>${lampState.tdate}</td>

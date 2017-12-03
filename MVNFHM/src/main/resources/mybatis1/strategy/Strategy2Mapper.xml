@@ -220,6 +220,7 @@
 		update 
 		<include refid="tableName"></include>
 		set
+			b_strategy_type_id			= #{TYPE},
 			name		= #{NAME},
 			b_ctrl_strategy2.explain		= #{EXPLAIN},
 			value		= #{VALUE},
