@@ -159,7 +159,7 @@
 											</td>
 											<!-- 亮度 -->
 											<td class="center">
-												<c:choose><c:when test="${'0' == strategy2.bright}"><%=on %></c:when><c:when test="${'255' == strategy2.bright}"><%=off %></c:when>
+												<c:choose><c:when test="${'0' == strategy2.bright}"><%=off %></c:when><c:when test="${'255' == strategy2.bright}"><%=on %></c:when>
 												<c:otherwise>${strategy2.bright }</c:otherwise></c:choose>
 											</td>
 											<!-- 组数量 -->
