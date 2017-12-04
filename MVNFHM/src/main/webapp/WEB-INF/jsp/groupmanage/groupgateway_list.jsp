@@ -32,11 +32,19 @@
 					<div class="row">
 						<div class="col-xs-12">
 
-						<!-- 检索  -->
+						
 						<form action="group/listGateways.do?" method="post" name="Form" id="Form">
 						<input type="hidden" id="term_id" name="term_id" value="${pd.term_id }"/>
 						<input type="hidden" id="op" name="op" value="${pd.op }"/>
 						<div id="zhongxin" style="padding-top: 13px;">
+						<!-- 组名表示  -->
+						<table class="table table-striped table-bordered table-hover">
+							<tr>
+								<td class="center"><%=group_name %>:&nbsp;&nbsp;${pd.termName }
+								</td>
+							</tr>
+						</table>
+						<!-- 检索  -->
 						<table style="margin-top:5px;">
 							<tr>
 								<td>

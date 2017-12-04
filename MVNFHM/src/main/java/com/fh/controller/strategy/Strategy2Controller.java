@@ -97,6 +97,14 @@ public class Strategy2Controller extends BaseController {
 			}
 		}
 		
+		// 取得策略包名称
+		String setId = pd.getString("strategysetid");
+		pd.put("id", setId);
+		PageData pdSet = strategySetService.findStrategySetById(pd);
+		if(pdSet!=null && pdSet.getString("name")!=null) {
+			pd.put("strategySetName", pdSet.getString("name"));
+		}
+		
 		mv.setViewName("strategy/strategy2_list");
 		mv.addObject("strategy2List", strategy2List);
 		mv.addObject("pd", pd);

@@ -220,6 +220,7 @@
 <!-- jsp国际化文件 -->
 <%@ include file="../international.jsp"%>
 <script src="static/js/echart/echarts.js"></script>
+<script src="static/ace/js/ace/ace.js"></script>
 </head>
 <body class="no-skin" >
 

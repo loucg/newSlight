@@ -23,6 +23,7 @@ import com.fh.entity.system.GatewayStrategy;
 import com.fh.entity.system.User;
 import com.fh.service.fhoa.department.DepartmentManager;
 import com.fh.service.group.GroupGatewayService;
+import com.fh.service.group.GroupService;
 import com.fh.service.group.mem.GroupMemService;
 import com.fh.util.AppUtil;
 import com.fh.util.Const;
@@ -46,6 +47,8 @@ public class GroupGatewayController extends BaseController{
     private DepartmentManager departmentService;
     @Resource(name="groupMemService")
     private GroupMemService groupMemService;
+	@Resource(name = "groupService")
+	private GroupService groupService;
 
 
 	
@@ -131,6 +134,14 @@ public class GroupGatewayController extends BaseController{
 			session.setAttribute(session.getId(), null);
 		}
 					
+		// 获得组名称
+		String termId = pd.getString("term_id");
+		pd.put("id", termId);
+		PageData pdTerm = groupService.findById(pd);
+		if(pdTerm!=null && pdTerm.getString("name")!=null) {
+			pd.put("termName", pdTerm.getString("name"));
+		}		
+
 		mv.setViewName("groupmanage/groupgateway_list");
 		mv.addObject("gatewayList", gatewayList);
 		mv.addObject("pd", pd);

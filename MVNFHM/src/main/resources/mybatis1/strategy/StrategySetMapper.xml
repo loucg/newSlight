@@ -124,6 +124,15 @@
 			id = #{id}
 	</update>	
 	
+	<!-- 踢删策略包所含策略  -->
+	<update id="removeStrategy2" parameterType="String">
+		update 
+			b_ctrl_strategy2
+		set status = '2'
+		where 
+			b_strategy_term_id = #{id}
+	</update>	
+	
 		<!--删除策略包 -->
 	<update id="delete" parameterType="page" >
 		delete from b_device_fault_statistic 

@@ -73,6 +73,7 @@ public class StrategySetService implements StrategySetManager {
 	 */
 	public void deleteStrategySetById(String id) throws Exception {
 		dao.update("StrategySetMapper.remove", id);
+		dao.update("StrategySetMapper.removeStrategy2", id);
 	}
 
 	/**

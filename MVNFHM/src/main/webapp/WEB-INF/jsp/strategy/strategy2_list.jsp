@@ -42,8 +42,10 @@
 						<c:if test="${empty pd.apply }">
 							<table style="width:100%;margin-top:5px;">
 							<tr>
-								<td style="vertical-align:top;">
+								<td style="vertical-align:top;" width="20px">
 									<a class="btn btn-mini btn-grey" onclick="goStrategySet('${pd.c_term_id}','${pd.strategysetid}');"><%=return1 %></a>
+								</td>
+								<td class="center"><%=strategyset_name %>:&nbsp;&nbsp;${pd.strategySetName}
 								</td>
 							</tr>
 							</table>
