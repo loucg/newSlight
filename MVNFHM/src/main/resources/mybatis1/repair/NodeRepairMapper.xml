@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="NodeRepairMapper">
+
+<!-- 终端维修记录查询 -->
+	<select id="getFaultNodelistPage" parameterType="page" resultType="pd">
+		SELECT  a.id AS id,
+			    a.fault_no,
+				a.type,
+				a.tdate AS startime,
+				a.comment,
+				b.register,
+				b.repairman,
+				b.tdate,
+<!-- 				b.result, -->
+<!-- 				b.explain, -->
+				c.name,
+				c.location,
+				c.lamp_pole_num AS polenumber,
+				c.c_client_id,
+				d.client_code AS code				 
+		FROM b_client_fault AS a
+			LEFT JOIN b_client_repair AS b ON a.id = b.b_client_fault_id
+			LEFT JOIN c_client_attr1 AS c ON a.c_client_id = c.c_client_id
+			LEFT JOIN c_client AS d ON c.c_client_id = d.id 
+		WHERE a.status='1' 		<!-- 只显示未修复故障 -->
+<!-- 		<if test="pd.userid==pd.weixiuroleid"> -->
+			AND c.sys_user_id in ${pd.userids}
+<!-- 		</if> -->
+		<!-- 故障编号 -->
+		<if test="pd.fault_no!=null and pd.fault_no!=''">
+			AND a.fault_no LIKE CONCAT(CONCAT('%', #{pd.fault_no}), '%')
+		</if>
+		<!-- 节点编号 -->
+		<if test="pd.code!=null and pd.code!=''">
+			AND d.client_code LIKE CONCAT(CONCAT('%', #{pd.code}), '%')
+		</if>
+		<!-- 节点名称 -->
+		<if test="pd.name!=null and pd.name!=''">
+			AND c.name LIKE CONCAT(CONCAT('%', #{pd.name}), '%')
+		</if>
+		<!-- 位置 -->
+		<if test="pd.location!=null and pd.location!=''">
+			AND c.location LIKE CONCAT(CONCAT('%', #{pd.location}), '%')
+		</if>
+		<!-- 故障时间(开始) -->
+		<if test="pd.Start!=null and pd.Start!=''">
+			AND DATE_FORMAT(a.tdate,'%Y-%m-%d') &gt;= #{pd.Start}
+		</if>
+		<!-- 故障时间(结束) -->
+		<if test="pd.End!=null and pd.End!='' ">
+			AND DATE_FORMAT(a.tdate,'%Y-%m-%d') &lt;= #{pd.End}
+		</if>
+		GROUP BY a.id
+	</select>
+
+<!-- 根据id获取终端故障记录 -->
+	<select id="getFaultNodeById" resultType="pd">
+		SELECT a.id AS id,
+		    a.fault_no,
+		    a.type,
+			a.tdate AS startime,
+			a.comment,
+			b.register,
+			b.repairman,
+			b.tdate,
+<!-- 			b.result, -->
+<!-- 			b.explain, -->
+			c.name,
+			c.location,
+			c.lamp_pole_num AS polenumber,
+			c.c_client_id,
+			d.client_code AS code
+		FROM b_client_fault AS a
+			LEFT JOIN b_client_repair AS b ON a.id = b.b_client_fault_id
+			LEFT JOIN c_client_attr1 AS c ON a.c_client_id = c.c_client_id
+			LEFT JOIN c_client AS d ON c.c_client_id = d.id 
+		WHERE a.id = #{id ,jdbcType=INTEGER}
+		GROUP BY a.id
+	</select>
+	
+	
+	<!-- 节点信息 -->
+	<select id="getNodeInfoById" parameterType="page" resultType="pd">
+		SELECT
+			c_gateway_attr1.`name` gateway_name,
+			CASE WHEN c_client_attr1.node2='0' THEN c_client_attr1.node ELSE CONCAT_WS('.',c_client_attr1.node,c_client_attr1.node2) END AS node,
+			c_client.client_code,
+			c_client_type.`name` client_type_name,
+			c_client_attr1.`name` client_name,
+			c_client_attr1.location,
+			c_client_attr1.lamp_pole_num
+		FROM
+			c_client_attr1
+		LEFT JOIN
+			c_client ON c_client.id = c_client_attr1.c_client_id
+		LEFT JOIN
+			c_gateway_attr1
+		ON
+			c_gateway_attr1.c_gateway_id IN
+			(
+			SELECT
+				c_client_gateway.c_gateway_id
+			FROM
+				c_client_gateway
+			WHERE
+				c_client_gateway.c_client_id = c_client_attr1.c_client_id
+			)
+		LEFT JOIN
+			c_client_type ON c_client_type.id = c_client_attr1.c_client_type_id
+		WHERE 
+			c_client_attr1.c_client_id = #{c_client_id}
+		GROUP BY
+			c_client_attr1.c_client_id
+	</select>
+	
+	<!-- 终端维修记录新增 -->
+	<insert id="createNodeRepair" parameterType="pd">
+	insert into b_client_repair (
+			b_client_fault_id,
+<!-- 			c_client_id, -->
+			register,
+			repairman,
+			tdate,
+			operate
+<!-- 			result, -->
+<!-- 			b_client_repair.`explain` -->
+		)
+	values
+		(
+			#{id},
+<!-- 			#{c_client_id}, -->
+			#{register},
+			#{repairman}, 
+			#{tdate},
+			#{operate}
+<!-- 			#{result}, -->
+<!-- 			#{explain} -->
+		 )
+	</insert>
+	
+	<!-- 终端维修记录修改 -->
+	<update id="updateFaultNodeStatus" parameterType="pd">
+		UPDATE b_client_fault 
+		SET status ='2'
+		WHERE 
+			id =#{id}
+	</update>
+	
+</mapper>

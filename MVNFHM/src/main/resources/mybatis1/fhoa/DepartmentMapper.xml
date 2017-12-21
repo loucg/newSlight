@@ -425,4 +425,25 @@
 		SELECT *
 		FROM b_note
 	</select>
+	
+	<select id="geAllUserInDepartment" parameterType="page" resultType="pd">
+		SELECT 
+			b_user_company.b_user_id,
+			b_user_company.POSITION,			<!-- 职务 -->
+			sys_user.EMAIL,						<!-- 邮箱 -->
+			sys_user.PHONE,						<!-- 手机 -->
+			sys_user.`NAME` AS username,		<!-- 姓名 -->
+			b_company.`NAME` AS companyname 	<!-- 所在公司 -->
+		FROM 
+			sys_user
+		INNER JOIN
+			b_user_company ON sys_user.USER_ID = b_user_company.b_user_id
+		INNER JOIN
+			b_department ON b_user_company.b_department_id = b_department.id
+		INNER JOIN
+			b_company ON b_department.b_company_id = b_company.id
+		WHERE
+			b_user_company.b_user_id in ${pd.userids}
+	</select>
+	
 </mapper>

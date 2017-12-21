@@ -258,4 +258,12 @@ public class UserService implements UserManager{
 		dao.findForObject("UserMapper.resetP", pd);
 	}
 	
+	/**用户信息列表(全部)
+	 * @param USER_IDS
+	 * @throws Exception
+	 */
+	public List<PageData> getUserIdAndNameInfo(PageData pd)throws Exception{
+		return (List<PageData>) dao.findForList("UserMapper.getUserIdAndNameInfo", pd);
+	}
+	
 }

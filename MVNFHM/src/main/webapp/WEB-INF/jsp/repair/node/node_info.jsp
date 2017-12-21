@@ -18,38 +18,6 @@
 <!-- jsp文件头和头部 -->
 <%@ include file="../../system/index/top.jsp"%>
 <link rel="stylesheet" href="static/ace/css/datepicker.css" />
-<script type="text/javascript">
-
-	//保存
-	function save(){
-			if($("#register").val()==""){
-				$("#register").tips({
-					side:3,
-		            msg:'<%=please_enter_register%>',
-		            bg:'#AE81FF',
-		            time:2
-		        });
-				$("#register").focus();
-				return false;
-			}
-
-			if($("#explain").val()==""){
-			$("#explain").tips({
-				side:3,
-	            msg:'<%=please_enter_repire_explain%>',
-	            bg:'#AE81FF',
-	            time:2
-	        });
-			$("#explain").focus();
-			return false;
-		}
-
-			$("#Form").submit();
-			$("#zhongxin").hide();
-			$("#zhongxin2").show();
-	}
-
-</script>
 </head>
 <body class="no-skin">
 
@@ -62,51 +30,52 @@
 				<div class="row">
 					<div class="col-xs-12">
 
-					<form action="repair/${msg}" name="Form" id="Form" method="post">
-						<input type="hidden" name="id" id="id" value="${pd.id}"/>
+					<form action="repair/goNodeInfo.do" name="userForm" id="userForm" method="post">
+						<input type="hidden" name="c_client_id" id="c_client_id" value="${pd.c_client_id }"/>
 						<div id="zhongxin" style="padding-top: 13px;">
 						<table id="table_report" class="table table-striped table-bordered table-hover">
 							<tr>
-								<td style="width:79px;text-align: right;padding-top: 13px;"><%=registrant%>:</td>
-								<td><input style="width:95%;" type="text" name="register" id="register" value="${pd.register}" maxlength="500" placeholder="<%=please_enter_register%>" title="<%=registrant%>"/></td>
+								<!-- 所属网关 -->
+								<td style="width:85px;text-align: right;padding-top: 13px;"><%=belong_gateway %>:</td>
+								<td><input type="text" name="gateway_name" id="gateway_name"  value="${pd.gateway_name }" style="width:98%;" disabled="disabled"/></td>
 							</tr>
 							<tr>
-								<td style="width:79px;text-align: right;padding-top: 13px;"><%=maintenance_man%>:</td>
-								<td><input style="width:95%;" type="text" name="repairman" id="repairman" value="${pd.repairman}" maxlength="500" placeholder="<%=please_enter_repair_person%>" title="<%=maintenance_man%>"/></td>
-							</tr>
-
-				<%-- 			<tr>
-								<td style="width:79px;text-align: right;padding-top: 13px;">修复时间:</td>
-								<td style="padding-left:8px;"><input class="span10 date-picker" name="tdate" id="tdate"  value="${pd.tdate}" type="text" data-date-format="yyyy-mm-dd" readonly="readonly" style="width:88px;" placeholder="修复时间" title="修复时间"/></td>
-
-
-							</tr> --%>
-
-							<tr>
-								<td style="width:79px;text-align: right;padding-top: 13px;"><%=repair_result%>:</td>
-								<td>
-									<select class="chosen-select form-control" name="result" id="result" data-placeholder="<%=please_choose_repair_result%>" style="float:left;padding-left: 12px;width:95%;">
-										<option value="1" <c:if test="${pd.result==1}">selected</c:if>><%=wait_repair%></option>
-										<option value="2" <c:if test="${pd.result==2}">selected</c:if>><%=has_repair%></option>
-										<option value="3" <c:if test="${pd.result==3}">selected</c:if>><%=destroy%></option>
-										<option value="3" <c:if test="${pd.result==4}">selected</c:if>><%=repair_self%></option>
-
-								  	</select>
-								 </td>
+								<!-- 节点地址 -->
+								<td style="width:85px;text-align: right;padding-top: 13px;"><%=node_address %>:</td>
+								<td><input type="email" name="node" id="node"  value="${pd.node }" style="width:98%;" disabled="disabled"/></td>
 							</tr>
 							<tr>
-								<td style="width:79px;text-align: right;padding-top: 13px;"><%=repair_instructions%>:</td>
-								<td><input style="width:95%;" type="text" name="explain" id="explain" value="${pd.explain}" maxlength="500" placeholder="<%=please_enter_repire_explain%>" title="<%=repair_instructions%>"/></td>
+								<!-- 节点编号-->
+								<td style="width:85px;text-align: right;padding-top: 13px;"><%=node_number %>:</td>
+								<td><input type="number" name="client_code" id="client_code"  value="${pd.client_code }" style="width:98%;" disabled="disabled"/></td>
+							</tr>
+							<tr>
+								<!-- 节点名称-->
+								<td style="width:85px;text-align: right;padding-top: 13px;"><%=node_name %>:</td>
+								<td><input type="email" name="client_name" id="client_name"  value="${pd.client_name }" style="width:98%;" disabled="disabled"/></td>
+							</tr>
+							<tr>
+								<!-- 节点类型-->
+								<td style="width:85px;text-align: right;padding-top: 13px;"><%=node_type %>:</td>
+								<td><input type="text" name="client_type_name" id="client_type_name"value="${pd.client_type_name }" style="width:98%;" disabled="disabled"/></td>
+							</tr>
+							<tr>
+								<!-- 位置-->
+								<td style="width:85px;text-align: right;padding-top: 13px;"><%=location %>:</td>
+								<td><input type="text" name="location" id="location"value="${pd.location }" style="width:98%;" disabled="disabled"/></td>
+							</tr>
+							<tr>
+								<!-- 灯杆号-->
+								<td style="width:85px;text-align: right;padding-top: 13px;"><%=pole_number %>:</td>
+								<td><input type="text" name="lamp_pole_num" id="lamp_pole_num"value="${pd.lamp_pole_num }" style="width:98%;" disabled="disabled"/></td>
 							</tr>
 							<tr>
 								<td style="text-align: center;" colspan="10">
-									<a class="btn btn-mini btn-primary" onclick="save();"><%=save%></a>
 									<a class="btn btn-mini btn-danger" onclick="top.Dialog.close();"><%=cancel%></a>
 								</td>
 							</tr>
 						</table>
 						</div>
-						<div id="zhongxin2" class="center" style="display:none"><br/><br/><br/><br/><br/><img src="static/images/jiazai.gif" /><br/><h4 class="lighter block green"><%=committing%>...</h4></div>
 					</form>
 
 					</div>
@@ -174,6 +143,6 @@
 		});
 	});
 
-	</script>
+	</script>	
 </body>
 </html>

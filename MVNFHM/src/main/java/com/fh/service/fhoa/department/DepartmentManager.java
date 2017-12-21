@@ -5,6 +5,7 @@ import java.util.List;
 import com.fh.entity.Page;
 import com.fh.entity.system.Department;
 import com.fh.entity.system.Role;
+import com.fh.entity.system.User;
 import com.fh.util.PageData;
 
 /** 
@@ -182,5 +183,9 @@ public interface DepartmentManager{
 	 */
 	public List<PageData> smslist()throws Exception;
 	
+	/**
+	 * 获取某个部门下所有的用户
+	 */
+	public List<PageData> geAllUserInDepartment(Page page) throws Exception;
 }
 

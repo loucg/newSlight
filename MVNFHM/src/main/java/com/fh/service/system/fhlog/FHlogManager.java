@@ -92,5 +92,13 @@ public interface FHlogManager{
 	 * @throws Exception
 	 */
 	public List<PageData> getAllDeviceList(PageData pd) throws Exception;
+	
+	/**
+	 * 更换网关，写入节点信息
+	 * @param pd
+	 * @return
+	 * @throws Exception
+	 */
+	public void saveNodeInfo(PageData pd) throws Exception;
 }
 

@@ -188,4 +188,10 @@ public interface UserManager {
 	 * @throws Exception
 	 */
 	public void resetP(PageData pd)throws Exception;
+	
+	/**用户信息列表(全部)
+	 * @param USER_IDS
+	 * @throws Exception
+	 */
+	public List<PageData> getUserIdAndNameInfo(PageData pd)throws Exception;
 }

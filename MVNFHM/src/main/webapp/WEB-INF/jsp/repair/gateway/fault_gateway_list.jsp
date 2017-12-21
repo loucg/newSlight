@@ -33,36 +33,42 @@
 						<div class="col-xs-12">
 
 						<!-- 检索  -->
-						<form action="repair/weixiu" method="post" name="Form" id="Form">
+						<form action="repair/listGateway" method="post" name="Form" id="Form">
 						<table style="margin-top:5px;">
 							<tr>
-							   <td>
-									<div class="nav-search" style="margin-left:8px;">
-									    <label><%=group_name%>：</label>
-										<input class="nav-search-input" autocomplete="off" id="nav-search-input" type="text" name="cname" value="${pd.cname}" placeholder="<%=please_enter_group_name%>" />
-									</div>
-								</td>
 								 <td>
 									<div class="nav-search" style="margin-left:8px;">
-									    <label><%=device_name%>：</label>
-										<input class="nav-search-input" autocomplete="off" id="nav-search-input" type="text" name="name" value="${pd.name}" placeholder="<%=please_type_device_name%>" />
+									    <label><%=gateway_name%> ：</label>
+										<input class="nav-search-input" autocomplete="off" id="nav-search-input" type="text" name="name" value="${pd.name}" placeholder="<%=please_enter_gateway_name%>" /> 
 									</div>
 								</td>
 								<td>
-									<div class="nav-search" style="margin-left:8px;">
-									    <label><%=device_number%>：</label>
-										<input class="nav-search-input" autocomplete="off" id="nav-search-input" type="text" name="code" value="${pd.code}" placeholder="<%=please_type_device_number%>" />
+									<div class="nav-search" style="margin-left:14px;">
+									    <label><%=gateway_number%>：</label>
+										<input class="nav-search-input" autocomplete="off" id="nav-search-input" type="text" name="code" value="${pd.code}" placeholder="<%=please_enter_gateway_number%>" />
 									</div>
 								</td>
 								 <td>
-									<div class="nav-search" style="margin-left:8px;">
+									<div class="nav-search" style="margin-left:14px;">
 									    <label><%=location%>：</label>
 										<input class="nav-search-input" autocomplete="off" id="nav-search-input" type="text" name="location" value="${pd.location}" placeholder="<%=please_enter_location%>" />
 									</div>
 								</td>
-								<td style="padding-left:8px;padding-bottom:4px;"><label><%=please_choose_start_time%>:</label><input class="span10 date-picker" name="Start" id="Start"  value="${pd.Start}" type="text" data-date-format="yyyy-mm-dd" readonly="readonly" style="width:80px;height:28px;" placeholder="<%=please_choose_start_time%>" title="<%=start_time%>"/></td>
-								<td style="padding-left:8px;padding-bottom:4px;"><label><%=please_choose_end_time%>:</label><input class="span10 date-picker" name="End" name="End"  value="${pd.End}" type="text" data-date-format="yyyy-mm-dd" readonly="readonly" style="width:80px;height:28px;" placeholder="<%=please_choose_end_time%>" title="<%=end_time%>"/></td>
-								<td style="vertical-align:right;padding-left:4px;padding-bottom:4px"><button class="btn btn-mini btn-light" onclick="search();"  title="<%=search1%>"><i id="nav-search-icon" class="ace-icon fa fa-search bigger-110 nav-search-icon white"></i><%=search1%></button></td>
+								<td>
+									<div class="nav-search" style="margin-left:14px;">
+										<label><%=please_choose_start_time%>:</label>
+										<input class="span10 date-picker" name="Start" id="Start"  value="${pd.Start}" type="text" data-date-format="yyyy-mm-dd" style="width:100px;height:28px;padding-top:2px;" placeholder="<%=please_choose_start_time%>" title="<%=start_time%>"/>
+									</div>
+								</td>
+								<td>
+									<div class="nav-search" style="margin-left:14px;">
+										<label><%=please_choose_end_time%>:</label>
+										<input class="span10 date-picker" name="End" name="End"  value="${pd.End}" type="text" data-date-format="yyyy-mm-dd" style="width:100px;height:28px;padding-top:2px;" placeholder="<%=please_choose_end_time%>" title="<%=end_time%>"/>
+									</div>
+								</td>
+								<c:if test="${QX.cha == 1 }">
+									<td style="vertical-align:right;padding-left:4px;padding-bottom:4px;"><button class="btn btn-mini btn-light" onclick="search();"  title="<%=search1%>" style="padding: 4px 4px;"><i id="nav-search-icon" class="ace-icon fa fa-search bigger-110 nav-search-icon white"></i><%=search1%></button></td>
+								</c:if>
 							</tr>
 						</table>
 						<!-- 检索  -->
@@ -71,24 +77,16 @@
 							<thead>
 								<tr>
 									<th class="center" ><%=number%></th>
-									<!-- <th class="center" ><%=group_name%></th> -->
-									<th class="center" ><%=device_number%></th>
-									<th class="center" ><%=device_name%></th>
+									<!-- <th class="center" >组名</th> -->
+									<th class="center" ><%=fault_no%></th>
+									<th class="center" ><%=gateway_number%></th>
+									<th class="center" ><%=gateway_name%></th>
 									<th class="center" ><%=location%></th>
 									<th class="center" ><%=pole_number%></th>
 									<!-- <th class="center" >网关</th> -->
-									<th class="center"><%=fault_type%></th>
-									<th class="center"><%=start_time%></th>
-									<th class="center"><%=exception_description%></th>
-									<th class="center"><%=registrant%></th>
-									<th class="center"><%=maintenance_man%></th>
-									<th class="center"><%=repair_time%></th>
-									<th class="center"><%=repair_result%></th>
-									<th class="center"><%=repair_instructions%></th>
-									<th class="center"><%=repair_register%></th>
-
-
-
+									<th class="center" ><%=fault_type%></th>
+									<th class="center"><%=fault_time%></th>
+									<th class="center"><%=operate%></th>
 								</tr>
 							</thead>
 
@@ -96,61 +94,50 @@
 
 							<!-- 开始循环 -->
 							<c:choose>
-								<c:when test="${not empty weixiuList}">
-								 	<c:if test="${QX.cha == 1 }">
- 									<c:forEach items="${weixiuList}" var="var" varStatus="vs">
+								<c:when test="${not empty varList}">
+									<c:if test="${QX.cha == 1 }">
+									<c:forEach items="${varList}" var="var" varStatus="vs">
 										<tr>
+
 											<td class='center' style="width: 30px;">${vs.index+1}</td>
-												<!-- 组号不再显示
-													<td class="center">${var.cname}</td>
-												 -->
+													<%-- <td class="center">${var.cname}</td> --%>
+													<td class="center">${var.fault_no}</td>
 													<td class="center">${var.code}</td>
 													<td>${ fn:substring(var.name ,0,50)}</td>
 
 													<td class="center">${var.location}</td>
 													<td class="center">${var.polenumber}</td>
-													<%-- <td class="center">${var.gateway}</td> --%>
-
-													<td class="center">
-														<c:if test="${var.type == '1' }"><span class="label label-important arrowed-in"><%=lamp_open_circuit%></span></c:if>
-														<c:if test="${var.type == '2' }"><span class="label label-success arrowed"><%=lamp_short%></span></c:if>
-														<c:if test="${var.type == '3' }"><span class="label label-success arrowed"><%=abnormal_lamp%></span></c:if>
-														<c:if test="${var.type == '4' }"><span class="label label-success arrowed"><%=gateway_anomaly%></span></c:if>
-														<c:if test="${var.type == '5' }"><span class="label label-success arrowed"><%=circuit_breaker_abnormality%></span></c:if>
-													</td>
-													<td class="center">${var.startime}</td>
-													<td class="center">${var.comment}</td>
-													<td class="center">${var.register}</td>
-													<td class="center">${var.repairman}</td>
+													<td class="center">${var.status_name}</td>
 													<td class="center">${var.tdate}</td>
-													<td class="center">
-													    <c:if test="${var.result == '1' }"><span class="label label-important arrowed-in"><%=wait_repair%></span></c:if>
-														<c:if test="${var.result == '2' }"><span class="label label-success arrowed"><%=has_repair%></span></c:if>
-														<c:if test="${var.result == '3' }"><span class="label label-success arrowed"><%=destroy%></span></c:if>
-														<c:if test="${var.result == '4' }"><span class="label label-success arrowed"><%=repair_self%></span></c:if>
-													</td>
-													<td class="center">${var.explain}</td>
-
-											<td class="center" style="width: 60px;">
-												 <div class='hidden-phone visible-desktop btn-group'>
-
-													<c:if test="${var.register !=null}">
-													<a class="btn btn-xs btn-danger" onclick="edit('${var.id}');"><%=edit%></a>
-														<%-- <c:if test="${var.tdate != '' }">
-														<a style="cursor:pointer;" class="green" onclick="edit('${var.id}');" title="编辑">
-															<i class="ace-icon fa fa-pencil bigger-130"></i>编辑
-														</a> --%>
-														<%-- </c:if > --%>
-														<%-- <c:if test="${var.tdate == '' }">
-														 <a class="btn btn-sm btn-success" onclick="add('${var.id}');" title="新增"></a>
-														</c:if > --%>
-								 				  </c:if>
-
-														<c:if test="${var.register ==null}">
-														<a class="btn btn-xs btn-danger" onclick="add('${var.id}');"><%=registe%></a>
+											 <td class="center" style="width: 200px;">
+												 <c:if test="${QX.edit != 1 && QX.del != 1 }">
+												<span class="label label-large label-grey arrowed-in-right arrowed-in"><i class="ace-icon fa fa-lock" title="<%=no_permission%>"></i></span>
+												</c:if>
+												<div class="hidden-sm hidden-xs btn-group">
+													<c:if test="${QX.edit == 1 && var.status == 1}">
+														<a class="btn btn-xs btn-danger" style="border-radius:15px;" onclick="getGatewayList('${var.c_gateway_id}');">
+															<%=change_gateway%>
+														</a>
+														<c:if test="${var.register !=null}">	
+															<a class="btn btn-xs btn-danger" style="border-radius:15px;" onclick="edit('${var.id}');">
+																<%=edit%>
+															</a>
 														</c:if>
-
-												 </div>
+														<c:if test="${var.register ==null}">	
+															<a class="btn btn-xs btn-danger" style="border-radius:15px;" onclick="registe('${var.id}');">
+																<%=registe%>
+															</a>
+														</c:if>
+													</c:if>
+													<c:if test="${QX.edit == 1 && var.status == 3}">
+														<a class="btn btn-xs btn-danger" style="border-radius:15px;" onclick="cancelRepair('${var.id}');">
+															<%=revoke%>
+														</a>
+														<a class="btn btn-xs btn-danger" style="border-radius:15px;" onclick="completeRepair('${var.id}');">
+															<%=achieve%>
+														</a>
+													</c:if>
+												</div>
 											</td>
 										</tr>
 
@@ -224,55 +211,112 @@
 			top.jzts();
 			$("#Form").submit();
 		}
+
+		//查看已认领的网关
+		function getGatewayList(gatewayId){
+			 top.jzts();
+			 var diag = new top.Dialog();
+			 diag.Drag=true;
+			 diag.Title ="<%=available_gateway%>";
+			 diag.URL = '<%=basePath%>repair/goRepairGatewayList?faultGatewayid='+gatewayId;
+			 diag.Width = 1000;
+			 diag.Height = 620;
+			 diag.CancelEvent = function(){ //关闭事件
+				 if(diag.innerFrame.contentWindow.document.getElementById('zhongxin').style.display == 'none'){
+					 nextPage('${page.currentPage}');
+				}
+				diag.close();
+			 };
+			 diag.show();
+		}
+		//完成更换操作
+		function completeRepair(faultId){
+			bootbox.confirm('<%=make_sure_change_gateway %>?', function(result) {
+				if(result) {
+					top.jzts();
+					$.ajax({
+						type: "POST",
+						url: '<%=basePath%>repair/completeRepair.do',
+				    	data: {DATA_IDS:faultId},
+						dataType:'json',
+						cache: false,
+						success: function(data){
+							 $.each(data.list, function(i, list){
+									nextPage('${page.currentPage}');
+							 });
+						}
+					});
+				}
+			});
+		}
+		//撤销更换操作
+		function cancelRepair(faultId){
+			bootbox.confirm('<%=make_sure_cancel_change_gateway %>?', function(result) {
+				if(result) {
+					top.jzts();
+					$.ajax({
+						type: "POST",
+						url: '<%=basePath%>repair/cancelRepair.do',
+				    	data: {DATA_IDS:faultId},
+						dataType:'json',
+						cache: false,
+						success: function(data){
+							 $.each(data.list, function(i, list){
+									nextPage('${page.currentPage}');
+							 });
+						}
+					});
+				}
+			});
+		}
 		//修改
 		function edit(id){
 			 top.jzts();
-
 			 var diag = new top.Dialog();
 			 diag.Drag=true;
 			 diag.Title ="<%=modify%>";
-			 diag.URL = '<%=basePath%>repair/goWeixiuEdit?id='+id;
+			 diag.URL = '<%=basePath%>repair/goGatewayEdit?id='+id;
 			 diag.Width = 650;
-			 diag.Height = 280;
+			 diag.Height = 360;
 			 diag.CancelEvent = function(){ //关闭事件
 				 if(diag.innerFrame.contentWindow.document.getElementById('zhongxin').style.display == 'none'){
-					 nextPage(${page.currentPage});
+					 nextPage('${page.currentPage}');
 				}
 				diag.close();
 			 };
 			 diag.show();
 		}
 
-		function add(id){
+		//新增
+		function registe(id){
 			 top.jzts();
 			 var diag = new top.Dialog();
 			 diag.Drag=true;
-			 diag.Title ="<%=add2%>";
-			 diag.URL = '<%=basePath%>repair/goWeixiuCreate?id='+id;
+			 diag.Title ="<%=registe%>";
+			 diag.URL = '<%=basePath%>repair/goGatewayCreate?id='+id;
 			 diag.Width = 650;
-			 diag.Height = 280;
+			 diag.Height = 360;
 			 diag.CancelEvent = function(){ //关闭事件
 				 if(diag.innerFrame.contentWindow.document.getElementById('zhongxin').style.display == 'none'){
 					 if('${page.currentPage}' == '0'){
 						 top.jzts();
 						 setTimeout("self.location=self.location",100);
 					 }else{
-						 nextPage(${page.currentPage});
+						 nextPage('${page.currentPage}');
 					 }
 				}
 				diag.close();
 			 };
 			 diag.show();
 		}
-
-
+		
 		$(function() {
 			//日期框
 			$('.date-picker').datepicker({autoclose: true,todayHighlight: true});
-
+			
 			//下拉框
 			if(!ace.vars['touch']) {
-				$('.chosen-select').chosen({allow_single_deselect:true});
+				$('.chosen-select').chosen({allow_single_deselect:true}); 
 				$(window)
 				.off('resize.chosen')
 				.on('resize.chosen', function() {
@@ -296,7 +340,7 @@
 				});
 			}
 
-
+			
 			//复选框全选控制
 			var active_class = 'active';
 			$('#simple-table > thead > tr > th input[type=checkbox]').eq(0).on('click', function(){
@@ -308,8 +352,6 @@
 				});
 			});
 		});
-
 		</script>
-
 </body>
 </html>

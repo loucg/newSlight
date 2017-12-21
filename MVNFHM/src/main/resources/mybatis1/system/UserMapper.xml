@@ -678,6 +678,38 @@
 			where 
 				USER_ID = #{USER_ID}
 	</update>
-	
+	<!-- 获取用户信息 -->
+	<select id="getUserIdAndNameInfo" parameterType="pd" resultType="pd" >
+		select  u.USER_ID,
+				u.NAME
+		from SYS_USER u
+		inner join 
+		B_USER_COMPANY p
+		on u.USER_ID = p.B_USER_ID
+		inner join 
+		B_DEPARTMENT q
+		on p.B_DEPARTMENT_ID = q.ID
+		inner join 
+		B_COMPANY m
+		on q.B_COMPANY_ID = m.ID
+		inner join 
+		B_STATUS n
+		on u.STATUS = n.VALUE
+		and n.B_STATUS_MAIN_ID = 1
+		where m.ID = (
+			select  m.ID
+			from SYS_USER u
+			inner join 
+			B_USER_COMPANY p
+			on u.USER_ID = p.B_USER_ID
+			inner join 
+			B_DEPARTMENT q
+			on p.B_DEPARTMENT_ID = q.ID
+			inner join 
+			B_COMPANY m
+			on q.B_COMPANY_ID = m.ID
+			where u.USER_ID = #{USER_ID}
+		)
+	</select>
 	<!-- fh313596790qq(青苔) -->
 </mapper>

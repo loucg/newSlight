@@ -12,12 +12,15 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.fh.controller.base.BaseController;
 import com.fh.entity.Page;
+import com.fh.entity.system.User;
 import com.fh.hzy.util.LogType;
 import com.fh.hzy.util.UserUtils;
 import com.fh.service.fhoa.department.DepartmentManager;
 import com.fh.service.slight.gateway.GatewayService;
 import com.fh.service.system.fhlog.FHlogManager;
 import com.fh.service.system.role.RoleManager;
+import com.fh.service.system.user.UserManager;
+import com.fh.util.Const;
 import com.fh.util.Jurisdiction;
 import com.fh.util.PageData;
 
@@ -34,6 +37,8 @@ public class GatewayController extends BaseController{
 	private DepartmentManager departmentService;
 	@Resource(name="fhlogService")
 	private FHlogManager FHLOG;
+	@Resource(name = "userService")
+	private UserManager userService;
 	
 	private String gatewayJsp = "repair/gateway/gateway_list";  						//网关维修记录查询jsp
 	private String gatewayEditJsp = "repair/gateway/gateway_edit";  					//网关维修登记修改jsp
@@ -79,7 +84,11 @@ public class GatewayController extends BaseController{
 		PageData pd = new PageData();
 		pd = this.getPageData();
 		pd = gatewayService.getGatewayById(pd);
+		User user = (User) Jurisdiction.getSession().getAttribute(Const.SESSION_USER);
+		pd.put("USER_ID", user.getUSER_ID());//登记人员
+		List<PageData> userList = userService.getUserIdAndNameInfo(pd);
 		mv.addObject("pd", pd);
+		mv.addObject("userList", userList);
 		mv.addObject("msg", "editGateway");
 		mv.setViewName(gatewayEditJsp);
 		return mv;
@@ -98,7 +107,7 @@ public class GatewayController extends BaseController{
 		PageData pd = new PageData();
 		pd = this.getPageData();
 		pd.put("tdate", new Date());//创建时间
-		gatewayService.editGateway(pd);
+		gatewayService.editRegistion(pd);
 		mv.addObject("msg", "success");
 		FHLOG.save(UserUtils.getUserid(), "修改网关维修登记记录", LogType.repairlogin);
 		mv.setViewName(saveRsultJsp);
@@ -119,8 +128,14 @@ public class GatewayController extends BaseController{
 		PageData pd = new PageData();
 		pd = this.getPageData();
 		pd = gatewayService.getGatewayById(pd);
-		/*pd.put("tdate", Tools.date2Str(new Date()));//创建时间
-*/		mv.addObject("pd", pd);
+		// 获得登录的用户id
+		User user = (User) Jurisdiction.getSession().getAttribute(Const.SESSION_USER);
+		pd.put("register_name", user.getNAME());//登记人员
+		pd.put("register", user.getUSER_ID());//登记人员
+		pd.put("USER_ID", user.getUSER_ID());//登记人员
+		List<PageData> userList = userService.getUserIdAndNameInfo(pd);
+		mv.addObject("pd", pd);
+		mv.addObject("userList", userList);
 		mv.addObject("msg", "createGateway");
 		mv.setViewName(gatewayEditJsp);
 		return mv;

@@ -43,5 +43,13 @@ public interface GatewayService {
 	 * @throws Exception
 	 */
 	public PageData getGatewayById(PageData pd) throws Exception;
+	
+	/**
+	 * 编辑网关登记信息
+	 * @param pd
+	 * @return
+	 * @throws Exception
+	 */
+	public void editRegistion(PageData pd) throws Exception;
 
 }

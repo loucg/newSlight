@@ -659,5 +659,24 @@
 	String make_sure_delete_group =  properties.getProperty("make_sure_delete_group");//label:确定要删除分组?
 	String apply_strategyset_failed =  properties.getProperty("apply_strategyset_failed");//label:应用策略包失败！
 	String del_strategyset_failed =  properties.getProperty("del_strategyset_failed");//label:删除策略包失败！
-	
+	String available_gateway =  properties.getProperty("available_gateway");//label:可替换的网关
+	String make_sure_change_gateway =  properties.getProperty("make_sure_change_gateway");//label:确定更换此网关	
+	String revoke =  properties.getProperty("revoke");//label:撤销
+	String achieve =  properties.getProperty("achieve");//label:完成
+	String make_sure_cancel_change_gateway =  properties.getProperty("make_sure_cancel_change_gateway");//label:确定撤销更换此网关
+	String fault_time = properties.getProperty("fault_time");//label:故障时间
+	String fault_no = properties.getProperty("fault_no");//label:故障编号
+	String please_enter_fault_no = properties.getProperty("please_enter_fault_no");//label:请输入故障编号
+	String please_enter_node_no = properties.getProperty("please_enter_node_no");//label:请输入节点编号
+	String please_enter_node_name = properties.getProperty("please_enter_node_name");//label:请输入节点名称
+	String fault_device_type = properties.getProperty("fault_device_type");//label:故障设备类型
+	String node = properties.getProperty("node");//label:节点
+	String repair_operate = properties.getProperty("repair_operate");//label:修复操作
+	String please_choose_maintainer = properties.getProperty("please_choose_maintainer");//label:请选择修复人
+	String please_enter_repair_operate = properties.getProperty("please_enter_repair_operate");//label:请输入修复操作
+	String fault_detail = properties.getProperty("fault_detail");//label:故障信息
+	String node_detail = properties.getProperty("node_detail");//label:节点信息
+	String please_enter_registrant = properties.getProperty("please_enter_registrant");//label:节点信息
+	String please_enter_maintainer = properties.getProperty("please_enter_maintainer");//label:节点信息
+	String please_select_device_type = properties.getProperty("please_select_device_type");//label:节点信息
 %>

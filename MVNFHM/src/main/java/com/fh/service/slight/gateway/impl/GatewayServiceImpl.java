@@ -33,7 +33,12 @@ public class GatewayServiceImpl implements GatewayService{
 	}
 	public void createGateway(PageData pd) throws Exception {
 		// TODO Auto-generated method stub
-		dao.save("RepairMapper.createGateway", pd);
+		dao.save("RepairMapper.createGatewayRepairInfo", pd);
+	}
+	
+	public void editRegistion(PageData pd) throws Exception {
+		// TODO Auto-generated method stub
+		dao.update("RepairMapper.editRegistion", pd);
 	}
 
 }

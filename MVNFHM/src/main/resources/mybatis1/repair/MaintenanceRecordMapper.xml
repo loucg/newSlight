@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="MaintenanceRecordMapper">
+
+	<!-- 维修信息 -->
+	<select id="getOwnClientlistPage" parameterType="page" resultType="pd">
+		<!-- device_type: '1'节点 ;'2' 网关 -->
+		<!-- 设备类型 -->
+		SELECT * FROM(
+			<if test="pd.device_type==null or pd.device_type=='' or pd.device_type==1">
+			SELECT
+				'1' as device_type, 
+				b_client_repair.id,
+				b_client_fault.fault_no,
+				b_client_fault_id as fault_id,
+				b_client_repair.register,
+				b_client_repair.repairman,
+				a.name as repairman_name,
+				b.name as register_name,
+				b_client_repair.tdate,
+				operate
+			FROM
+				b_client_repair
+			LEFT JOIN
+				b_client_fault ON b_client_fault.id = b_client_repair.b_client_fault_id
+			LEFT JOIN
+				c_client_attr1 ON c_client_attr1.c_client_id = b_client_fault.c_client_id
+			LEFT JOIN
+				sys_user a ON a.user_id = b_client_repair.repairman
+			LEFT JOIN
+				sys_user b ON b.user_id = b_client_repair.register
+			WHERE
+				c_client_attr1.sys_user_id in ${pd.userids}
+				<!-- 故障编号 -->
+				<if test="pd.fault_no!=null and pd.fault_no!=''">
+					AND b_client_fault.fault_no LIKE CONCAT(CONCAT('%', #{pd.fault_no}), '%')
+				</if>
+				<!-- 故障修复时间(开始) -->
+				<if test="pd.Start!=null and pd.Start!=''">
+					AND DATE_FORMAT(b_client_repair.tdate,'%Y-%m-%d') &gt;= #{pd.Start}
+				</if>
+				<!-- 故障修复时间(结束) -->
+				<if test="pd.End!=null and pd.End!='' ">
+					AND DATE_FORMAT(b_client_repair.tdate,'%Y-%m-%d') &lt;= #{pd.End}
+				</if>
+				<!-- 修复人 -->
+				<if test="pd.maintainer!=null and pd.maintainer!=''">
+					AND a.name LIKE CONCAT(CONCAT('%', #{pd.maintainer}), '%')
+				</if>
+				<!-- 登录人 -->
+				<if test="pd.registrant!=null and pd.registrant!=''">
+					AND b.name LIKE CONCAT(CONCAT('%', #{pd.registrant}), '%')
+				</if>
+			GROUP BY b_client_repair.id
+			</if>
+			<if test="pd.device_type==null or pd.device_type==''">
+			UNION ALL
+			</if>
+			<if test="pd.device_type==null or pd.device_type=='' or pd.device_type==2">
+			SELECT
+				'2' as device_type, 
+				b_gateway_repair.id,
+				b_gateway_fault.fault_no,
+				b_gateway_fault_id as fault_id,
+				b_gateway_repair.register,
+				b_gateway_repair.repairman,
+				a.name as repairman_name,
+				b.name as register_name,
+				b_gateway_repair.tdate,
+				operate
+			FROM
+				b_gateway_repair
+			LEFT JOIN
+				b_gateway_fault ON b_gateway_fault.id = b_gateway_repair.b_gateway_fault_id
+			LEFT JOIN
+				c_gateway_attr1 ON c_gateway_attr1.c_gateway_id = b_gateway_fault.c_gateway_id
+			LEFT JOIN
+				sys_user a ON a.user_id = b_gateway_repair.repairman
+			LEFT JOIN
+				sys_user b ON b.user_id = b_gateway_repair.register
+			WHERE
+				c_gateway_attr1.sys_user_id in ${pd.userids}
+				<!-- 故障编号 -->
+				<if test="pd.fault_no!=null and pd.fault_no!=''">
+					AND b_gateway_fault.fault_no LIKE CONCAT(CONCAT('%', #{pd.fault_no}), '%')
+				</if>
+				<!-- 故障修复时间(开始) -->
+				<if test="pd.Start!=null and pd.Start!=''">
+					AND DATE_FORMAT(b_gateway_repair.tdate,'%Y-%m-%d') &gt;= #{pd.Start}
+				</if>
+				<!-- 故障修复时间(结束) -->
+				<if test="pd.End!=null and pd.End!='' ">
+					AND DATE_FORMAT(b_gateway_repair.tdate,'%Y-%m-%d') &lt;= #{pd.End}
+				</if>
+				<!-- 修复人 -->
+				<if test="pd.maintainer!=null and pd.maintainer!=''">
+					AND a.name LIKE CONCAT(CONCAT('%', #{pd.maintainer}), '%')
+				</if>
+				<!-- 登录人 -->
+				<if test="pd.registrant!=null and pd.registrant!=''">
+					AND b.name LIKE CONCAT(CONCAT('%', #{pd.registrant}), '%')
+				</if>
+			GROUP BY b_gateway_repair.id
+			</if>
+		) AS allrecord
+		ORDER BY tdate
+	</select>
+	
+	<!-- 未使用 -->
+	<select id="getNodeFaultById" resultType="pd">
+		SELECT a.id AS id,
+		    a.fault_no,
+		    a.type,
+			a.tdate AS startime,
+			a.comment,
+			b.register,
+			b.repairman,
+			b.tdate,
+			c.name,
+			c.location,
+			c.lamp_pole_num AS polenumber,
+			c.c_client_id,
+			d.client_code AS code
+		FROM b_client_fault AS a
+			LEFT JOIN b_client_repair AS b ON a.id = b.b_client_fault_id
+			LEFT JOIN c_client_attr1 AS c ON a.c_client_id = c.c_client_id
+			LEFT JOIN c_client AS d ON c.c_client_id = d.id 
+		WHERE a.id = #{id ,jdbcType=INTEGER}
+		GROUP BY a.id
+	</select>	
+	
+	<select id="getGatewayFaultById" resultType="pd">
+		SELECT a.id AS id,
+		    a.fault_no,
+		    a.type,
+			a.tdate AS startime,
+			a.comment,
+			b.register,
+			b.repairman,
+			b.tdate,
+			c.name,
+			c.location,
+			c.lamp_pole_num AS polenumber,
+			c.c_gateway_id,
+			d.gateway_code AS code
+		FROM b_gateway_fault AS a
+			LEFT JOIN b_gateway_repair AS b ON a.id = b.b_gateway_fault_id
+			LEFT JOIN c_gateway_attr1 AS c ON a.c_gateway_id = c.c_gateway_id
+			LEFT JOIN c_gateway AS d ON c.c_gateway_id = d.id 
+		WHERE a.id = #{id ,jdbcType=INTEGER}
+		GROUP BY a.id
+	</select>
+	
+</mapper>

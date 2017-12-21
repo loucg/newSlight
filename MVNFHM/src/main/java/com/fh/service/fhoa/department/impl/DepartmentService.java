@@ -11,6 +11,7 @@ import com.fh.dao.DaoSupport;
 import com.fh.entity.Page;
 import com.fh.entity.system.Department;
 import com.fh.entity.system.Role;
+import com.fh.entity.system.User;
 import com.fh.hzy.util.UserUtils;
 import com.fh.util.PageData;
 import com.fh.util.Tools;
@@ -361,5 +362,13 @@ public class DepartmentService implements DepartmentManager{
 		return (List<PageData>)dao.findForList("DepartmentMapper.getSmsplatform", null);
 	}
 	
+	/**
+	 * 获取某个部门下所有的用户
+	 */
+	@Override
+	public List<PageData> geAllUserInDepartment(Page page) throws Exception {
+		return (List<PageData>)dao.findForList("DepartmentMapper.geAllUserInDepartment", page);
+	}
+
 }
 

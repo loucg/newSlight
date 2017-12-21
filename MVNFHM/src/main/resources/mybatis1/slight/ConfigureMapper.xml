@@ -146,9 +146,9 @@
 			LEFT JOIN b_status AS h ON a.status = h.`value`
 			LEFT JOIN b_status_main AS i ON h.b_status_main_id = i.id 
 		WHERE a.sys_user_id in ${pd.userids}
-			AND k.type = '2'
+			AND k.type = '3'
 			AND h.b_status_main_id = 1
-			AND a.id = c.id
+			<!-- AND a.id = c.id -->
 			AND k.c_gateway_id = #{pd.gateway_id}
 		<if test="pd.number!=null and pd.number!=''">
 			AND b.sensor_code LIKE CONCAT(CONCAT('%', #{pd.number}),'%')
@@ -296,7 +296,7 @@
 		WHERE a.sys_user_id in ${pd.userids}
 			AND k.type = '1'
 			AND h.b_status_main_id = 1
-			AND a.id = c.id
+			<!--  AND a.id = c.id -->
 		<if test="pd.number!=null and pd.number!=''">
 			AND b.client_code LIKE CONCAT(CONCAT('%', #{pd.number}),'%')
 		</if>

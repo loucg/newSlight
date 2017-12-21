@@ -10,7 +10,7 @@
 			+ path + "/";
 %>
 <!-- jsp 国际化-->
-<%@ include file="../../international.jsp"%>
+<%@ include file="../international.jsp"%>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -18,7 +18,7 @@
 <!-- 下拉框 -->
 <link rel="stylesheet" href="static/ace/css/chosen.css" />
 <!-- jsp文件头和头部 -->
-<%@ include file="../../system/index/top.jsp"%>
+<%@ include file="../system/index/top.jsp"%>
 <link rel="stylesheet" href="static/ace/css/datepicker.css" />
 </head>
 <body class="no-skin">
@@ -33,42 +33,44 @@
 						<div class="col-xs-12">
 
 						<!-- 检索  -->
-						<form action="repair/gateway" method="post" name="Form" id="Form">
+						<form action="repair/listMaintenanceRecord.do" method="post" name="Form" id="Form">
 						<table style="margin-top:5px;">
 							<tr>
+								<td>
+									<div class="nav-search" style="margin-left:8px;">
+										<label><%=fault_no %>:</label>
+										<input class="nav-search-input" autocomplete="off" id="fault_no" type="text" name="fault_no" value="${pd.fault_no}" placeholder="<%=please_enter_fault_no%>" />
+									</div>
+								</td>
+								<td>&nbsp;&nbsp;<%=equipment_type %>:</td>
+								<td style="vertical-align:top;padding-left:2px;"> 
+								 	<select class="chosen-select form-control" name="device_type" id="device_type" data-placeholder="<%=please_select_device_type %>" style="vertical-align:top;width: 130px;height:30px">
+										<option value=""></option>
+										<option value="1" <c:if test="${pd.device_type == 1 }">selected</c:if> ><%=node %></option>
+										<option value="2" <c:if test="${pd.device_type == 2 }">selected</c:if> ><%=gateway %></option>
+									</select>
+								</td>
+								<td style="padding-left:18px;padding-bottom:4px;">
+									<label><%=repair_time%>:&nbsp;&nbsp;</label>
+									<input class="span10 date-picker" autocomplete="off" name="Start" id="Start" type="text" value="${pd.Start}" data-date-format="yyyy-mm-dd" style="width:110px;height:28px;" placeholder="<%=please_choose_start_time%>" title="<%=please_choose_start_time%>"/>
+								</td>
+								<td style="padding-left:0px;padding-bottom:4px;">
+									<label><span style="padding-left:8px;padding-right:8px;">~</span></label>
+									<input class="span10 date-picker" autocomplete="off" name="End" name="End" type="text" value="${pd.End}" data-date-format="yyyy-mm-dd" style="width:110px;height:28px;" placeholder="<%=please_choose_end_time%>" title="<%=please_choose_end_time%>"/>
+								</td>
+								<td>
+									<div class="nav-search" style="margin-left:8px;">
+									    <label><%=maintenance_man%>:</label>
+										<input class="nav-search-input" autocomplete="off" id="maintainer" type="text" name="maintainer" value="${pd.maintainer}" placeholder="<%=please_enter_maintainer%>" />
+									</div>
+								</td>
 								 <td>
 									<div class="nav-search" style="margin-left:8px;">
-									    <label><%=gateway_name%> ：</label>
-										<input class="nav-search-input" autocomplete="off" id="nav-search-input" type="text" name="name" value="${pd.name}" placeholder="<%=please_enter_gateway_name%>" /> 
+									    <label><%=registrant%>:</label>
+										<input class="nav-search-input" autocomplete="off" id="registrant" type="text" name="registrant" value="${pd.registrant}" placeholder="<%=please_enter_registrant%>" />
 									</div>
 								</td>
-								<td>
-									<div class="nav-search" style="margin-left:14px;">
-									    <label><%=gateway_number%>：</label>
-										<input class="nav-search-input" autocomplete="off" id="nav-search-input" type="text" name="code" value="${pd.code}" placeholder="<%=please_enter_gateway_number%>" />
-									</div>
-								</td>
-								 <td>
-									<div class="nav-search" style="margin-left:14px;">
-									    <label><%=location%>：</label>
-										<input class="nav-search-input" autocomplete="off" id="nav-search-input" type="text" name="location" value="${pd.location}" placeholder="<%=please_enter_location%>" />
-									</div>
-								</td>
-								<td>
-									<div class="nav-search" style="margin-left:14px;">
-										<label><%=please_choose_start_time%>:</label>
-										<input class="span10 date-picker" name="Start" id="Start"  value="${pd.Start}" type="text" data-date-format="yyyy-mm-dd" readonly="readonly" style="width:100px;height:28px;padding-top:2px;" placeholder="<%=please_choose_start_time%>" title="<%=start_time%>"/>
-									</div>
-								</td>
-								<td>
-									<div class="nav-search" style="margin-left:14px;">
-										<label><%=please_choose_end_time%>:</label>
-										<input class="span10 date-picker" name="End" name="End"  value="${pd.End}" type="text" data-date-format="yyyy-mm-dd" readonly="readonly" style="width:100px;height:28px;padding-top:2px;" placeholder="<%=please_choose_end_time%>" title="<%=end_time%>"/>
-									</div>
-								</td>
-								<c:if test="${QX.cha == 1 }">
-									<td style="vertical-align:right;padding-left:4px;padding-bottom:4px;"><button class="btn btn-mini btn-light" onclick="search();"  title="<%=search1%>" style="padding: 4px 4px;"><i id="nav-search-icon" class="ace-icon fa fa-search bigger-110 nav-search-icon white"></i><%=search1%></button></td>
-								</c:if>
+								<td style="text-align:right;padding-left:8px;padding-bottom:4px"><button class="btn btn-mini btn-light" onclick="search();"  title="<%=search1%>"><i id="nav-search-icon" class="ace-icon fa fa-search bigger-110 nav-search-icon white"></i><%=search1%></button></td>
 							</tr>
 						</table>
 						<!-- 检索  -->
@@ -76,13 +78,12 @@
 						<table id="simple-table" class="table table-striped table-bordered table-hover"  style="margin-top:5px;">
 							<thead>
 								<tr>
-									<th class="center" ><%=number%></th>
-									<th class="center" ><%=fault_no%></th>
-									<th class="center" ><%=equipment_type%></th>
-									<th class="center"><%=repair_time%></th>
-									<th class="center"><%=repair_instructions%></th>
-									<th class="center"><%=maintenance_man%></th>
-									<th class="center"><%=registrant%></th>
+									<th class="center" style="width: 50px;" nowrap="nowrap"><%=fault_no%></th>
+									<th class="center" nowrap="nowrap"><%=equipment_type%></th>
+									<th class="center" nowrap="nowrap"><%=repair_time%></th>
+									<th class="center" nowrap="nowrap"><%=repair_operate%></th>
+									<th class="center" nowrap="nowrap"><%=maintenance_man%></th>
+									<th class="center" nowrap="nowrap"><%=registrant%></th>
 								</tr>
 							</thead>
 
@@ -90,22 +91,23 @@
 
 							<!-- 开始循环 -->
 							<c:choose>
-								<c:when test="${not empty gatewayList}">
-									<c:if test="${QX.cha == 1 }">
-									<c:forEach items="${gatewayList}" var="var" varStatus="vs">
+								<c:when test="${not empty maintenanceList}">
+								 	<c:if test="${QX.cha == 1 }">
+ 									<c:forEach items="${maintenanceList}" var="var" varStatus="vs">
 										<tr>
-
-											<td class='center' style="width: 40px;">${vs.index+1}</td>
-													<td class="center"><a onclick="faultGatewayDetail('${var.id}')" style="cursor:pointer;">${var.code}</a></td>
-													<td class="center"><%=gateway%></td>
-													<td class="center">${var.tdate}</td>
-													<td class="center">${var.explain}</td>
-													<td class="center"><a onclick="repairmanDetail('${var.repairman}')" style="cursor:pointer;">${var.repairman_name}</a></td>
-													<td class="center"><a onclick="registermanDetail('${var.register}')" style="cursor:pointer;">${var.register_name}</a></td>
-													<input type="hidden" name="register" id="register" value="${pd.register}"/>
-													<input type="hidden" name="repairman" id="repairman" value="${pd.repairman}"/>
+											<!-- 故障编号 -->
+											<td class="center"><a onclick="viewFaultInfo('${var.fault_id}','${var.device_type}')" style="cursor:pointer;">${var.fault_no}</a></td>
+											<!-- 设备类型 -->
+											<td class="center"><c:if test="${var.device_type == '1' }"><%=node%></c:if><c:if test="${var.device_type == '2' }"><%=gateway%></c:if></td>
+											<!-- 修复时间 -->
+											<td class="center">${var.tdate}</td>
+											<!-- 修复操作 -->
+											<td class="center">${var.operate}</td>
+											<!-- 修复人员 -->
+											<td class="center"><a onclick="viewUserInfo('${var.repairman}','<%=maintenance_man %>')" style="cursor:pointer;">${var.repairman_name}</a></td>
+											<!-- 登记人员 -->
+											<td class="center"><a onclick="viewUserInfo('${var.register}','<%=registrant %>')" style="cursor:pointer;">${var.register_name}</a></td>
 										</tr>
-
 									</c:forEach>
 									</c:if>
 									<c:if test="${QX.cha == 0 }">
@@ -125,11 +127,6 @@
 					<div class="page-header position-relative">
 					<table style="width:100%;">
 						<tr>
-							<%-- <td style="vertical-align:top;">
-								<c:if test="${QX.add == 1 }">
-								<a class="btn btn-sm btn-success" onclick="add();">维修登记</a>
-								</c:if>
-							</td> --%>
 							<td style="vertical-align:top;"><div class="pagination" style="float: right;padding-top: 0px;margin-top: 0px;">${page.pageStr}</div></td>
 						</tr>
 					</table>
@@ -155,7 +152,7 @@
 	<!-- /.main-container -->
 	<!-- basic scripts -->
 	<!-- 页面底部js¨ -->
-	<%@ include file="../../system/index/foot.jsp"%>
+	<%@ include file="../system/index/foot.jsp"%>
 	<!-- ace scripts -->
 	<script src="static/ace/js/ace/ace.js"></script>
 	<!-- 删除时确认窗口 -->
@@ -176,34 +173,16 @@
 			top.jzts();
 			$("#Form").submit();
 		}
-
-		//修改
-		function edit(id){
+		
+		//显示故障信息
+		function viewFaultInfo(fault_id, device_type){
 			 top.jzts();
 			 var diag = new top.Dialog();
 			 diag.Drag=true;
-			 diag.Title ="<%=modify%>";
-			 diag.URL = '<%=basePath%>repair/goGatewayEdit?id='+id;
+			 diag.Title ='<%=fault_detail%>';
+			 diag.URL = '<%=basePath%>repair/goFaultInfo?id='+fault_id+'&device_type='+device_type;
 			 diag.Width = 650;
-			 diag.Height = 280;
-			 diag.CancelEvent = function(){ //关闭事件
-				 if(diag.innerFrame.contentWindow.document.getElementById('zhongxin').style.display == 'none'){
-					 nextPage('${page.currentPage}');
-				}
-				diag.close();
-			 };
-			 diag.show();
-		}
-
-		//新增
-		function add(id){
-			 top.jzts();
-			 var diag = new top.Dialog();
-			 diag.Drag=true;
-			 diag.Title ="<%=add2%>";
-			 diag.URL = '<%=basePath%>repair/goGatewayCreate?id='+id;
-			 diag.Width = 650;
-			 diag.Height = 280;
+			 diag.Height = 380;
 			 diag.CancelEvent = function(){ //关闭事件
 				 if(diag.innerFrame.contentWindow.document.getElementById('zhongxin').style.display == 'none'){
 					 if('${page.currentPage}' == '0'){
@@ -218,42 +197,36 @@
 			 diag.show();
 		}
 
-		// 维修人员信息
-		function repairmanDetail(id){
+		//显示维修人员，登记人员信息
+		function viewUserInfo(user_id, atitle){
 			 top.jzts();
 			 var diag = new top.Dialog();
 			 diag.Drag=true;
-			 diag.Title ="<%=maintenance_man%>";
-			 diag.URL = '<%=basePath%>repair/viewUserInfo?USER_ID='+id;
-			 diag.Width = 351;
-			 diag.Height = 379;
+			 diag.Title = atitle;
+			 diag.URL = '<%=basePath%>repair/goUserInfo?user_id='+user_id;
+			 diag.Width = 650;
+			 diag.Height = 300;
 			 diag.CancelEvent = function(){ //关闭事件
+				 if(diag.innerFrame.contentWindow.document.getElementById('zhongxin').style.display == 'none'){
+					 if('${page.currentPage}' == '0'){
+						 top.jzts();
+						 setTimeout("self.location=self.location",100);
+					 }else{
+						 nextPage('${page.currentPage}');
+					 }
+				}
 				diag.close();
 			 };
 			 diag.show();
 		}
-		// 登记人员信息
-		function registermanDetail(id){
-			 top.jzts();
-			 var diag = new top.Dialog();
-			 diag.Drag=true;
-			 diag.Title ="<%=registrant%>";
-			 diag.URL = '<%=basePath%>repair/viewUserInfo?USER_ID='+id;
-			 diag.Width = 351;
-			 diag.Height = 379;
-			 diag.CancelEvent = function(){ //关闭事件
-				diag.close();
-			 };
-			 diag.show();
-		}
-		
+
 		$(function() {
 			//日期框
 			$('.date-picker').datepicker({autoclose: true,todayHighlight: true});
-			
+
 			//下拉框
 			if(!ace.vars['touch']) {
-				$('.chosen-select').chosen({allow_single_deselect:true}); 
+				$('.chosen-select').chosen({allow_single_deselect:true});
 				$(window)
 				.off('resize.chosen')
 				.on('resize.chosen', function() {
@@ -277,7 +250,7 @@
 				});
 			}
 
-			
+
 			//复选框全选控制
 			var active_class = 'active';
 			$('#simple-table > thead > tr > th input[type=checkbox]').eq(0).on('click', function(){
@@ -289,6 +262,7 @@
 				});
 			});
 		});
+
 		</script>
 
 </body>

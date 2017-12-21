@@ -121,6 +121,18 @@ public class FHlogService implements FHlogManager {
 
 	}
 
+	
+	/**
+	 * 
+	 * 更换网关→节点信息写入命令表
+	 */
+	@Override
+	public void saveNodeInfo(PageData pd) throws Exception {
+		dao.save("LogMapper.insertLog", pd);
+		int lastid = (Integer) dao.findForObject("ConfigureMapper.lastInsertId", pd);
+		pd.put("logid", lastid);
+		dao.save("LogMapper.insertDeviceLog", pd);
+	}
 	/**
 	 * 删除
 	 * 

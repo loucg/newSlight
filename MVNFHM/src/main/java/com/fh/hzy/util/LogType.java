@@ -28,6 +28,7 @@ public class LogType {
 	public static final int editrole = 18;
 	public static final int assignrole = 19;
 	public static final int system = 20;
+	public static final int changegateway = 23;
 	public static int getLogin() {
 		return login;
 	}

@@ -134,7 +134,7 @@
 	<insert id="insertDeviceLog" parameterType="pd">
 		INSERT INTO b_client_log
 		(b_uesr_log_id, c_client_id, c_gateway_id, b_cmd_type_id, `status`, tdate, cmd, encryption_cmd)
-		VALUES (#{logid}, null, #{gateway}, #{cmdid}, 1,null,#{cmd}, null)
+		VALUES (#{logid}, null, #{gateway}, #{cmdid}, 1,#{tdate},#{cmd}, null)
 	</insert>
 	
 	<!-- 获取所有终端日志类型-->

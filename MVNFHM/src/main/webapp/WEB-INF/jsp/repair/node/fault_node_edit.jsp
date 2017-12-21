@@ -18,38 +18,6 @@
 <!-- jsp文件头和头部 -->
 <%@ include file="../../system/index/top.jsp"%>
 <link rel="stylesheet" href="static/ace/css/datepicker.css" />
-<script type="text/javascript">
-
-	//保存
-	function save(){
-			if($("#register").val()==""){
-				$("#register").tips({
-					side:3,
-		            msg:'<%=please_enter_register%>',
-		            bg:'#AE81FF',
-		            time:2
-		        });
-				$("#register").focus();
-				return false;
-			}
-
-			if($("#explain").val()==""){
-			$("#explain").tips({
-				side:3,
-	            msg:'<%=please_enter_repire_explain%>',
-	            bg:'#AE81FF',
-	            time:2
-	        });
-			$("#explain").focus();
-			return false;
-		}
-			$("#Form").submit();
-			$("#zhongxin").hide();
-			$("#zhongxin2").show();
-	}
-
-
-</script>
 </head>
 <body class="no-skin">
 
@@ -64,60 +32,52 @@
 
 					<form action="repair/${msg}" name="Form" id="Form" method="post">
 						<input type="hidden" name="id" id="id" value="${pd.id}"/>
-						<input type="hidden" name="c_gateway_id" id="c_gateway_id" value="${pd.c_gateway_id}"/>
+<%-- 						<input type="hidden" name="c_client_id" id="c_client_id" value="${pd.c_client_id}"/> --%>
 						<div id="zhongxin" style="padding-top: 13px;">
 						<table id="table_report" class="table table-striped table-bordered table-hover">
 							<tr>
-								<td style="width:79px;text-align: right;padding-top: 13px;"><%=fault_no%>:</td>
-								<td><input style="width:95%;" type="text" name="fault_num" id="fault_num" value="${pd.fault_no}" readonly="readonly"/></td>
-							</tr>
-							<%-- <tr>
-								<td style="width:79px;text-align: right;padding-top: 13px;"><%=gateway_number%>:</td>
-								<td><input style="width:95%;" type="text" name="register" id="register" value="${pd.code}" readonly="readonly"/></td>
-							</tr> --%>
-							<tr>
-								<td style="width:79px;text-align: right;padding-top: 13px;"><%=equipment_type%>:</td>
-								<td><input style="width:95%;" type="text" name="register" id="register" value="<%=gateway%>" readonly="readonly"/></td>
+								<td style="width:79px;text-align: right;padding-top: 13px;" nowrap="nowrap"><%=fault_no %>:</td>
+								<td><input style="width:98%;" type="text" name="register" id="register" value="${pd.fault_no}" disabled/></td>
 							</tr>
 							<tr>
-								<td style="width:79px;text-align: right;padding-top: 13px;"><%=registrant%>:</td>
-								<td><input style="width:95%;" type="text" name="registerName" id="registerName" value="${pd.register_name}" readonly="readonly"/></td>
-								<input type="hidden" name="register" id="register" value="${pd.register}"/>
+								<td style="width:79px;text-align: right;padding-top: 13px;" nowrap="nowrap"><%=fault_device_type %>:</td>
+								<td><input style="width:98%;" type="text" name="devicetype" id="devicetype" value="<%=node %>" disabled/></td>
 							</tr>
 							<tr>
-								<td style="width:79px;text-align: right;padding-top: 13px;"><%=maintenance_man%>:</td>
+								<td style="width:79px;text-align: right;padding-top: 13px;"><%=registrant %>:</td>
+								<td><input style="width:98%;" type="text" value="${pd.username}" disabled/></td>
+							</tr>
+							<tr>
+								<td style="width:79px;text-align: right;padding-top: 13px;"><span style="color:red;">*</span><%=maintenance_man%>:</td>
 								<td>
-									<select class="chosen-select form-control" name="repairman" id="repairman" data-placeholder="<%=please_enter_repair_person%>" style="height:30px;width: 160px;border-width:1px;border-color:'#fff';border-radius:4px">
-										<option value=""><%=please_choose_maintainer%></option>
-										<c:forEach items="${userList}" var="user">
-											<option value="${user.USER_ID}" <c:if test="${user.USER_ID==pd.repairman}">selected="selected"</c:if>>${user.NAME}</option>
+									<select class="chosen-select form-control" name="repairman" id="repairman" title="<%=maintenance_man %>" style="vertical-align:top;width:98%;" 
+										onchange="switchAdjustItems(this.value)">
+										<option value=""><%=please_choose_maintainer %></option>
+										<c:forEach items="${maintainerList}" var="maintainer">
+											<option value="${maintainer.b_user_id }" <c:if test="${maintainer.b_user_id == pd.repairman }">selected</c:if> >${maintainer.username }</option>
 										</c:forEach>
-								    </select>
-							    </td>
-							</tr>
-				<%-- 			<tr>
-								<td style="width:79px;text-align: right;padding-top: 13px;">修复时间:</td>
-								<td style="padding-left:8px;"><input class="span10 date-picker" name="tdate" id="tdate"  value="${pd.tdate}" type="text" data-date-format="yyyy-mm-dd" readonly="readonly" style="width:88px;" placeholder="修复时间" title="修复时间"/></td>
-
-							</tr> --%>
-				<%-- 			<tr>
-								<td style="width:79px;text-align: right;padding-top: 13px;"><%=repair_result%>:</td>
-								<td>
-									<select class="chosen-select form-control" name="result" id="result" data-placeholder="<%=please_choose_repair_result%>" style="float:left;padding-left: 12px;width:95%;">
-										<option value="1" <c:if test="${pd.result==1}">selected</c:if>><%=wait_repair%></option>
-										<option value="2" <c:if test="${pd.result==2}">selected</c:if>><%=has_repair%></option>
-										<option value="3" <c:if test="${pd.result==3}">selected</c:if>><%=destroy%></option>
-										<option value="3" <c:if test="${pd.result==4}">selected</c:if>><%=repair_self%></option>
-
-								  	</select>
-								 </td>
-							</tr> --%>
-							<tr>
-								<td style="width:79px;text-align: right;padding-top: 13px;"><%=repair_instructions%>:</td>
-								<td>
-									<textarea rows="3" cols="65" name="explain" id="explain" maxlength="500" placeholder="<%=please_enter_repire_explain%>" title="<%=repair_instructions%>" >${pd.explain}</textarea>
+									</select>
 								</td>
 							</tr>
+							<tr>
+								<td style="width:79px;text-align: right;padding-top: 13px;"><span style="color:red;">*</span><%=repair_operate %>:</td>
+								<td><textarea style="width:98%;height:100px;" type="text" name="operate" id="operate" maxlength="255" title="<%=repair_operate%>" placeholder="<%=please_enter_repair_operate%>">${pd.operate}</textarea></td>
+							</tr>
+<!-- 							<tr> -->
+<%-- 								<td style="width:79px;text-align: right;padding-top: 13px;"><%=repair_result%>:</td> --%>
+<!-- 								<td> -->
+<%-- 									<select class="chosen-select form-control" name="result" id="result" data-placeholder="<%=please_choose_repair_result%>" style="float:left;padding-left: 12px;width:95%;"> --%>
+<%-- 										<option value="1" <c:if test="${pd.result==1}">selected</c:if>><%=wait_repair%></option> --%>
+<%-- 										<option value="2" <c:if test="${pd.result==2}">selected</c:if>><%=has_repair%></option> --%>
+<%-- 										<option value="3" <c:if test="${pd.result==3}">selected</c:if>><%=destroy%></option> --%>
+<%-- 										<option value="3" <c:if test="${pd.result==4}">selected</c:if>><%=repair_self%></option> --%>
+<!-- 								  	</select> -->
+<!-- 								 </td> -->
+<!-- 							</tr> -->
+<!-- 							<tr> -->
+<%-- 								<td style="width:79px;text-align: right;padding-top: 13px;"><%=repair_instructions%>:</td> --%>
+<%-- 								<td><input style="width:95%;" type="text" name="explain" id="explain" value="${pd.explain}" maxlength="500" placeholder="<%=please_enter_repire_explain%>" title="<%=repair_instructions%>"/></td> --%>
+<!-- 							</tr> -->
 							<tr>
 								<td style="text-align: center;" colspan="10">
 									<a class="btn btn-mini btn-primary" onclick="save();"><%=save%></a>
@@ -150,6 +110,35 @@
 <script type="text/javascript" src="static/js/jquery.tips.js"></script>
 	<script type="text/javascript">
 	$(top.hangge());
+
+	//保存
+	function save(){
+		if($("#repairman").val()==""){
+			$("#repairman").tips({
+				side:3,
+	            msg:'<%=please_choose_maintainer%>',
+	            bg:'#AE81FF',
+	            time:2
+	        });
+			$("#repairman").focus();
+			return false;
+		}
+
+		if($("#operate").val()==""){
+			$("#operate").tips({
+				side:3,
+	            msg:'<%=please_enter_repair_operate%>',
+	            bg:'#AE81FF',
+	            time:2
+	        });
+			$("#operate").focus();
+			return false;
+		}
+
+		$("#Form").submit();
+		$("#zhongxin").hide();
+		$("#zhongxin2").show();
+	}
 
 	$(function() {
 		//日期框
