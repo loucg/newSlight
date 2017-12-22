@@ -8,6 +8,7 @@
 		SELECT  a.id AS id,
 			    a.fault_no,
 				a.type,
+				e.`name` AS status_name,
 				a.tdate AS startime,
 				a.comment,
 				b.register,
@@ -24,6 +25,7 @@
 			LEFT JOIN b_client_repair AS b ON a.id = b.b_client_fault_id
 			LEFT JOIN c_client_attr1 AS c ON a.c_client_id = c.c_client_id
 			LEFT JOIN c_client AS d ON c.c_client_id = d.id 
+			LEFT JOIN b_status AS e ON e.b_status_main_id = '4' AND a.type = e.value 
 		WHERE a.status='1' 		<!-- 只显示未修复故障 -->
 <!-- 		<if test="pd.userid==pd.weixiuroleid"> -->
 			AND c.sys_user_id in ${pd.userids}
@@ -60,6 +62,7 @@
 		SELECT a.id AS id,
 		    a.fault_no,
 		    a.type,
+		    e.`name` AS status_name,
 			a.tdate AS startime,
 			a.comment,
 			b.register,
@@ -76,6 +79,7 @@
 			LEFT JOIN b_client_repair AS b ON a.id = b.b_client_fault_id
 			LEFT JOIN c_client_attr1 AS c ON a.c_client_id = c.c_client_id
 			LEFT JOIN c_client AS d ON c.c_client_id = d.id 
+			LEFT JOIN b_status AS e ON e.b_status_main_id = '4' AND a.type = e.value 
 		WHERE a.id = #{id ,jdbcType=INTEGER}
 		GROUP BY a.id
 	</select>

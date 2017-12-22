@@ -100,12 +100,12 @@
 											<td class="center">${fn:substring(var.name ,0,50)}</td>
 											<td class="center">${var.location}</td>
 											<td class="center">${var.polenumber}</td>
-											<td class="center">
-												<c:if test="${var.type == '1' }"><span class="label label-important arrowed-in"><%=lamp_open_circuit%></span></c:if>
-												<c:if test="${var.type == '2' }"><span class="label label-success arrowed"><%=lamp_short%></span></c:if>
-												<c:if test="${var.type == '3' }"><span class="label label-success arrowed"><%=abnormal_lamp%></span></c:if>
-												<c:if test="${var.type == '4' }"><span class="label label-success arrowed"><%=gateway_anomaly%></span></c:if>
-												<c:if test="${var.type == '5' }"><span class="label label-success arrowed"><%=circuit_breaker_abnormality%></span></c:if>
+											<td class="center"><span class="label label-success arrowed">${var.status_name}</span>
+<%-- 												<c:if test="${var.type == '1' }"><span class="label label-important arrowed-in"><%=lamp_open_circuit%></span></c:if> --%>
+<%-- 												<c:if test="${var.type == '2' }"><span class="label label-success arrowed"><%=lamp_short%></span></c:if> --%>
+<%-- 												<c:if test="${var.type == '3' }"><span class="label label-success arrowed"><%=abnormal_lamp%></span></c:if> --%>
+<%-- 												<c:if test="${var.type == '4' }"><span class="label label-success arrowed"><%=gateway_anomaly%></span></c:if> --%>
+<%-- 												<c:if test="${var.type == '5' }"><span class="label label-success arrowed"><%=circuit_breaker_abnormality%></span></c:if> --%>
 											</td>
 											<td class="center">${var.startime}</td>
 											<td class="center" style="width: 60px;">

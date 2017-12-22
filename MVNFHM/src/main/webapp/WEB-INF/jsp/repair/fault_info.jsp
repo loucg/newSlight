@@ -63,8 +63,7 @@
 							</tr>
 							<tr>
 								<td style="width:85px;text-align: right;padding-top: 13px;"><%=fault_type %>:</td>
-								<td><c:if test="${pd.type == '1' }"><span class="label label-important arrowed-in"><%=lamp_open_circuit%></span></c:if><c:if test="${pd.type == '2' }"><span class="label label-success arrowed"><%=lamp_short%></span></c:if><c:if test="${pd.type == '3' }"><span class="label label-success arrowed"><%=abnormal_lamp%></span></c:if><c:if test="${pd.type == '4' }"><span class="label label-success arrowed"><%=gateway_anomaly%></span></c:if><c:if test="${pd.type == '5' }"><span class="label label-success arrowed"><%=circuit_breaker_abnormality%></span></c:if>
-								</td>
+								<td><span class="label label-success arrowed">${pd.status_name}</span></td>
 							</tr>
 							<tr>
 								<td style="width:85px;text-align: right;padding-top: 13px;"><%=fault_time %>:</td>

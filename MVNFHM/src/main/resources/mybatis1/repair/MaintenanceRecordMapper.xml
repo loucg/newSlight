@@ -134,6 +134,7 @@
 		SELECT a.id AS id,
 		    a.fault_no,
 		    a.type,
+		    e.`name` AS status_name,
 			a.tdate AS startime,
 			a.comment,
 			b.register,
@@ -148,6 +149,7 @@
 			LEFT JOIN b_gateway_repair AS b ON a.id = b.b_gateway_fault_id
 			LEFT JOIN c_gateway_attr1 AS c ON a.c_gateway_id = c.c_gateway_id
 			LEFT JOIN c_gateway AS d ON c.c_gateway_id = d.id 
+			LEFT JOIN b_status AS e ON e.b_status_main_id = '3' AND a.type = e.value 
 		WHERE a.id = #{id ,jdbcType=INTEGER}
 		GROUP BY a.id
 	</select>
