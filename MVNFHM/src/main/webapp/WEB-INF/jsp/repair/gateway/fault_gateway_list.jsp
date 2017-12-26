@@ -36,6 +36,12 @@
 						<form action="repair/listGateway" method="post" name="Form" id="Form">
 						<table style="margin-top:5px;">
 							<tr>
+								<td>
+									<div class="nav-search" style="margin-left:8px;">
+										<label><%=fault_no %>：</label>
+										<input class="nav-search-input" autocomplete="off" id="nav-search-input" type="text" name="fault_no" value="${pd.fault_no}" placeholder="<%=please_enter_fault_no%>" />
+									</div>
+								</td>
 								 <td>
 									<div class="nav-search" style="margin-left:8px;">
 									    <label><%=gateway_name%> ：</label>
@@ -54,17 +60,13 @@
 										<input class="nav-search-input" autocomplete="off" id="nav-search-input" type="text" name="location" value="${pd.location}" placeholder="<%=please_enter_location%>" />
 									</div>
 								</td>
-								<td>
-									<div class="nav-search" style="margin-left:14px;">
-										<label><%=please_choose_start_time%>:</label>
+								<td style="padding-left:18px;padding-bottom:4px;">
+										<label><%=fault_time%>:&nbsp;&nbsp;</label>
 										<input class="span10 date-picker" name="Start" id="Start"  value="${pd.Start}" type="text" data-date-format="yyyy-mm-dd" style="width:100px;height:28px;padding-top:2px;" placeholder="<%=please_choose_start_time%>" title="<%=start_time%>"/>
-									</div>
 								</td>
-								<td>
-									<div class="nav-search" style="margin-left:14px;">
-										<label><%=please_choose_end_time%>:</label>
+								<td style="padding-left:0px;padding-bottom:4px;">
+										<label><span style="padding-left:8px;padding-right:8px;">~</span></label>
 										<input class="span10 date-picker" name="End" name="End"  value="${pd.End}" type="text" data-date-format="yyyy-mm-dd" style="width:100px;height:28px;padding-top:2px;" placeholder="<%=please_choose_end_time%>" title="<%=end_time%>"/>
-									</div>
 								</td>
 								<c:if test="${QX.cha == 1 }">
 									<td style="vertical-align:right;padding-left:4px;padding-bottom:4px;"><button class="btn btn-mini btn-light" onclick="search();"  title="<%=search1%>" style="padding: 4px 4px;"><i id="nav-search-icon" class="ace-icon fa fa-search bigger-110 nav-search-icon white"></i><%=search1%></button></td>
@@ -76,14 +78,14 @@
 						<table id="simple-table" class="table table-striped table-bordered table-hover"  style="margin-top:5px;">
 							<thead>
 								<tr>
-									<th class="center" ><%=number%></th>
-									<!-- <th class="center" >组名</th> -->
+									<%-- <th class="center" style="width: 50px;"><%=number%></th> --%>
+									<!-- <th class="center" >組名</th> -->
 									<th class="center" ><%=fault_no%></th>
 									<th class="center" ><%=gateway_number%></th>
 									<th class="center" ><%=gateway_name%></th>
 									<th class="center" ><%=location%></th>
 									<th class="center" ><%=pole_number%></th>
-									<!-- <th class="center" >网关</th> -->
+									<!-- <th class="center" >網關</th> -->
 									<th class="center" ><%=fault_type%></th>
 									<th class="center"><%=fault_time%></th>
 									<th class="center"><%=operate%></th>
@@ -99,8 +101,8 @@
 									<c:forEach items="${varList}" var="var" varStatus="vs">
 										<tr>
 
-											<td class='center' style="width: 30px;">${vs.index+1}</td>
-													<%-- <td class="center">${var.cname}</td> --%>
+											<%-- <td class='center' style="width: 30px;">${vs.index+1}</td> --%>
+											<%-- <td class="center">${var.cname}</td> --%>
 													<td class="center">${var.fault_no}</td>
 													<td class="center">${var.code}</td>
 													<td>${ fn:substring(var.name ,0,50)}</td>
@@ -118,12 +120,7 @@
 														<a class="btn btn-xs btn-danger" style="border-radius:15px;" onclick="getGatewayList('${var.c_gateway_id}');">
 															<%=change_gateway%>
 														</a>
-														<c:if test="${var.register !=null}">	
-															<a class="btn btn-xs btn-danger" style="border-radius:15px;" onclick="edit('${var.id}');">
-																<%=edit%>
-															</a>
-														</c:if>
-														<c:if test="${var.register ==null}">	
+														<c:if test="${var.status == 1}">	
 															<a class="btn btn-xs btn-danger" style="border-radius:15px;" onclick="registe('${var.id}');">
 																<%=registe%>
 															</a>
