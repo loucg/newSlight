@@ -431,9 +431,11 @@ public class RepairanalysisService implements RepairanalysisManager{
 	private void setCommonItem(PageData pd, int cmdid) {
 		// 共同项目
 		pd.put("userid", UserUtils.getUserid());
+		pd.put("sys_user_id", UserUtils.getUserid());
 		pd.put("type", LogType.changegateway);
 		pd.put("comment", "更换网关");
 		pd.put("tdate", Tools.date2Str(new Date()));
+		pd.put("time", Tools.date2Str(new Date()));
 		pd.put("gateway", (Integer)pd.get("newGatewayid"));
 		pd.put("c_gateway_id", (Integer)pd.get("newGatewayid"));
 		pd.put("b_cmd_type_id", cmdid);

@@ -152,7 +152,7 @@ public class GatewayController extends BaseController{
 		PageData pd = new PageData();
 		pd = this.getPageData();
 		pd.put("tdate", Calendar.getInstance().getTime());//创建时间
-		gatewayService.createGateway(pd);
+		gatewayService.registe(pd);
 		mv.addObject("msg", "success");
 		FHLOG.save(UserUtils.getUserid(), "登记网关维修记录", LogType.repairlogin);
 		mv.setViewName(saveRsultJsp);

@@ -51,5 +51,13 @@ public interface GatewayService {
 	 * @throws Exception
 	 */
 	public void editRegistion(PageData pd) throws Exception;
+	
+	/**
+	 * 登記网关修復信息
+	 * @param pd
+	 * @return
+	 * @throws Exception
+	 */
+	public void registe(PageData pd) throws Exception;
 
 }

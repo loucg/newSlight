@@ -22,21 +22,21 @@
 
 	//保存
 	function save(){
-			if($("#register").val()==""){
-				$("#register").tips({
+			if($("#repairman").val()==""){
+				$("#repairman").tips({
 					side:3,
-		            msg:'<%=please_enter_register%>',
+		            msg:'<%=please_choose_maintainer%>',
 		            bg:'#AE81FF',
 		            time:2
 		        });
-				$("#register").focus();
+				$("#repairman").focus();
 				return false;
 			}
 
 			if($("#explain").val()==""){
 			$("#explain").tips({
 				side:3,
-	            msg:'<%=please_enter_repire_explain%>',
+	            msg:'<%=please_enter_repair_operate%>',
 	            bg:'#AE81FF',
 	            time:2
 	        });
@@ -68,7 +68,7 @@
 						<div id="zhongxin" style="padding-top: 13px;">
 						<table id="table_report" class="table table-striped table-bordered table-hover">
 							<tr>
-								<td style="width:79px;text-align: right;padding-top: 13px;"><%=fault_no%>:</td>
+								<td style="width:79px;text-align: right;padding-top: 13px;" nowrap="nowrap"><%=fault_no%>:</td>
 								<td><input style="width:95%;" type="text" name="fault_num" id="fault_num" value="${pd.fault_no}" readonly="readonly"/></td>
 							</tr>
 							<%-- <tr>
@@ -76,18 +76,18 @@
 								<td><input style="width:95%;" type="text" name="register" id="register" value="${pd.code}" readonly="readonly"/></td>
 							</tr> --%>
 							<tr>
-								<td style="width:79px;text-align: right;padding-top: 13px;"><%=equipment_type%>:</td>
+								<td style="width:79px;text-align: right;padding-top: 13px;" nowrap="nowrap"><%=equipment_type%>:</td>
 								<td><input style="width:95%;" type="text" name="register" id="register" value="<%=gateway%>" readonly="readonly"/></td>
 							</tr>
 							<tr>
-								<td style="width:79px;text-align: right;padding-top: 13px;"><%=registrant%>:</td>
+								<td style="width:79px;text-align: right;padding-top: 13px;" nowrap="nowrap"><%=registrant%>:</td>
 								<td><input style="width:95%;" type="text" name="registerName" id="registerName" value="${pd.register_name}" readonly="readonly"/></td>
 								<input type="hidden" name="register" id="register" value="${pd.register}"/>
 							</tr>
 							<tr>
-								<td style="width:79px;text-align: right;padding-top: 13px;"><%=maintenance_man%>:</td>
+								<td style="width:79px;text-align: right;padding-top: 13px;" nowrap="nowrap"><span style="color:red;">*</span><%=maintenance_man%>:</td>
 								<td>
-									<select class="chosen-select form-control" name="repairman" id="repairman" data-placeholder="<%=please_enter_repair_person%>" style="height:30px;width: 160px;border-width:1px;border-color:'#fff';border-radius:4px">
+									<select class="chosen-select form-control" name="repairman" id="repairman" data-placeholder="<%=please_enter_repair_person%>" title="<%=maintenance_man %>" style="height:30px;width: 160px;border-width:1px;border-color:'#fff';border-radius:4px">
 										<option value=""><%=please_choose_maintainer%></option>
 										<c:forEach items="${userList}" var="user">
 											<option value="${user.USER_ID}" <c:if test="${user.USER_ID==pd.repairman}">selected="selected"</c:if>>${user.NAME}</option>
@@ -113,9 +113,9 @@
 								 </td>
 							</tr> --%>
 							<tr>
-								<td style="width:79px;text-align: right;padding-top: 13px;"><%=repair_instructions%>:</td>
+								<td style="width:79px;text-align: right;padding-top: 13px;" nowrap="nowrap"><span style="color:red;">*</span><%=repair_operate%>:</td>
 								<td>
-									<textarea rows="3" cols="65" name="explain" id="explain" maxlength="500" placeholder="<%=please_enter_repire_explain%>" title="<%=repair_instructions%>" >${pd.explain}</textarea>
+									<textarea rows="3" cols="65" name="explain" id="explain" maxlength="500" placeholder="<%=please_enter_repair_operate%>" title="<%=repair_operate%>" >${pd.explain}</textarea>
 								</td>
 							</tr>
 							<tr>

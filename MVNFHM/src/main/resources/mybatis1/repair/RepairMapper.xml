@@ -207,11 +207,11 @@
 		)
 	values
 		(
-		           #{id},
-		           #{register},
-			       #{repairman}, 
-			       #{tdate},
-			       #{operate}
+           #{id},
+           #{register},
+	       #{repairman}, 
+	       #{tdate},
+	       #{explain}
 		 )
 	</insert>
 	
@@ -315,6 +315,9 @@
 		 			AND a.type = b_status.value
 		WHERE 1=1 AND 
 		 a.status != '2' AND b.sys_user_id in ${pd.userids}
+		<if test="pd.fault_no!=null and pd.fault_no!=''">
+			AND a.fault_no LIKE CONCAT(CONCAT('%', #{pd.fault_no}), '%')
+		</if>
 		<if test="pd.name!=null and pd.name!=''">
 			AND b.name LIKE CONCAT(CONCAT('%', #{pd.name}), '%')
 		</if>
@@ -350,6 +353,7 @@
 		 	a.sys_user_id IN ${pd.userids} AND 
 		 	a.RLstatus = '2' AND 
 		 	d.status = '1' AND 
+		 	a.staus = 1 AND 
 		 	NOT EXISTS (SELECT 1 FROM c_client_gateway f where a.c_gateway_id = f.c_gateway_id) 
 	</select>
 	
@@ -359,7 +363,7 @@
 		SET 
 			status = #{status},
 			c_gateway_new_id = #{newGatewayid}
-		WHERE c_gateway_id = #{oldGatewayid}
+		WHERE c_gateway_id = #{oldGatewayid} AND status != 2
 	</update>
 	
 	<!-- 查询旧网关下所有节点的地址 -->
@@ -463,4 +467,12 @@
 		FROM b_client_log
 		WHERE c_gateway_id = #{newGatewayid}
 	</delete>
+	
+	<!-- 修改网关查询 -->
+	<update id="updateGatewayStatusById" parameterType="pd">
+		UPDATE b_gateway_fault
+		SET 
+			status = 2
+		WHERE id = #{id}
+	</update>
 </mapper>

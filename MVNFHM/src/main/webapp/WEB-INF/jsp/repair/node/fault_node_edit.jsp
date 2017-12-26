@@ -44,11 +44,11 @@
 								<td><input style="width:98%;" type="text" name="devicetype" id="devicetype" value="<%=node %>" disabled/></td>
 							</tr>
 							<tr>
-								<td style="width:79px;text-align: right;padding-top: 13px;"><%=registrant %>:</td>
+								<td style="width:79px;text-align: right;padding-top: 13px;" nowrap="nowrap"><%=registrant %>:</td>
 								<td><input style="width:98%;" type="text" value="${pd.username}" disabled/></td>
 							</tr>
 							<tr>
-								<td style="width:79px;text-align: right;padding-top: 13px;"><span style="color:red;">*</span><%=maintenance_man%>:</td>
+								<td style="width:79px;text-align: right;padding-top: 13px;" nowrap="nowrap"><span style="color:red;">*</span><%=maintenance_man%>:</td>
 								<td>
 									<select class="chosen-select form-control" name="repairman" id="repairman" title="<%=maintenance_man %>" style="vertical-align:top;width:98%;" 
 										onchange="switchAdjustItems(this.value)">
@@ -60,7 +60,7 @@
 								</td>
 							</tr>
 							<tr>
-								<td style="width:79px;text-align: right;padding-top: 13px;"><span style="color:red;">*</span><%=repair_operate %>:</td>
+								<td style="width:79px;text-align: right;padding-top: 13px;" nowrap="nowrap"><span style="color:red;">*</span><%=repair_operate %>:</td>
 								<td><textarea style="width:98%;height:100px;" type="text" name="operate" id="operate" maxlength="255" title="<%=repair_operate%>" placeholder="<%=please_enter_repair_operate%>">${pd.operate}</textarea></td>
 							</tr>
 <!-- 							<tr> -->
