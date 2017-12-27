@@ -160,6 +160,7 @@
 							  $("#Form").submit();
 							  $("#zhongxin").hide();
 							  $("#zhongxin2").hide();
+							  top.Dialog.close();
 							  break;
 						  }
 					}
