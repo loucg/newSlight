@@ -162,16 +162,18 @@ public class RepairController extends BaseController{
 		PageData pd = new PageData();
 		pd = this.getPageData();
 		page.setPd(pd);
+		String faultId = pd.getString("faultId");
 		String newGatewayId = pd.getString("gatewayId");
 		String oldGatewayid = pd.getString("faultGatewayid");
+		pd.put("faultId", Integer.valueOf(faultId));
 		pd.put("oldGatewayid", Integer.valueOf(oldGatewayid));
 		pd.put("newGatewayid", Integer.valueOf(newGatewayId));
 		// 更换网关
 		 List<PageData> nodeList =repairanalysisService.updateGateway(pd);
 		ObjectExcelView erv = new ObjectExcelView();
 		mv = new ModelAndView(erv,ClientTypeUtils.exportNode(nodeList));
-		mv.addObject("msg", "success");
-		mv.setViewName(saveRsultJsp);
+//		mv.addObject("msg", "success");
+//		mv.setViewName(saveRsultJsp);
 		return mv;
 	}
 	

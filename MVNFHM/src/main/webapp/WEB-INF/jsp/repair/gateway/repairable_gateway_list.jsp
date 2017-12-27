@@ -36,6 +36,7 @@
 						<!-- 检索  -->
 						<form action="repair/changeGateway" method="post" name="Form" id="Form">
 						<!-- 检索  -->
+						<input type="hidden" name="faultId" id="faultId" value="${pd.id}">
 						<input type="hidden" name="gatewayId" id="gatewayId" value="">
 						<input type="hidden" name="faultGatewayid" id="faultGatewayid" value="${pd.faultGatewayid}">
 						<div id="zhongxin" style="padding-top: 13px;">

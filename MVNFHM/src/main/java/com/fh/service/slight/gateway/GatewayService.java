@@ -34,7 +34,7 @@ public interface GatewayService {
 	 * @return
 	 * @throws Exception
 	 */ 
-	public void createGateway(PageData pd) throws Exception; 
+	public void insertGatewayRepairInfo(PageData pd) throws Exception; 
 	
 	/**
 	 * 根据id获取网关维修记录

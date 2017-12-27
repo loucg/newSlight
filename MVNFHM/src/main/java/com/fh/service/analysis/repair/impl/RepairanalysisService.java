@@ -174,8 +174,6 @@ public class RepairanalysisService implements RepairanalysisManager{
 	 */
 	@Transactional
 	public void updateCompleteInfo(PageData pd)throws Exception{
-		// 获得登录的用户id
-		User user = (User) Jurisdiction.getSession().getAttribute(Const.SESSION_USER);
 		// 根据ID查询维修网关信息
 		PageData gatewayFaultPd =getfaultGatewayById(pd);
 		gatewayFaultPd.put("oldGatewayid", gatewayFaultPd.get("c_gateway_id"));
@@ -184,22 +182,16 @@ public class RepairanalysisService implements RepairanalysisManager{
 		// 更新网关维修状态 为完了
 		this.updateGatewayStatus(gatewayFaultPd);
 		// 查询有无网关维修信息
-		PageData gatewayRepairPd = getGatewayRepairById(gatewayFaultPd);
-		gatewayRepairPd.put("id", gatewayFaultPd.get("id"));
-		//维修人员
-		gatewayRepairPd.put("repairman", user.getUSER_ID());
+		// 登录维修记录
+		gatewayFaultPd.put("b_gateway_fault_id", gatewayFaultPd.get("id"));
+		gatewayFaultPd.put("register", UserUtils.getUserid());
+		gatewayFaultPd.put("repairman", UserUtils.getUserid());
+		gatewayFaultPd.put("tdate", Tools.date2Str(new Date()));
 		// 维修描述
-		gatewayRepairPd.put("operate", "旧网关"+gatewayFaultPd.get("c_gateway_id")+"替换为"+"新网关"+gatewayFaultPd.get("c_gateway_new_id"));//维修结果 已修复
-		if (null == gatewayRepairPd.get("register")) {
-			// 登记人员
-			gatewayRepairPd.put("register", user.getUSER_ID());//登记人员
-			//生成维修时间
-			gatewayRepairPd.put("tdate", Calendar.getInstance().getTime());//创建时间
-			gatewayService.createGateway(gatewayRepairPd);
-		} else {
-			// 修改维修记录
-			gatewayService.editGateway(gatewayRepairPd);
-		}
+		gatewayFaultPd.put("explain", "旧网关"+gatewayFaultPd.get("c_gateway_id")+"替换为"+"新网关"+gatewayFaultPd.get("c_gateway_new_id"));//维修结果 已修复
+		// 登录维修记录
+		gatewayService.insertGatewayRepairInfo(gatewayFaultPd);
+		
 	}
 	
 	/**按下撤销按钮动作
@@ -275,24 +267,29 @@ public class RepairanalysisService implements RepairanalysisManager{
 		// 节点地址循环
 		StringBuilder sbInfo = new StringBuilder();
 		// 本次节点起始序号
-		int nodeIndex = 1;
+		int nodeIndex = 0;
 		int loopCnt = 0;
 		int tmpTotalNodecnt = totalNodecnt;
+		// 总信息
+		boolean totalFlg = true;
 		for (PageData nodeInfo : nodeAddrInfo) {
 			loopCnt++;
+			nodeIndex++;
 			// 总节点个数
-			sbInfo.append(totalNodecnt);
-			sbInfo.append(COMMA);
-			// 本次节点起始序号
-			sbInfo.append(nodeIndex);
-			sbInfo.append(COMMA);
-			// 本次节点个数
-			if (tmpTotalNodecnt <= CMD_LENGTH) {
-				sbInfo.append(tmpTotalNodecnt);
-			} else {
-				sbInfo.append(20);
+			if(totalFlg){
+				sbInfo.append(totalNodecnt);
+				sbInfo.append(COMMA);
+				// 本次节点起始序号
+				sbInfo.append(nodeIndex);
+				sbInfo.append(COMMA);
+				// 本次节点个数
+				if (tmpTotalNodecnt <= CMD_LENGTH) {
+					sbInfo.append(tmpTotalNodecnt);
+				} else {
+					sbInfo.append(20);
+				}
+				sbInfo.append(COMMA);
 			}
-			sbInfo.append(COMMA);
 			// 节点地址
 			sbInfo.append(nodeInfo.getString("node"));
 			sbInfo.append(CHINESE_COMMA);
@@ -306,19 +303,28 @@ public class RepairanalysisService implements RepairanalysisManager{
 			sbInfo.append(nodeInfo.getString("coordinate"));
 			sbInfo.append(SEMICOLON);
 			// 一条指令中最多包含20个节点，剩余的另起指令
-			if (tmpTotalNodecnt <= CMD_LENGTH && tmpTotalNodecnt == loopCnt) {
-				pd.put("cmd", sbInfo.substring(0, sbInfo.length() - 1).toString());
-				fhlog.saveNodeInfo(pd);
-				// 信息清空
-				sbInfo.setLength(0);
-			} else if (tmpTotalNodecnt > CMD_LENGTH && loopCnt == CMD_LENGTH) {
-				tmpTotalNodecnt -= CMD_LENGTH;
-				nodeIndex++;
-				loopCnt = 0;
-				pd.put("cmd", sbInfo.substring(0, sbInfo.length() - 1).toString());
-				fhlog.saveNodeInfo(pd);
-				// 信息清空
-				sbInfo.setLength(0);
+			if (tmpTotalNodecnt <= CMD_LENGTH) {
+				totalFlg = false;
+				if(tmpTotalNodecnt == loopCnt){
+					pd.put("cmd", sbInfo.substring(0, sbInfo.length() - 1).toString());
+					fhlog.saveNodeInfo(pd);
+					// 信息清空
+					sbInfo.setLength(0);
+					totalFlg = true;
+				}
+			} else if (tmpTotalNodecnt > CMD_LENGTH) {
+				totalFlg = false;
+				if(loopCnt == CMD_LENGTH){
+					tmpTotalNodecnt -= CMD_LENGTH;
+//					nodeIndex++;
+					loopCnt = 0;
+					pd.put("cmd", sbInfo.substring(0, sbInfo.length() - 1).toString());
+					fhlog.saveNodeInfo(pd);
+					// 信息清空
+					sbInfo.setLength(0);
+					totalFlg = true;
+				}
+				
 			}
 		}
 		// 下载节点信息到本地

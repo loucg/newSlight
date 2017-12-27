@@ -36,7 +36,7 @@ public class GatewayServiceImpl implements GatewayService{
 		// TODO Auto-generated method stub
 		return (PageData)dao.findForObject("RepairMapper.getGatewayById", pd);
 	}
-	public void createGateway(PageData pd) throws Exception {
+	public void insertGatewayRepairInfo(PageData pd) throws Exception {
 		// TODO Auto-generated method stub
 		dao.save("RepairMapper.createGatewayRepairInfo", pd);
 	}
@@ -61,7 +61,7 @@ public class GatewayServiceImpl implements GatewayService{
 	@Transactional
 	public void registe(PageData pd) throws Exception {
 		// 創建維修數據
-		createGateway(pd);
+		insertGatewayRepairInfo(pd);
 		//更新網關狀態
 		dao.save("RepairMapper.updateGatewayStatusById", pd);
 	}

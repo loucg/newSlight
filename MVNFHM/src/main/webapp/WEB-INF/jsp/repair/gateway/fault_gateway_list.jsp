@@ -117,7 +117,7 @@
 												</c:if>
 												<div class="hidden-sm hidden-xs btn-group">
 													<c:if test="${QX.edit == 1 && var.status == 1}">
-														<a class="btn btn-xs btn-danger" style="border-radius:15px;" onclick="getGatewayList('${var.c_gateway_id}');">
+														<a class="btn btn-xs btn-danger" style="border-radius:15px;" onclick="getGatewayList('${var.id}','${var.c_gateway_id}');">
 															<%=change_gateway%>
 														</a>
 														<c:if test="${var.status == 1}">	
@@ -210,12 +210,12 @@
 		}
 
 		//查看已认领的网关
-		function getGatewayList(gatewayId){
+		function getGatewayList(id,gatewayId){
 			 top.jzts();
 			 var diag = new top.Dialog();
 			 diag.Drag=true;
 			 diag.Title ="<%=available_gateway%>";
-			 diag.URL = '<%=basePath%>repair/goRepairGatewayList?faultGatewayid='+gatewayId;
+			 diag.URL = '<%=basePath%>repair/goRepairGatewayList?id='+id+'&faultGatewayid='+gatewayId;
 			 diag.Width = 1000;
 			 diag.Height = 620;
 			 diag.CancelEvent = function(){ //关闭事件
