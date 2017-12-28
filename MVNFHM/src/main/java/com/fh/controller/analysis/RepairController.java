@@ -170,8 +170,8 @@ public class RepairController extends BaseController{
 		pd.put("newGatewayid", Integer.valueOf(newGatewayId));
 		// 更换网关
 		 List<PageData> nodeList =repairanalysisService.updateGateway(pd);
-		ObjectExcelView erv = new ObjectExcelView();
-		mv = new ModelAndView(erv,ClientTypeUtils.exportNode(nodeList));
+//		ObjectExcelView erv = new ObjectExcelView();
+//		mv = new ModelAndView(erv,ClientTypeUtils.exportNode(nodeList));
 		mv.addObject("msg", "success");
 		mv.setViewName(saveRsultJsp);
 		return mv;
