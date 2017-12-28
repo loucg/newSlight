@@ -172,8 +172,8 @@ public class RepairController extends BaseController{
 		 List<PageData> nodeList =repairanalysisService.updateGateway(pd);
 		ObjectExcelView erv = new ObjectExcelView();
 		mv = new ModelAndView(erv,ClientTypeUtils.exportNode(nodeList));
-//		mv.addObject("msg", "success");
-//		mv.setViewName(saveRsultJsp);
+		mv.addObject("msg", "success");
+		mv.setViewName(saveRsultJsp);
 		return mv;
 	}
 	
