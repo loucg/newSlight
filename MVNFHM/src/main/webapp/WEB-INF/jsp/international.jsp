@@ -679,4 +679,6 @@
 	String please_enter_registrant = properties.getProperty("please_enter_registrant");//label:节点信息
 	String please_enter_maintainer = properties.getProperty("please_enter_maintainer");//label:节点信息
 	String please_select_device_type = properties.getProperty("please_select_device_type");//label:节点信息
+	String download_node_info = properties.getProperty("download_node_info");//label:节点信息
+	
 %>

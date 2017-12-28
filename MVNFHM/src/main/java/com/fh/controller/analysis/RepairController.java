@@ -115,8 +115,14 @@ public class RepairController extends BaseController{
 		if(pd.get("excel")!=null&&pd.getString("excel").equals("1")){
 			ObjectExcelView erv = new ObjectExcelView();					//执行excel操作
 //			mv = new ModelAndView(erv,FaultUtils.exportRepair(varList));
-			FHLOG.save(UserUtils.getUserid(), "导出维修统计excel", LogType.repairexport);
+//			FHLOG.save(UserUtils.getUserid(), "导出维修统计excel", LogType.repairexport);
 			return mv;
+		}else if(pd.get("excel")!=null&&pd.getString("excel").equals("2")){
+				ObjectExcelView erv = new ObjectExcelView();				//执行excel操作
+				List<PageData> nodeInfoList = repairanalysisService.getOldClientNodeAdress(pd);
+				mv = new ModelAndView(erv,FaultUtils.exportNode(nodeInfoList));
+//				FHLOG.save(UserUtils.getUserid(), "导出维修统计excel", LogType.repairexport);
+				return mv;
 		}else{
 			mv.addObject("pd", pd);		//传入上级所有信息
 			mv.setViewName("repair/gateway/fault_gateway_list");

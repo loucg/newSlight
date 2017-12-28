@@ -34,6 +34,8 @@
 
 						<!-- 检索  -->
 						<form action="repair/listGateway" method="post" name="Form" id="Form">
+						<input type="hidden" id="excel" name="excel" value="0"/>
+						<input type="hidden" id="oldGatewayid" name="oldGatewayid" value=""/>
 						<table style="margin-top:5px;">
 							<tr>
 								<td>
@@ -117,14 +119,15 @@
 												</c:if>
 												<div class="hidden-sm hidden-xs btn-group">
 													<c:if test="${QX.edit == 1 && var.status == 1}">
-														<a class="btn btn-xs btn-danger" style="border-radius:15px;" onclick="getGatewayList('${var.id}','${var.c_gateway_id}');">
+														<a class="btn btn-xs btn-danger" style="border-radius:15px;" onclick="getGatewayList('${var.c_gateway_id}');">
 															<%=change_gateway%>
 														</a>
-														<c:if test="${var.status == 1}">	
-															<a class="btn btn-xs btn-danger" style="border-radius:15px;" onclick="registe('${var.id}');">
-																<%=registe%>
-															</a>
-														</c:if>
+														<a class="btn btn-xs btn-danger" style="border-radius:15px;" onclick="registe('${var.id}');">
+															<%=registe%>
+														</a>
+														<a class="btn btn-xs btn-success" style="border-radius:15px;" onclick="downloadNode('${var.c_gateway_id}');">
+															<%=download_node_info%>
+														</a>
 													</c:if>
 													<c:if test="${QX.edit == 1 && var.status == 3}">
 														<a class="btn btn-xs btn-danger" style="border-radius:15px;" onclick="cancelRepair('${var.id}');">
@@ -210,12 +213,12 @@
 		}
 
 		//查看已认领的网关
-		function getGatewayList(id,gatewayId){
+		function getGatewayList(gatewayId){
 			 top.jzts();
 			 var diag = new top.Dialog();
 			 diag.Drag=true;
 			 diag.Title ="<%=available_gateway%>";
-			 diag.URL = '<%=basePath%>repair/goRepairGatewayList?id='+id+'&faultGatewayid='+gatewayId;
+			 diag.URL = '<%=basePath%>repair/goRepairGatewayList?faultGatewayid='+gatewayId;
 			 diag.Width = 1000;
 			 diag.Height = 620;
 			 diag.CancelEvent = function(){ //关闭事件
@@ -305,6 +308,14 @@
 				diag.close();
 			 };
 			 diag.show();
+		}
+		
+		//导出excel
+		function downloadNode(oldGatewayid){
+			$("#excel").val("2");
+			$("#oldGatewayid").val(oldGatewayid);
+			$("#Form").submit();
+			$("#excel").val("0");
 		}
 		
 		$(function() {

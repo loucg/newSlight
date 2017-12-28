@@ -187,4 +187,28 @@ public class FaultUtils {
 		dataMap.put("varList", varList);
 		return dataMap;
 	}
+	
+	public static Map<String, Object> exportNode(List<PageData> list){
+		Map<String, Object> dataMap = new HashMap<>();
+		List<String> titles = new ArrayList<>();
+		titles.add("节点ID");
+		titles.add("节点编码");
+		titles.add("节点GPS");
+		titles.add("节点地址");
+		titles.add("节点类型");
+		dataMap.put("titles", titles);
+		
+		List<PageData> varList = new ArrayList<PageData>();
+		for(int i=0;i<list.size();i++){
+			PageData vpd = new PageData();
+			vpd.put("var1", String.valueOf(list.get(i).get("id")));//节点ID	
+			vpd.put("var2", list.get(i).getString("client_code"));//节点编码	
+			vpd.put("var3", list.get(i).getString("coordinate"));//节点GPS
+			vpd.put("var4", list.get(i).getString("node"));	//节点地址
+			vpd.put("var5", String.valueOf(list.get(i).get("type")));	//节点类型
+			varList.add(vpd);
+		}
+		dataMap.put("varList", varList);
+		return dataMap;
+	}
 }
