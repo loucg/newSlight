@@ -157,6 +157,39 @@
 		c_client_gateway.c_gateway_id = #{pd.id}
 		
 	</select>
-	
+		<!-- 查看路灯个数 -->
+	<select id="getLampCount" parameterType="page" resultType="Integer">
+		SELECT 
+				count(c_client_gateway.c_client_id) client_num
+			FROM
+				c_client_gateway
+			INNER JOIN
+				c_client_attr1	
+			ON
+				c_client_attr1.c_client_id = c_client_gateway.c_client_id
+			WHERE
+				c_client_gateway.type = 1 AND 
+				c_client_gateway.c_gateway_id = #{pd.id} AND 
+				c_client_attr1.staus = 1 AND 
+				c_client_attr1.sys_user_id IN ${pd.userids}
+	</select>
+	<!-- 查看传感器个数 -->
+	<select id="getSensorCount" parameterType="page" resultType="Integer">
+		SELECT 
+				count(c_client_gateway.c_client_id) client_num
+			FROM
+				c_client_gateway
+			INNER JOIN 
+			c_sensor ON c_client_gateway.c_client_id = c_sensor.id
+			INNER JOIN
+				c_sensor_attr1	
+			ON
+				c_sensor_attr1.c_sensor_id = c_sensor.id
+			WHERE
+				c_client_gateway.type = 3 AND 
+				c_client_gateway.c_gateway_id = #{pd.id} AND 
+				c_sensor_attr1.status = 1 AND 
+				c_sensor_attr1.sys_user_id IN ${pd.userids}
+	</select>
 	
 </mapper>

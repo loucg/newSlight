@@ -118,10 +118,21 @@ public class GatewayStateController extends BaseController {
 	 * @throws Exception
 	 */
 	@RequestMapping(value = "/goSenlampStatePage")
-	public ModelAndView goSenlampStatePage() throws Exception {
+	public ModelAndView goSenlampStatePage(Page page) throws Exception {
 		ModelAndView mv = this.getModelAndView();
 		PageData pd = new PageData();
 		pd = this.getPageData();
+		// 获得登录的用户id
+		User user = (User) Jurisdiction.getSession().getAttribute(Const.SESSION_USER);
+		String sys_user_id = user.getUSER_ID();
+		pd.put("sys_user_id", sys_user_id);
+		String userids = departmentService.getUseridsInDepartment(pd);
+		pd.put("userids", userids);
+		page.setPd(pd);
+		int lampCount = gatewayStateService.getLampCount(page);
+		int sensorCount = gatewayStateService.getSensorCount(page);
+		pd.put("lampCount", lampCount);
+		pd.put("sensorCount", sensorCount);
 		mv.setViewName("street/state/selectBranch");
 		mv.addObject("pd", pd);
 		return mv;

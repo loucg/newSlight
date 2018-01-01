@@ -33,11 +33,13 @@
 									<tr>
 										<td style="text-align: center;padding-top: 50px;">
 											<button onclick="viewLampDetail('${pd.id }')" class = "button1"><%=lamp_state_page%></button>
+											<span>${pd.lampCount }</span>
 										</td>
 									</tr>
 									<tr>
 										<td style="text-align: center;padding-top: 40px;">
 											<button onclick="viewSensorDetail('${pd.id }')" class = "button2"><%=sensor_state_page%></button>
+											<span>${pd.sensorCount }</span>
 										</td>
 									</tr>
 								</table>

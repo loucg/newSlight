@@ -56,4 +56,22 @@ public interface GatewayStateService {
 	 * @throws Exception
 	 */
 	public List<PageData> viewSensorDetail(Page page) throws Exception;
+	
+	/**
+	 * 获取指定网关 下的灯节点个数
+	 * 
+	 * @param PageData
+	 * @return
+	 * @throws Exception
+	 */
+	public int getLampCount(Page page) throws Exception;
+	
+	/**
+	 * 获取指定网关 下的传感器节点个数
+	 * 
+	 * @param PageData
+	 * @return
+	 * @throws Exception
+	 */
+	public int getSensorCount(Page page) throws Exception;
 }

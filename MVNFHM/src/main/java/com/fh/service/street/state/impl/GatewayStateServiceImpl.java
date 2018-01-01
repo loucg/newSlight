@@ -72,5 +72,27 @@ public class GatewayStateServiceImpl implements GatewayStateService {
 	public List<PageData> viewSensorDetail(Page page) throws Exception {
 		return (List<PageData>) dao.findForList("GatewayStateMapper.sensorInfolistPage", page);
 	}
+	
+	/**
+	 * 获取指定网关 下的灯节点个数
+	 * 
+	 * @param PageData
+	 * @return
+	 * @throws Exception
+	 */
+	public int getLampCount(Page pd) throws Exception{
+		return (Integer) dao.findForObject("GatewayStateMapper.getLampCount", pd);
+	}
+	
+	/**
+	 * 获取指定网关 下的传感器节点个数
+	 * 
+	 * @param PageData
+	 * @return
+	 * @throws Exception
+	 */
+	public int getSensorCount(Page pd) throws Exception{
+		return (Integer) dao.findForObject("GatewayStateMapper.getSensorCount", pd);
+	}
 
 }
