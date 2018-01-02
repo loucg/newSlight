@@ -56,5 +56,19 @@ public interface StatusManager {
 	 * @throws Exception
 	 */
 	public Status getStatusById(String id) throws Exception;
+	
+	/**列出网关故障信息
+	 * @param pd
+	 * @return
+	 * @throws Exception
+	 */
+	public List<PageData> getGatewayStatus(PageData pd) throws Exception;
+	
+	/**列出节点故障信息
+	 * @param pd
+	 * @return
+	 * @throws Exception
+	 */
+	public List<PageData> getNodeStatus(PageData pd) throws Exception;
 		
 }

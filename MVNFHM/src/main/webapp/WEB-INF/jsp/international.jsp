@@ -679,6 +679,12 @@
 	String please_enter_registrant = properties.getProperty("please_enter_registrant");//label:节点信息
 	String please_enter_maintainer = properties.getProperty("please_enter_maintainer");//label:节点信息
 	String please_select_device_type = properties.getProperty("please_select_device_type");//label:节点信息
-	String download_node_info = properties.getProperty("download_node_info");//label:节点信息
+	String sms_destination_setting = properties.getProperty("sms_destination_setting");//label:设定短信发送对象
+	String remind_admin = properties.getProperty("remind_admin");//label:是否提醒自己
+	String sms_destination = properties.getProperty("sms_destination");//label:短信发送对象
+	String please_input_device_address = properties.getProperty("please_input_device_address");//label:请输入设备地址
+	String please_input_sms_to_who = properties.getProperty("please_input_sms_to_who");//label:请选择短信发送对象
+	String add_sms_setting = properties.getProperty("add_sms_setting");//label:请选择短信发送对象
+	String add_duplicate = properties.getProperty("add_duplicate");//label:请选择短信发送对象
 	
 %>

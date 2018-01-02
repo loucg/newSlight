@@ -85,5 +85,13 @@
 		<include refid="tableName"></include>
 		where id=#{id}
 	</select>
-		
+	
+	<!-- 查询网关故障类型 -->
+	<select id="getGatewayStatus" parameterType="String" resultMap="statusResultMap">
+		select value,name from b_status where b_status_main_id = 3 and value != 1 order by value asc
+	</select>
+	<!-- 查询节点故障类型 -->
+	<select id="getNodeStatus" parameterType="String" resultMap="statusResultMap">
+		select value,name from b_status where b_status_main_id = 4 and name is not null order by value asc
+	</select>	
 </mapper>

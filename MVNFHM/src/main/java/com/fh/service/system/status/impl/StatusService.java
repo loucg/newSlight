@@ -82,5 +82,21 @@ public class StatusService implements StatusManager{
 	public Status getStatusById(String id) throws Exception {
 		return (Status) dao.findForObject("StatusMapper.getStatusById", id);
 	}
-
+	/**列出网关故障信息
+	 * @param pd
+	 * @return
+	 * @throws Exception
+	 */
+	public List<PageData> getGatewayStatus(PageData pd) throws Exception {
+		return (List<PageData>) dao.findForList("StatusMapper.getGatewayStatus", pd);
+	}
+	
+	/**列出节点故障信息
+	 * @param pd
+	 * @return
+	 * @throws Exception
+	 */
+	public List<PageData> getNodeStatus(PageData pd) throws Exception {
+		return (List<PageData>) dao.findForList("StatusMapper.getNodeStatus", pd);
+	}
 }

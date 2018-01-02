@@ -9,6 +9,7 @@
 			+ request.getServerName() + ":" + request.getServerPort()
 			+ path + "/";
 %>
+<%@include file="international.jsp"%>  <!--国际化标签  -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -80,6 +81,20 @@
 	                }  
 	            },  
 	            message: '重置成功！',  
+	            callback: function() {  
+	            	document.getElementById('zhongxin').style.display = 'none';
+	    		    top.Dialog.close();  
+	            },   
+	        });
+		}
+		else if("addDuplicate"==msg){
+			bootbox.alert({  
+	            buttons: {  
+	               ok: {  
+	                    label: 'OK',  
+	                }  
+	            },  
+	            message: '<%=add_duplicate%>',  
 	            callback: function() {  
 	            	document.getElementById('zhongxin').style.display = 'none';
 	    		    top.Dialog.close();  

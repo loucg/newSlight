@@ -26,18 +26,18 @@
 				<div class="page-content">
 					<div class="row">
 						<div class="col-xs-12">
-
 							<!-- 检索  -->
-							<form action="smsplatform/list.do" method="post" name="Form"
-								id="Form">
+							<form action="smsplatform/goSmsSetting.do" method="post" name="Form" id="Form">
+							<input type="hidden" name="b_note_id" id="b_note_id" value="${pd.b_note_id}"/>
+							<div id="zhongxin" style="padding-top: 13px;">
 								<table id="simple-table" class="table table-striped table-bordered table-hover"	style="margin-top: 15px;">
 									<thead>
 										<tr>
-											<th class="center" style="width: 50px;"><%=number%></th>
-											<th class="center" style="width: 300px;"><%=sms_platform_name%></th>
-											<th class="center" style="width: 500px;"><%=sms_platform_data%></th>
-											<th class="center"><%=sms_platform_contact%></th>
-											<th class="center"><%=status%></th>
+											<th class="center"><%=equipment_type%></th>
+											<th class="center"><%=fault_type%></th>
+											<th class="center"><%=location%></th>
+											<th class="center"><%=remind_admin%></th>
+											<th class="center"><%=sms_destination%></th>
 											<th class="center"><%=operate%></th>
 										</tr>
 									</thead>
@@ -45,15 +45,26 @@
 									<tbody>
 										<!-- 开始循环 -->
 										<c:choose>
-											<c:when test="${not empty varList}">
+											<c:when test="${not empty destInfo}">
 												<c:if test="${QX.cha == 1 }">
-													<c:forEach items="${varList}" var="var" varStatus="vs">
+													<c:forEach items="${destInfo}" var="var" varStatus="vs">
 														<tr>
-															<td class='center' style="width: 30px;">${vs.index+1}</td>
-															<td class='center'>${var.name}</td>
-															<td class='center'>${var.b_note_url}</td>
-															<td class='center'>${var.contact}</td>
-															<td class='center'><c:if test="${var.status == 1 }"><%=effective%></c:if><c:if test="${var.status == 2 }"><%=invalid%></c:if></td>
+															<%-- <td class='center'>
+															<select class="chosen-select form-control" name="deviceType" id="deviceType" data-placeholder="<%=please_choose_device_type%>" style="height:30px;width: 160px;border-width:1px;border-color:'#fff';border-radius:4px">
+																	<option value="1" <c:if test="${1==pd.device_type}">selected="selected"</c:if>><%=gateway%></option>
+																	<option value="2" <c:if test="${2==pd.device_type}">selected="selected"</c:if>><%=node%></option>
+															</td> --%>
+															<c:if test="${var.device_type == 1}">
+																<td class='center'><%=gateway %></td>
+																<td class='center'>${var.gateway_fault_name}</td>
+															</c:if>
+															<c:if test="${var.device_type ==2}">
+																<td class='center'><%=node %></td>
+																<td class='center'>${var.node_fault_name}</td>
+															</c:if>
+															<td class='center'>${var.location}</td>
+															<td class='center'><input type="checkbox" id="send_to_admin" name="send_to_admin" <c:if test="${var.send_to_admin == '1'}">checked</c:if> onclick="return false;" /></td>
+															<td class='center'>${var.person_name}</td>
 															<td class="center"><c:if
 																	test="${QX.edit != 1 && QX.del != 1 }">
 																	<span
@@ -65,16 +76,12 @@
 																	<c:if test="${QX.edit == 1 }">
 																		<a class="btn btn-xs btn-success" onclick="edit('${var.id}');"><%=edit %></a>
 																	</c:if>
-																	<c:if test="${QX.edit == 1 }">
-																		<a class="btn btn-xs btn-success" onclick="smsDestination('${var.id}');"><%=sms_destination_setting %></a>
-																	</c:if>
 																	<c:if test="${QX.del == 1 }">
 																		<a class="btn btn-xs btn-danger" onclick="del('${var.id}');"><%=delete %></a>
 																	</c:if>
 																</div>
 																</td>
 														</tr>
-
 													</c:forEach>
 												</c:if>
 												<c:if test="${QX.cha == 0 }">
@@ -97,16 +104,13 @@
 											<td style="vertical-align: top;"><c:if
 													test="${QX.add == 1 }">
 													<a class="btn btn-sm btn-success"
-														onclick="add();"><%=add2%></a>
-												</c:if> <c:if
-													test="${null != pd.id && pd.id != ''}">
-													<a class="btn btn-sm btn-success"
-														onclick="goSondict('${pd.PARENT_ID}');"><%=return1%></a>
+														onclick="add(${pd.b_note_id});"><%=add2%></a>
 												</c:if></td>
 											<td style="vertical-align: top;"><div class="pagination"
 													style="float: right; padding-top: 0px; margin-top: 0px;">${page.pageStr}</div></td>
 										</tr>
 									</table>
+								</div>
 								</div>
 							</form>
 
@@ -148,12 +152,12 @@
 		}
 		
 		//新增
-		function add(){
+		function add(b_note_id){
 			 top.jzts();
 			 var diag = new top.Dialog();
 			 diag.Drag=true;
-			 diag.Title ="<%=add2%>";
-			 diag.URL = '<%=basePath%>smsplatform/goAdd.do';
+			 diag.Title ="<%=add_sms_setting%>";
+			 diag.URL = '<%=basePath%>smsplatform/goAddSmsSetting.do?b_note_id='+b_note_id;
 			 diag.Width = 470;
 			 diag.Height = 280;
 			 diag.CancelEvent = function(){ //关闭事件
@@ -175,9 +179,9 @@
 			bootbox.confirm("确定要删除吗?", function(result) {
 				if(result) {
 					top.jzts();
-					var url = "<%=basePath%>smsplatform/delete.do?id="+Id+"&tm="+new Date().getTime();
+					var url = "<%=basePath%>smsplatform/deleteSmsSetting.do?id="+Id+"&tm="+new Date().getTime();
 					$.get(url,function(data){
-						nextPage(${page.currentPage});
+						nextPage('${page.currentPage}');
 					});
 				}
 			});
@@ -189,7 +193,7 @@
 			 var diag = new top.Dialog();
 			 diag.Drag=true;
 			 diag.Title ="<%=modify %>";
-			 diag.URL = '<%=basePath%>smsplatform/goEdit?id='+Id;
+			 diag.URL = '<%=basePath%>smsplatform/goDestEdit?id='+Id;
 			 diag.Width = 470;
 			 diag.Height = 280;
 			 diag.CancelEvent = function(){ //关闭事件
@@ -200,23 +204,10 @@
 			 };
 			 diag.show();
 		}
-		//短信发送设置画面
-		function smsDestination(Id){
-			 top.jzts();
-			 var diag = new top.Dialog();
-			 diag.Drag=true;
-			 diag.Title ="<%=sms_destination_setting %>";
-			 diag.URL = '<%=basePath%>smsplatform/goSmsSetting?b_note_id='+Id;
-			 diag.Width = 1080;
-			 diag.Height = 580;
-			 diag.CancelEvent = function(){ //关闭事件
-				 if(diag.innerFrame.contentWindow.document.getElementById('zhongxin').style.display == 'none'){
-					 nextPage('${page.currentPage}');
-				}
-				diag.close();
-			 };
-			 diag.show();
-		}
+		
+/* 		$(function() {
+			alert(${addScuccess});
+		}); */
 	</script>
 
 </body>
