@@ -9,6 +9,8 @@ public class GatewayUnlineCheck implements ServletContextListener{
 	public void contextDestroyed(ServletContextEvent arg0) {
 		try {
 			QuartzLoad.stop();
+			ClientInfoCollectionQuarta.stop();
+			ClientStatisticsQuarta.stop();
 		} catch (Exception e) {
 			e.printStackTrace();
 		}		
@@ -18,6 +20,8 @@ public class GatewayUnlineCheck implements ServletContextListener{
 	public void contextInitialized(ServletContextEvent arg0) {
 		try {
 			QuartzLoad.run();
+			ClientInfoCollectionQuarta.run();
+			ClientStatisticsQuarta.run();
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

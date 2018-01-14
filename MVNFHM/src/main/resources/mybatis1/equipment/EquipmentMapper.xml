@@ -489,4 +489,261 @@ select count(*) as equipmentcnt from
 	<update id="delete" parameterType="page" >
 		delete from b_device_fault_statistic where (sys_user_id in ${pd.userids} OR sys_user_id is null) and DATE_FORMAT(tdate,'%Y-%m-%d')=DATE_FORMAT(CURRENT_DATE,'%Y-%m-%d')
 	</update>
+	<!--能耗统计 -->
+	<!--灯能耗按day统计 -->
+	<select id="select_lamp_energy_day" parameterType="page" resultType="pd">
+	<![CDATA[
+	select total_kwh,seq,total_sumtime,seq_time,dayname,dateflag from(
+		SELECT 
+		IFNULL(sum(kwh),0) as total_kwh,IFNULL(sum(sumtime),0) as total_sumtime,1 as seq,'1_1' as seq_time,DATE_FORMAT(CURRENT_DATE(),'%Y-%m-%d') as dayname,'date1' as dateflag
+		FROM
+		b_client_statistic_bk
+		WHERE 1=1
+		AND
+		b_client_statistic_bk.sys_user_id in ${pd.userids}
+		AND TIMESTAMPDIFF(day,DATE_FORMAT(b_client_statistic_bk.tdate,'%Y-%m-%d'),now())=0
+		UNION
+		
+		SELECT 
+		IFNULL(sum(kwh),0) as total_kwh,IFNULL(sum(sumtime),0) as total_sumtime,2 as seq,'2_2' as seq_time,DATE_FORMAT(DATE_SUB(CURRENT_DATE(),INTERVAL 1 day),'%Y-%m-%d') as dayname,'date2' as datename
+		FROM
+		b_client_statistic_bk
+		WHERE 1=1
+		AND
+		b_client_statistic_bk.sys_user_id in ${pd.userids}
+		AND   TIMESTAMPDIFF(day,DATE_FORMAT(b_client_statistic_bk.tdate,'%Y-%m-%d'),now())=1
+		
+		UNION 
+		SELECT 
+		IFNULL(sum(kwh),0) as total_kwh,IFNULL(sum(sumtime),0) as total_sumtime,3 as seq,'3_3' as seq_time,DATE_FORMAT(DATE_SUB(CURRENT_DATE(),INTERVAL 2 day),'%Y-%m-%d') as dayname,'date3' as datename
+		FROM
+		b_client_statistic_bk
+		WHERE 1=1
+		AND
+		b_client_statistic_bk.sys_user_id in ${pd.userids}
+		AND   TIMESTAMPDIFF(day,DATE_FORMAT(b_client_statistic_bk.tdate,'%Y-%m-%d'),now())=2
+		UNION 
+		SELECT 
+		IFNULL(sum(kwh),0) as total_kwh,IFNULL(sum(sumtime),0) as total_sumtime,4 as seq,'4_4' as seq_time,DATE_FORMAT(DATE_SUB(CURRENT_DATE(),INTERVAL 3 day),'%Y-%m-%d') as dayname,'date4' as datename
+		FROM
+		b_client_statistic_bk
+		WHERE 1=1
+		AND
+		b_client_statistic_bk.sys_user_id in ${pd.userids}
+		AND   TIMESTAMPDIFF(day,DATE_FORMAT(b_client_statistic_bk.tdate,'%Y-%m-%d'),now())=3
+		
+		UNION 
+		SELECT 
+		IFNULL(sum(kwh),0) as total_kwh,IFNULL(sum(sumtime),0) as total_sumtime,5 as seq,'5_5' as seq_time,DATE_FORMAT(DATE_SUB(CURRENT_DATE(),INTERVAL 4 day),'%Y-%m-%d') as dayname,'date5' as datename
+		FROM
+		b_client_statistic_bk
+		WHERE 1=1
+		AND
+		b_client_statistic_bk.sys_user_id in ${pd.userids}
+		AND   TIMESTAMPDIFF(day,DATE_FORMAT(b_client_statistic_bk.tdate,'%Y-%m-%d'),now())=4
+		
+		UNION 
+		SELECT 
+		IFNULL(sum(kwh),0) as total_kwh,IFNULL(sum(sumtime),0) as total_sumtime,6 as seq,'6_6' as seq_time,DATE_FORMAT(DATE_SUB(CURRENT_DATE(),INTERVAL 5 day),'%Y-%m-%d') as dayname,'date6' as datename
+		FROM
+		b_client_statistic_bk
+		WHERE 1=1
+		AND
+		b_client_statistic_bk.sys_user_id in ${pd.userids}
+		AND   TIMESTAMPDIFF(day,DATE_FORMAT(b_client_statistic_bk.tdate,'%Y-%m-%d'),now())=5
+		
+		UNION 
+		SELECT 
+		IFNULL(sum(kwh),0) as total_kwh,IFNULL(sum(sumtime),0) as total_sumtime,7 as seq,'7_7' as seq_time,DATE_FORMAT(DATE_SUB(CURRENT_DATE(),INTERVAL 6 day),'%Y-%m-%d')  as dayname,'date7' as datename
+		FROM
+		b_client_statistic_bk
+		WHERE 1=1
+		AND
+		b_client_statistic_bk.sys_user_id in ${pd.userids}
+		AND   TIMESTAMPDIFF(day,DATE_FORMAT(b_client_statistic_bk.tdate,'%Y-%m-%d'),now())=6
+		
+		UNION 
+		SELECT 
+		IFNULL(sum(kwh),0) as total_kwh,IFNULL(sum(sumtime),0) as total_sumtime,8 as seq,'8_8' as seq_time,DATE_FORMAT(DATE_SUB(CURRENT_DATE(),INTERVAL 7 day),'%Y-%m-%d')  as dayname,'date8' as datename
+		FROM
+		b_client_statistic_bk
+		WHERE 1=1
+		AND
+		b_client_statistic_bk.sys_user_id in ${pd.userids}
+		AND   TIMESTAMPDIFF(day,DATE_FORMAT(b_client_statistic_bk.tdate,'%Y-%m-%d'),now())=7
+		) A order by a.seq
+		]]>
+	</select>
+	
+	
+	<!--灯能耗按week统计 -->
+	<select id="select_lamp_energy_week" parameterType="page" resultType="pd">
+	<![CDATA[
+	select total_kwh,seq,total_sumtime,seq_time,dayname,dateflag from(
+		SELECT 
+		IFNULL(sum(kwh),0) as total_kwh,IFNULL(sum(sumtime),0) as total_sumtime,1 as seq,'1_1' as seq_time,'当前周' as dayname,'date1' as dateflag
+		FROM
+		b_client_statistic_bk
+		WHERE 1=1
+		AND
+		b_client_statistic_bk.sys_user_id in ${pd.userids}
+		AND YEARWEEK(DATE_FORMAT(b_client_statistic_bk.tdate,'%Y-%m-%d'),1)=YEARWEEK(DATE_SUB(NOW(), INTERVAL 0 DAY),1)
+		UNION
+		
+		SELECT 
+		IFNULL(sum(kwh),0) as total_kwh,IFNULL(sum(sumtime),0) as total_sumtime,2 as seq,'2_2' as seq_time,'前1周' as dayname,'date2' as dateflag
+		FROM
+		b_client_statistic_bk
+		WHERE 1=1
+		AND
+		b_client_statistic_bk.sys_user_id in ${pd.userids}
+		AND YEARWEEK(DATE_FORMAT(b_client_statistic_bk.tdate,'%Y-%m-%d'),1)=YEARWEEK(DATE_SUB(NOW(), INTERVAL 7 DAY),1)
+		
+		UNION 
+		SELECT 
+		IFNULL(sum(kwh),0) as total_kwh,IFNULL(sum(sumtime),0) as total_sumtime,3 as seq,'3_3' as seq_time,'前2周' as dayname,'date3' as dateflag
+		FROM
+		b_client_statistic_bk
+		WHERE 1=1
+		AND
+		b_client_statistic_bk.sys_user_id in ${pd.userids}
+		AND YEARWEEK(DATE_FORMAT(b_client_statistic_bk.tdate,'%Y-%m-%d'),1)=YEARWEEK(DATE_SUB(NOW(), INTERVAL 14 DAY),1)
+		UNION 
+		SELECT 
+		IFNULL(sum(kwh),0) as total_kwh,IFNULL(sum(sumtime),0) as total_sumtime,4 as seq,'4_4' as seq_time,'前3周' as dayname,'date4' as dateflag
+		FROM
+		b_client_statistic_bk
+		WHERE 1=1
+		AND
+		b_client_statistic_bk.sys_user_id in ${pd.userids}
+		AND YEARWEEK(DATE_FORMAT(b_client_statistic_bk.tdate,'%Y-%m-%d'),1)=YEARWEEK(DATE_SUB(NOW(), INTERVAL 21 DAY),1)
+		
+		UNION 
+		SELECT 
+		IFNULL(sum(kwh),0) as total_kwh,IFNULL(sum(sumtime),0) as total_sumtime,5 as seq,'5_5'as seq_time,'前4周' as dayname,'date5' as dateflag
+		FROM
+		b_client_statistic_bk
+		WHERE 1=1
+		AND
+		b_client_statistic_bk.sys_user_id in ${pd.userids}
+		AND YEARWEEK(DATE_FORMAT(b_client_statistic_bk.tdate,'%Y-%m-%d'),1)=YEARWEEK(DATE_SUB(NOW(), INTERVAL 28 DAY),1)
+		
+		UNION 
+		SELECT 
+		IFNULL(sum(kwh),0) as total_kwh,IFNULL(sum(sumtime),0) as total_sumtime,6 as seq, '6_6' as seq_time,'前5周' as dayname,'date6' as dateflag
+		FROM
+		b_client_statistic_bk
+		WHERE 1=1
+		AND
+		b_client_statistic_bk.sys_user_id in ${pd.userids}
+		AND YEARWEEK(DATE_FORMAT(b_client_statistic_bk.tdate,'%Y-%m-%d'),1)=YEARWEEK(DATE_SUB(NOW(), INTERVAL 35 DAY),1)
+		
+		UNION 
+		SELECT 
+		IFNULL(sum(kwh),0) as total_kwh,IFNULL(sum(sumtime),0) as total_sumtime,7 as seq,'7_7' as seq_time,'前6周' as dayname,'date7' as dateflag
+		FROM
+		b_client_statistic_bk
+		WHERE 1=1
+		AND
+		b_client_statistic_bk.sys_user_id in ${pd.userids}
+		AND YEARWEEK(DATE_FORMAT(b_client_statistic_bk.tdate,'%Y-%m-%d'),1)=YEARWEEK(DATE_SUB(NOW(), INTERVAL 42 DAY),1)
+		
+		UNION 
+		SELECT 
+		IFNULL(sum(kwh),0) as total_kwh,IFNULL(sum(sumtime),0) as total_sumtime,8 as seq,'8_8' as seq_time,'前7周' as dayname,'date8' as dateflag
+		FROM
+		b_client_statistic_bk
+		WHERE 1=1
+		AND
+		b_client_statistic_bk.sys_user_id in ${pd.userids}
+		AND YEARWEEK(DATE_FORMAT(b_client_statistic_bk.tdate,'%Y-%m-%d'),1)=YEARWEEK(DATE_SUB(NOW(), INTERVAL 48 DAY),1) 
+		) A order by a.seq
+		]]>
+	</select>
+	
+	
+	<!--灯能耗按month统计 -->
+	<select id="select_lamp_energy_month" parameterType="page" resultType="pd">
+	<![CDATA[
+	select total_kwh,seq,total_sumtime,seq_time,dayname,dateflag from(
+		SELECT 
+		IFNULL(sum(kwh),0) as total_kwh,IFNULL(sum(sumtime),0) as total_sumtime,1 as seq,'1_1' as seq_time,DATE_FORMAT(DATE_SUB(CURRENT_DATE(),INTERVAL 0 Month),'%Y-%m') as dayname,'date1' as dateflag
+		FROM
+		b_client_statistic_bk
+		WHERE 1=1
+		AND
+		b_client_statistic_bk.sys_user_id in ${pd.userids}
+		AND DATE_FORMAT(b_client_statistic_bk.tdate,'%Y%m')=DATE_FORMAT(DATE_SUB(CURRENT_DATE(),INTERVAL 0 Month),'%Y%m')
+		
+		UNION 
+		SELECT 
+		IFNULL(sum(kwh),0) as total_kwh,IFNULL(sum(sumtime),0) as total_sumtime,2 as seq,'2_2' as seq_time,DATE_FORMAT(DATE_SUB(CURRENT_DATE(),INTERVAL 1 Month),'%Y-%m') as dayname,'date2' as dateflag
+		FROM
+		b_client_statistic_bk
+		WHERE 1=1
+		AND
+		b_client_statistic_bk.sys_user_id in ${pd.userids}
+		AND DATE_FORMAT(b_client_statistic_bk.tdate,'%Y%m')=DATE_FORMAT(DATE_SUB(CURRENT_DATE(),INTERVAL 1 Month),'%Y%m')
+		
+		UNION 
+		SELECT 
+		IFNULL(sum(kwh),0) as total_kwh,IFNULL(sum(sumtime),0) as total_sumtime,3 as seq,'3_3' as seq_time,DATE_FORMAT(DATE_SUB(CURRENT_DATE(),INTERVAL 2 Month),'%Y-%m') as dayname,'date3' as dateflag
+		FROM
+		b_client_statistic_bk
+		WHERE 1=1
+		AND
+		b_client_statistic_bk.sys_user_id in ${pd.userids}
+		AND DATE_FORMAT(b_client_statistic_bk.tdate,'%Y%m')=DATE_FORMAT(DATE_SUB(CURRENT_DATE(),INTERVAL 2 Month),'%Y%m')
+		UNION 
+		SELECT 
+		IFNULL(sum(kwh),0) as total_kwh,IFNULL(sum(sumtime),0) as total_sumtime,4 as seq,'4_4' as seq_time,DATE_FORMAT(DATE_SUB(CURRENT_DATE(),INTERVAL 3 Month),'%Y-%m') as dayname,'date4' as dateflag
+		FROM
+		b_client_statistic_bk
+		WHERE 1=1
+		AND
+		b_client_statistic_bk.sys_user_id in ${pd.userids}
+		AND DATE_FORMAT(b_client_statistic_bk.tdate,'%Y%m')=DATE_FORMAT(DATE_SUB(CURRENT_DATE(),INTERVAL 3 Month),'%Y%m')
+		
+		UNION 
+		SELECT 
+		IFNULL(sum(kwh),0) as total_kwh,IFNULL(sum(sumtime),0) as total_sumtime,5 as seq,'5_5' as seq_time,DATE_FORMAT(DATE_SUB(CURRENT_DATE(),INTERVAL 4 Month),'%Y-%m') as dayname,'date5' as dateflag
+		FROM
+		b_client_statistic_bk
+		WHERE 1=1
+		AND
+		b_client_statistic_bk.sys_user_id in ${pd.userids}
+		AND DATE_FORMAT(b_client_statistic_bk.tdate,'%Y%m')=DATE_FORMAT(DATE_SUB(CURRENT_DATE(),INTERVAL 4 Month),'%Y%m')
+		UNION 
+		SELECT 
+		IFNULL(sum(kwh),0) as total_kwh,IFNULL(sum(sumtime),0) as total_sumtime,6 as seq,'6_6' as seq_time,DATE_FORMAT(DATE_SUB(CURRENT_DATE(),INTERVAL 5 Month),'%Y-%m') as dayname,'date6' as dateflag
+		FROM
+		b_client_statistic_bk
+		WHERE 1=1
+		AND
+		b_client_statistic_bk.sys_user_id in ${pd.userids}
+		AND DATE_FORMAT(b_client_statistic_bk.tdate,'%Y%m')=DATE_FORMAT(DATE_SUB(CURRENT_DATE(),INTERVAL 5 Month),'%Y%m')
+		
+		UNION 
+		SELECT 
+		IFNULL(sum(kwh),0) as total_kwh,IFNULL(sum(sumtime),0) as total_sumtime,7 as seq,'7_7' as seq_time,DATE_FORMAT(DATE_SUB(CURRENT_DATE(),INTERVAL 6 Month),'%Y-%m') as dayname,'date7' as dateflag
+		FROM
+		b_client_statistic_bk
+		WHERE 1=1
+		AND
+		b_client_statistic_bk.sys_user_id in ${pd.userids}
+		AND DATE_FORMAT(b_client_statistic_bk.tdate,'%Y%m')=DATE_FORMAT(DATE_SUB(CURRENT_DATE(),INTERVAL 6 Month),'%Y%m')
+		
+		UNION 
+		SELECT 
+		IFNULL(sum(kwh),0) as total_kwh,IFNULL(sum(sumtime),0) as total_sumtime,8 as seq,'8_8' as seq_time,DATE_FORMAT(DATE_SUB(CURRENT_DATE(),INTERVAL 7 Month),'%Y-%m') as dayname,'date8' as dateflag
+		FROM
+		b_client_statistic_bk
+		WHERE 1=1
+		AND
+		b_client_statistic_bk.sys_user_id in ${pd.userids}
+		AND DATE_FORMAT(b_client_statistic_bk.tdate,'%Y%m')=DATE_FORMAT(DATE_SUB(CURRENT_DATE(),INTERVAL 7 Month),'%Y%m')
+		) A order by a.seq
+		]]>
+	</select>
+	
 </mapper>

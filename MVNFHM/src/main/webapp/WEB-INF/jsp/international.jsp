@@ -686,5 +686,7 @@
 	String please_input_sms_to_who = properties.getProperty("please_input_sms_to_who");//label:请选择短信发送对象
 	String add_sms_setting = properties.getProperty("add_sms_setting");//label:请选择短信发送对象
 	String add_duplicate = properties.getProperty("add_duplicate");//label:请选择短信发送对象
+	String lamp_power_collection = properties.getProperty("lamp_power_collection");//label:灯能耗统计图
+	String lamp_sumtime_collection = properties.getProperty("lamp_sumtime_collection");//label:灯时长统计图
 	
 %>
