@@ -217,7 +217,7 @@
 		c.value = a.fault_type and c.b_status_main_id = 3
 		LEFT JOIN b_status d ON 
 		d.value = a.fault_type and d.b_status_main_id = 4
-	  where b_note_id = #{pd.b_note_id}
+	 <!--  where b_note_id = #{pd.b_note_id} -->
 	</select>
 	
 	<!-- 删除-->
@@ -268,7 +268,7 @@
 			send_to_admin,
 			send_to_person
 		) values (
-			#{b_note_id},	
+			1,	
 			#{device_type},	
 			#{fault_type},	
 			#{location},	

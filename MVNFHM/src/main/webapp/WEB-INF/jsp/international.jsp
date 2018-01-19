@@ -688,5 +688,6 @@
 	String add_duplicate = properties.getProperty("add_duplicate");//label:请选择短信发送对象
 	String lamp_power_collection = properties.getProperty("lamp_power_collection");//label:灯能耗统计图
 	String lamp_sumtime_collection = properties.getProperty("lamp_sumtime_collection");//label:灯时长统计图
+	String download_node_info = properties.getProperty("download_node_info");//label:节点信息下载
 	
 %>

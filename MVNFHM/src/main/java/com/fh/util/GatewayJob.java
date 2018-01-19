@@ -87,8 +87,7 @@ public class GatewayJob implements Job{
 					"		LEFT JOIN b_status c ON " + 
 					"		c.value = a.fault_type and c.b_status_main_id = 3" + 
 					"		LEFT JOIN b_status d ON " + 
-					"		d.value = a.fault_type and d.b_status_main_id = 4" + 
-					"	  where b_note_id = "+ smsplatformType;
+					"		d.value = a.fault_type and d.b_status_main_id = 4";
 			// 检索短信平台设置信息
 			Object[] smsSettingInfoList = DbFH.executeQueryFH(smsSettingSql);
 			List<List<Object>> smsSettingInfo = (List<List<Object>>) smsSettingInfoList[1];

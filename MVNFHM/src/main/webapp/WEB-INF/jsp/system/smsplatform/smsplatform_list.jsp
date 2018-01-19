@@ -65,9 +65,6 @@
 																	<c:if test="${QX.edit == 1 }">
 																		<a class="btn btn-xs btn-success" onclick="edit('${var.id}');"><%=edit %></a>
 																	</c:if>
-																	<c:if test="${QX.edit == 1 }">
-																		<a class="btn btn-xs btn-success" onclick="smsDestination('${var.id}');"><%=sms_destination_setting %></a>
-																	</c:if>
 																	<c:if test="${QX.del == 1 }">
 																		<a class="btn btn-xs btn-danger" onclick="del('${var.id}');"><%=delete %></a>
 																	</c:if>
