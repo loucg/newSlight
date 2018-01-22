@@ -148,5 +148,21 @@ public class MenuService implements MenuManager{
 		}
 		return menuList;
 	}
+	/**
+	 * 获取卡片式菜单
+	 * @return
+	 * @throws Exception
+	 */
+	public List<Menu> selectMenuInfo(PageData pd) throws Exception {
+		return (List<Menu>) dao.findForList("MenuMapper.selectMenuInfo", pd);
+	}
 	
+	/**
+	 * 获取卡片式菜单
+	 * @return
+	 * @throws Exception
+	 */
+	public List<Menu> selectMenuCard(PageData pd) throws Exception {
+		return (List<Menu>) dao.findForList("MenuMapper.selectMenuCard", pd);
+	}
 }

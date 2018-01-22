@@ -3,6 +3,7 @@ package com.fh.service.equipment;
 import java.util.List;
 
 import com.fh.entity.Page;
+import com.fh.entity.system.Menu;
 import com.fh.util.PageData;
 
 public interface LampStatictisService {
@@ -31,5 +32,17 @@ public interface LampStatictisService {
 	 * @return
 	 */
 	public List<PageData> listLampEnergyStatitcsNumByMonth(Page page) throws Exception;
-
+	
+	/**
+	 * @param menu
+	 * @throws Exception
+	 */
+	public void saveMenuCard(PageData pd) throws Exception;
+	
+	/**
+	 * @param menu
+	 * @throws Exception
+	 */
+	public void delMenuCard(PageData pd) throws Exception;
+	
 }

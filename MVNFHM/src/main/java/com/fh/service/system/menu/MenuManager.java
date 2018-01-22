@@ -77,4 +77,18 @@ public interface MenuManager {
 	 * @throws Exception
 	 */
 	public List<Menu> listAllMenuQx2(String MENU_ID) throws Exception;
+	
+	/**
+	 * @param MENU_ID----权限管理
+	 * @return
+	 * @throws Exception
+	 */
+	public List<Menu> selectMenuInfo(PageData pd) throws Exception;
+	
+	/**
+	 * @param MENU_ID-
+	 * @return
+	 * @throws Exception
+	 */
+	public List<Menu> selectMenuCard(PageData pd) throws Exception;
 }

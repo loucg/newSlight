@@ -16,7 +16,7 @@
 	<c:forEach items="${menuList}" var="menu1">
 	<c:if test="${menu1.hasMenu && '1' == menu1.MENU_STATE}">
 		<li class=""  id="lm${menu1.MENU_ID }">
-			<a style="cursor:pointer;" class="dropdown-toggle" <c:if test="${menu1.MENU_ID==335}">target="mainFrame" onclick="openFrame()" })"</c:if>>
+			<a style="cursor:pointer;" class="dropdown-toggle" <c:if test="${menu1.MENU_ID==335}">target="mainFrame" onclick="openFrame()"</c:if><c:if test="${menu1.MENU_ID==368}"> target="mainFrame" onclick="openStatisticFrame()"</c:if>>
 				<i class="${menu1.MENU_ICON == null ? 'menu-icon fa fa-leaf black' : menu1.MENU_ICON}">
 				<c:if test="${menu1.MENU_ICON == 'ztree_map'}"><img src="static/login/images/map.png" class="imgage"/></c:if>
 				<c:if test="${menu1.MENU_ICON == 'ztree_group'}"><img src="static/login/images/fzkz_icon.png" class="imgage"/></c:if>
@@ -127,8 +127,11 @@
 		function openFrame(){
 			top.mainFrame.tabAddHandler(335,"设备状态","equimentanaylise/retrieve");
 		}
+		// 打开div
+		function openStatisticFrame(){
+			top.mainFrame.tabAddHandler(368,"数据分析","lampstatictis/analysis");
+		}
 	</script>
-	
 <style type="text/css"> /** 重置浏览器默认标签样式 */ 
 	.imgage{padding-left:11px;width:30px;}
 	/* .ztree_map{background-image:url('map.png');} */

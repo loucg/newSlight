@@ -144,5 +144,27 @@
 			MENU_ID=#{MENU_ID}
 	</update>
 	
+	<select id="selectMenuInfo" parameterType="pd" resultMap="menuResultMap">
+		select  
+			SYS_MENU.MENU_ID,
+	 		SYS_MENU.MENU_NAME,
+	 		SYS_MENU.MENU_URL,
+	 		SYS_MENU.MENU_ICON,
+	 		SYS_MENU.MENU_ORDER,
+	 		SYS_MENU.MENU_STATE,
+	 		SYS_MENU.MENU_TYPE,
+	 		SYS_MENU.MENU_NAME_EN
+		 from 
+			SYS_MENU INNER JOIN SYS_SUB_MENU ON
+		SYS_MENU.MENU_ID = SYS_SUB_MENU.MENU_ID
+		 where USER_ID=#{USER_ID}
+	</select>
+	<select id="selectMenuCard" parameterType="pd" resultMap="menuResultMap">
+		select  
+			<include refid="Field"></include>
+		 from 
+			SYS_MENU 
+		WHERE PARENT_ID = 368
+	</select>
 	<!-- fh313596790qq(青苔) -->
 </mapper>

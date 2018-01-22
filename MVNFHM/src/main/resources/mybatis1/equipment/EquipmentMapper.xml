@@ -745,5 +745,18 @@ select count(*) as equipmentcnt from
 		) A order by a.seq
 		]]>
 	</select>
-	
+	<insert id="insertSubMenu" parameterType="pd">
+		insert into 
+			sys_sub_menu
+		(
+			USER_ID,
+			MENU_ID
+		) values (
+			#{USER_ID},
+			#{MENU_ID}
+		)
+	</insert>
+	<delete id="deleteSubMenu" parameterType="pd">
+		delete from sys_sub_menu where USER_ID = #{USER_ID} and MENU_ID = #{MENU_ID}
+	</delete>
 </mapper>
