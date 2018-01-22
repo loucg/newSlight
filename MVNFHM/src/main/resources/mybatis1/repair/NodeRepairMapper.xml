@@ -23,7 +23,7 @@
 				d.client_code AS code				 
 		FROM b_client_fault AS a
 			LEFT JOIN b_client_repair AS b ON a.id = b.b_client_fault_id
-			LEFT JOIN c_client_attr1 AS c ON a.c_client_id = c.c_client_id
+			LEFT JOIN c_client_attr1 AS c ON a.c_client_id = c.id
 			LEFT JOIN c_client AS d ON c.c_client_id = d.id 
 			LEFT JOIN b_status AS e ON e.b_status_main_id = '4' AND a.type = e.value 
 		WHERE a.status='1' 		<!-- 只显示未修复故障 -->
