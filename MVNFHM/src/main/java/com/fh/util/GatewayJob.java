@@ -14,7 +14,7 @@ public class GatewayJob implements Job{
 		
 		try {
 			// 掉线检测
-			String gatewayUnlinesql = "UPDATE c_gateway_upload_status SET status = '3' where timestampdiff(minute,tdate,now()) > 5";
+			String gatewayUnlinesql = "UPDATE c_gateway_upload_status SET status = '3',interstatus = 2 where timestampdiff(minute,tdate,now()) > 5";
 			DbFH.executeUpdateFH(gatewayUnlinesql);
 			// 取得短信平台
 			String adminInfoSql = "select " + 
