@@ -1,7 +1,12 @@
 package com.fh.util;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Random;
 
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
@@ -11,11 +16,13 @@ public class GatewayJob implements Job{
 	public static final String REGEX = ".*";
 	@Override
 	public void execute(JobExecutionContext arg0) throws JobExecutionException {
-		
+		Connection conn = null;
+		PreparedStatement pstm = null;
 		try {
 			// 掉线检测
 			String gatewayUnlinesql = "UPDATE c_gateway_upload_status SET status = '3',interstatus = 2 where timestampdiff(minute,tdate,now()) > 5";
 			DbFH.executeUpdateFH(gatewayUnlinesql);
+			
 			// 取得短信平台
 			String adminInfoSql = "select " + 
 					"			a.phone," + 
@@ -132,18 +139,83 @@ public class GatewayJob implements Job{
 			}
 			DbFH.executeUpdateFH(gatewaySmsSentSql);
 			DbFH.executeUpdateFH(nodeSmsSentSql);
+			// 登陆故障网关信息
+			conn = (Connection) DbFH.getFHCon();
+			// 掉线检测
+			String gatewayInfoSql = "select c_gateway_id from c_gateway_upload_status where timestampdiff(minute,tdate,now()) > 20";
+			String gatewayFaultSql = "select c_gateway_id from b_gateway_fault where status = 1 and sms_sent is null";
+			String insertSql = "INSERT into b_gateway_fault (fault_no,c_gateway_id,type,tdate,comment,status,c_gateway_new_id,sms_sent) VALUES (?,?,?,?,?,?,?,?)";
+			Object[] gatewayInfoList = DbFH.executeQueryFH(gatewayInfoSql);
+			Object[] gatewayFaultInfoList = DbFH.executeQueryFH(gatewayFaultSql);
+			List<List<Object>> gatewayIdList = (List<List<Object>>) gatewayInfoList[1];
+			List<List<Object>> FaultgatewayIdList = (List<List<Object>>) gatewayFaultInfoList[1];
+			if (null != gatewayIdList && gatewayIdList.size() > 0) {
+				for(List<Object> gatewayInfo : gatewayIdList) {
+					boolean isExists = false;
+					if (null != FaultgatewayIdList && FaultgatewayIdList.size() > 0) {
+						for(List<Object> gatewayFaultInfo : gatewayIdList) {
+							if(gatewayInfo.get(0).equals(gatewayFaultInfo.get(0))) {
+								isExists = true;
+								break;
+							}
+						}
+						
+					}
+					if (!isExists) {
+						pstm = conn.prepareStatement(insertSql);
+						// 故障编号
+						pstm.setString(1, randomHexString(12));
+						//网关编号
+						pstm.setString(2, String.valueOf(gatewayInfo.get(0)));
+						// 故障类型
+						pstm.setInt(3, 3);
+						// 时间
+						pstm.setTimestamp(4, new Timestamp(Calendar.getInstance().getTimeInMillis()));
+						pstm.setString(5, null);
+						pstm.setInt(6, 1);
+						pstm.setString(7, null);
+						pstm.setString(8, null);
+						pstm.executeUpdate();
+					}
+				}
+			}
 		} catch (ClassNotFoundException e1) {
 			e1.printStackTrace();
 		} catch (SQLException e1) {
 			e1.printStackTrace();
 		}catch (Exception e) {
 			e.printStackTrace();
-		}
+		}finally {
+			try {
+			if (conn != null) {
+				conn.close();
+				} 
+			if (pstm != null ) {
+				pstm.close();
+			}
+			}
+			catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
 	}
 	private String cnvNullData(Object str){
 		if(str == null) {
 			return "";
 		}
 		return str.toString();
+	}
+	
+	public static String randomHexString(int len){
+		try {
+			StringBuffer result = new StringBuffer();
+			for(int i=0;i<len;i++) {
+				result.append(Integer.toHexString(new Random().nextInt(16)));
+			}
+			return result.toString().toUpperCase();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 }
