@@ -153,7 +153,7 @@ public class GatewayJob implements Job{
 				for(List<Object> gatewayInfo : gatewayIdList) {
 					boolean isExists = false;
 					if (null != FaultgatewayIdList && FaultgatewayIdList.size() > 0) {
-						for(List<Object> gatewayFaultInfo : gatewayIdList) {
+						for(List<Object> gatewayFaultInfo : FaultgatewayIdList) {
 							if(gatewayInfo.get(0).equals(gatewayFaultInfo.get(0))) {
 								isExists = true;
 								break;
