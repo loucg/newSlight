@@ -143,7 +143,7 @@ public class GatewayJob implements Job{
 			conn = (Connection) DbFH.getFHCon();
 			// 掉线检测
 			String gatewayInfoSql = "select c_gateway_id from c_gateway_upload_status where timestampdiff(minute,tdate,now()) > 20";
-			String gatewayFaultSql = "select c_gateway_id from b_gateway_fault where status = 1 and sms_sent is null";
+			String gatewayFaultSql = "select c_gateway_id from b_gateway_fault where status = 1";
 			String insertSql = "INSERT into b_gateway_fault (fault_no,c_gateway_id,type,tdate,comment,status,c_gateway_new_id,sms_sent) VALUES (?,?,?,?,?,?,?,?)";
 			Object[] gatewayInfoList = DbFH.executeQueryFH(gatewayInfoSql);
 			Object[] gatewayFaultInfoList = DbFH.executeQueryFH(gatewayFaultSql);
