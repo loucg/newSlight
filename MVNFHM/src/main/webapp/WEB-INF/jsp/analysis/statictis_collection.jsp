@@ -36,7 +36,7 @@ a:hover{color:#3366cc!important;text-decoration:none;}
 *html .clearfix{height:1%;}
 .clearfix{display:block;}/* End hide from IE-mac */
 *+html .clearfix{min-height:1%;}
- .demo{width:1000px;margin:0px auto;position:absolute;padding:100px} 
+ .demo{width:80%;margin:0px auto;position:absolute;padding:100px} 
 /* Form input */
 .Form li{font-size:21px;font-weight:300}
 .Form label{display:inline-block;line-height:1.4em;font-size:18px}
@@ -379,7 +379,7 @@ $(function(){(
 			var key = d.split(',');
 			var menuId = key[0];
 			var menuUrl = key[1];
-			a.append($("<a class=deleteLink title="+c+' value='+menuId+'" onclick=openTargetPage(\''+menuId+'\',\''+c+'\',\''+menuUrl+'\')><span>'+c+'</span><div class=delete></div><em></em></a>'));
+			a.append($('<a class=deleteLink title="'+c+'" value="'+menuId+'" onclick=openTargetPage("'+menuId+'","'+c+'","'+menuUrl+'")><span>'+c+'</span><em></em></a>'));
 			searchAjax(c,d,true);
 			rightClick();
 			$.ajax({
